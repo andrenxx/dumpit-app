@@ -34,9 +34,9 @@ organized Kanban. Freemium: free plan allows unlimited manual Kanban +
 one AI call. Paid plan (R$25/mês) unlocks unlimited AI calls and daily
 AI summaries.
 
-Stack: React 18 + Vite 5 (frontend), Vercel Functions (backend API),
-Supabase (Postgres + Auth + RLS), Claude API (Anthropic), Stripe
-(payments), Web Push API (push notifications). Deploy: Vercel.
+Stack: React 18 + Vite 5 (frontend), Cloudflare Pages + Pages Functions
+(hosting + backend API), Supabase (Postgres + Auth + RLS), Claude API
+(Anthropic), Web Push API (push notifications). Deploy: Cloudflare Pages.
 
 # Frontend work
 
@@ -45,10 +45,10 @@ Before writing UI code, read the **JavaScript / React** subsection under
 strings must be in pt-BR. All AI calls must go through `api/` functions —
 never call the Claude API or expose secrets in frontend code.
 
-# Vercel Functions
+# Cloudflare Pages Functions
 
-Before writing or modifying API functions, read the **Vercel Functions**
-subsection under [Code conventions](CLAUDE.md#code-conventions) in
-`CLAUDE.md`. Every function must validate the Supabase JWT before
-processing, and must include CORS headers allowing only the specified
-origins.
+Before writing or modifying functions, read the **Cloudflare Pages
+Functions** subsection under [Code conventions](CLAUDE.md#code-conventions)
+in `CLAUDE.md`. Functions use the Workers runtime — no `process.env`,
+no Express-style handlers. Every function validates the Supabase JWT
+before processing and returns CORS headers on every response.

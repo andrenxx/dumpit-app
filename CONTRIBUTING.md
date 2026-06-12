@@ -7,14 +7,16 @@ source of truth** for feature state. The full reasoning is in
 ## First-time setup
 
 ```bash
-cp .env.example .env.local      # fill in your credentials
+cp .env.example .dev.vars       # server-side vars for Workers (gitignored)
+cp .env.example .env.local      # VITE_ vars for frontend dev (gitignored)
 npm install                     # install deps
-npm run dev                     # Vite dev server on :5173
-vercel dev                      # frontend + Vercel Functions on :3000
+npm run dev                     # Vite dev server on :5173 (frontend only)
+npm run build && wrangler pages dev dist --compatibility-date=2024-01-01  # full stack
 ```
 
-The app reads environment variables from `.env.local`. If `npm run dev`
-fails referencing a missing key, re-copy from `.env.example`.
+Server-side variables (non-`VITE_`) go in `.dev.vars` for `wrangler` to
+pick up. Frontend variables (`VITE_*`) go in `.env.local` for Vite.
+In production, all vars are set in the Cloudflare Dashboard.
 
 ## The loop
 

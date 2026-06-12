@@ -3,8 +3,9 @@ dist/
 .env.local
 .env.*.local
 
-# Vercel
-.vercel/
+# Cloudflare / Wrangler
+.wrangler/
+.dev.vars
 
 # Vite
 *.local

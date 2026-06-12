@@ -12,8 +12,8 @@ its category built natively for the PT-BR market, no configuration required.
 
 The repository is **scaffolded but not implemented**. The architectural
 foundation is captured in ADR 0001 (spec-driven workflow). The app structure
-under `src/` and `api/` contains no source code yet. The next contributor
-opens an implementation issue and proceeds via the standard
+under `src/` and `functions/` contains no source code yet. The next
+contributor opens an implementation issue and proceeds via the standard
 `/spec` → `/implement` → `/code-review` → `/ship` loop.
 
 ## Stack
@@ -23,14 +23,18 @@ opens an implementation issue and proceeds via the standard
 - **Routing:** React Router 6 (`react-router-dom`).
 - **Styling:** Tailwind CSS 3 (`tailwindcss`, `postcss`, `autoprefixer`).
 - **Drag and drop:** `@dnd-kit/core` + `@dnd-kit/sortable`.
-- **Backend:** Vercel Functions (`api/*.js`) — serverless, zero infra.
+- **Backend:** Cloudflare Pages Functions (`functions/*.js`) — serverless,
+  Workers runtime (V8 isolates, not Node.js). Env vars accessed via `env.*`
+  on the request context, not `process.env`.
 - **Database + Auth:** Supabase (Postgres + Row Level Security + magic-link auth).
   Local dev via `supabase start` or direct Supabase project.
-- **AI — parsing:** `claude-sonnet-4-6` (Anthropic API). Used in `api/parse-tasks.js`.
-- **AI — summary:** `claude-haiku-4-5-20251001` (Anthropic API). Used in `api/checkin-summary.js`.
-- **Payments:** Stripe Checkout + webhooks (`stripe` npm package server-side).
-- **Push notifications:** Web Push API + VAPID keys (`web-push` npm package server-side).
-- **Deploy:** Vercel — `git push` → production automatically.
+- **AI — parsing:** `claude-sonnet-4-6` (Anthropic API). Used in `functions/parse-tasks.js`.
+- **AI — summary:** `claude-haiku-4-5-20251001` (Anthropic API). Used in `functions/checkin-summary.js`.
+- **Push notifications:** Web Push API + VAPID keys (`web-push` npm package, bundled for Workers).
+- **Cron (check-in push):** Cloudflare Workers Cron Trigger — configured in `wrangler.toml`,
+  fires the send-checkin worker daily at 21:00 UTC (18h BRT).
+- **Deploy:** Cloudflare Pages — `git push` → production automatically.
+  Local dev: `wrangler pages dev dist --compatibility-date=2024-01-01`.
 
 ## Environment variables
 
@@ -40,16 +44,17 @@ secrets — that prefix exposes the value in the frontend bundle.
 ```
 VITE_SUPABASE_URL          # public, protected by RLS
 VITE_SUPABASE_ANON_KEY     # public, protected by RLS
-SUPABASE_SERVICE_ROLE_KEY  # server-only
+SUPABASE_SERVICE_ROLE_KEY  # server-only (Workers env)
 CLAUDE_API_KEY             # server-only — NEVER VITE_ prefix
-VITE_STRIPE_PUBLISHABLE_KEY # can be frontend
-STRIPE_SECRET_KEY          # server-only
-STRIPE_PRICE_ID            # server-only
-STRIPE_WEBHOOK_SECRET      # server-only
-VAPID_PUBLIC_KEY           # server-only
-VAPID_PRIVATE_KEY          # server-only
+VAPID_PUBLIC_KEY           # server-only (Workers env)
+VAPID_PRIVATE_KEY          # server-only (Workers env)
 VAPID_SUBJECT              # server-only (mailto:)
 ```
+
+In Cloudflare Pages Functions, server-side vars are set in the Cloudflare
+Dashboard (Settings → Environment Variables) and accessed as `context.env.VAR`.
+They are never in the frontend bundle. Local dev uses a `.dev.vars` file
+(gitignored) instead of `.env.local`.
 
 See `.env.example` for full reference.
 
@@ -111,7 +116,7 @@ with the issue number as scope:
 ```
 feat(#12): add drag-and-drop between kanban columns
 fix(#15): resolve ai rate limit race condition
-chore(#7): scaffold vercel function structure
+chore(#7): scaffold cloudflare pages functions structure
 ```
 
 Imperative, lowercase, no trailing period.
@@ -137,17 +142,20 @@ the issue title.
 - Pages live in `src/pages/`.
 - Shared utilities and clients live in `src/lib/`.
 
-### Vercel Functions
+### Cloudflare Pages Functions
 
-- All functions live in `api/*.js` and are treated as server-only.
+- All functions live in `functions/*.js` and run in the Workers runtime
+  (V8 isolates). No `process.env` — use `context.env.VAR_NAME`.
+- Each function exports `onRequest(context)` (or `onRequestPost`, etc.)
+  and returns a `Response` object — not Express-style `(req, res)`.
 - Each function validates the Supabase JWT from the `Authorization` header
-  before doing any work. Use `SUPABASE_SERVICE_ROLE_KEY` for server-side
-  Supabase calls.
-- Never import from `src/` in `api/` or vice versa — they are separate
-  runtime contexts.
+  before doing any work. Use `context.env.SUPABASE_SERVICE_ROLE_KEY`.
+- Never import from `src/` in `functions/` — separate runtime contexts.
 - CORS: only `dumpit.com.br`, `www.dumpit.com.br`, and
-  `http://localhost:5173` (dev) are allowed origins. Add the CORS headers
-  to every function response.
+  `http://localhost:5173` (dev) are allowed origins. Return CORS headers
+  on every response, including preflight `OPTIONS` requests.
+- The cron trigger (`send-checkin`) is a separate Worker defined in
+  `wrangler.toml` and does not live in `functions/`.
 
 ### Supabase / database
 
@@ -160,8 +168,8 @@ the issue title.
 
 ### AI calls
 
-- Use `claude-sonnet-4-6` for task parsing (`api/parse-tasks.js`).
-- Use `claude-haiku-4-5-20251001` for daily summaries (`api/checkin-summary.js`).
+- Use `claude-sonnet-4-6` for task parsing (`functions/parse-tasks.js`).
+- Use `claude-haiku-4-5-20251001` for daily summaries (`functions/checkin-summary.js`).
 - The Claude API key (`CLAUDE_API_KEY`) lives server-side only. It must
   **never** appear in any `VITE_`-prefixed variable or be referenced in
   frontend code.
@@ -185,4 +193,5 @@ runs these gates before each commit.
 - Bypassing the conventional commit + branch convention.
 - Committing directly to `main`.
 - Any key prefixed with `VITE_` that contains a secret.
-- AI API calls from the frontend (they must go through `api/` functions).
+- AI API calls from the frontend (they must go through `functions/` workers).
+- `process.env` in Workers code — use `context.env.*` instead.
