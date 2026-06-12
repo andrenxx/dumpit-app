@@ -1,0 +1,55 @@
+# Canonical label set for this repository.
+#
+# This file is the source of truth. Until a sync action lands, apply manually:
+#
+#   while read -r line; do
+#     name=$(echo "$line" | yq '.name')
+#     color=$(echo "$line" | yq '.color')
+#     desc=$(echo "$line" | yq '.description')
+#     gh label create "$name" --color "$color" --description "$desc" --force
+#   done < <(yq '.labels[] | @json' .github/labels.yml)
+#
+# Phase labels move through a strict sequence on each issue:
+#   discovery → spec → implementing → review → shipped
+# Type labels are stable across phases.
+
+labels:
+  # ── Phase ─────────────────────────────────────────────────────────
+  - name: "phase:discovery"
+    color: "C5DEF5"
+    description: "Problem framing, options exploration"
+  - name: "phase:spec"
+    color: "BFD4F2"
+    description: "Spec being drafted or under review"
+  - name: "phase:implementing"
+    color: "FBCA04"
+    description: "Implementation in progress"
+  - name: "phase:review"
+    color: "FEF2C0"
+    description: "Code review in progress"
+  - name: "phase:shipped"
+    color: "0E8A16"
+    description: "Merged and deployed"
+
+  # ── PR review gates (Phase 1.1+) ──────────────────────────────────
+  # spec:approved is applied by /spec-review on a clean checklist pass
+  # and removed by /code-review when a code commit modifies the spec.
+  # code:approved is applied by /code-review (Phase 1.2) on a clean pass.
+  # /ship requires both labels before marking the PR ready and merging.
+  - name: "spec:approved"
+    color: "5319E7"
+    description: "Spec audited and accepted; ready for implementation"
+  - name: "code:approved"
+    color: "0E8A16"
+    description: "Implementation audited and accepted; ready to ship"
+
+  # ── Type ──────────────────────────────────────────────────────────
+  - name: "type:feature"
+    color: "A2EEEF"
+    description: "User-facing feature"
+  - name: "type:chore"
+    color: "EDEDED"
+    description: "Tooling, infra, or process work"
+  - name: "type:bug"
+    color: "D73A4A"
+    description: "Something is broken"

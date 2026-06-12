@@ -1,0 +1,28 @@
+name: shell
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  parse-check:
+    name: bash -n
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Parse-check all tracked shell scripts
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(git ls-files -- '*.sh' ':(exclude)__fixtures__/**')
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "no tracked *.sh files; nothing to check"
+            exit 0
+          fi
+          fail=0
+          for f in "${files[@]}"; do
+            if ! bash -n "$f"; then
+              echo "::error file=$f::bash -n parse error"
+              fail=1
+            fi
+          done
+          exit "$fail"

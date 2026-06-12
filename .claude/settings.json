@@ -1,0 +1,32 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/implement-guard.sh"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/workflow-guard.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/bash-write-guard.sh"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/bash-workflow-guard.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

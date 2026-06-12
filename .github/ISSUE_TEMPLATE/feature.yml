@@ -1,0 +1,70 @@
+name: Feature
+description: Propose a feature, enhancement, or non-trivial change.
+title: "<short imperative title>"
+labels:
+  - "phase:spec"
+  - "type:feature"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for any non-trivial change. The issue body is the
+        **summary**; the full design lives in a spec at
+        `docs/specs/NNN-<slug>.md` opened as a PR. See
+        [`CONTRIBUTING.md`](../../CONTRIBUTING.md) for the full loop.
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What is true today that motivates this change?
+      placeholder: One short paragraph. No solutions yet.
+    validations:
+      required: true
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What outcome does this issue achieve, in one or two sentences?
+    validations:
+      required: true
+
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+      description: What is explicitly NOT in this issue? Be specific to prevent scope creep.
+    validations:
+      required: true
+
+  - type: textarea
+    id: validation-strategy
+    attributes:
+      label: Validation strategy
+      description: |
+        How will we know this works? Name the oracle: behaviors verified,
+        seams that must exist, fixtures, UX flows. Acceptance below should
+        be assertions about this oracle, not a substitute for it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance
+      description: A short checklist that, if true, means this issue is done.
+      value: |
+        - [ ] Spec at `docs/specs/NNN-<slug>.md` reviewed and merged
+        - [ ] Implementation PR merged with `Closes #N`
+        - [ ]
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Optional. Links, prior discussions, related issues or ADRs.
+    validations:
+      required: false

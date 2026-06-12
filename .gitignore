@@ -1,0 +1,25 @@
+node_modules/
+dist/
+.env.local
+.env.*.local
+
+# Vercel
+.vercel/
+
+# Vite
+*.local
+
+# Claude Code runtime
+.claude/.implement-lock
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Supabase local
+supabase/.branches
+supabase/.temp

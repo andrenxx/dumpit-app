@@ -1,0 +1,4 @@
+[
+  {"number": 991, "title": "Stub child A", "summary": "Stub summary A.", "branch": "feat/991-stub-a"},
+  {"number": 992, "title": "Stub child B", "summary": "Stub summary B.", "branch": "chore/992-stub-b"}
+]

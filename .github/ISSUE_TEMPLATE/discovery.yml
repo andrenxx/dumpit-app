@@ -1,0 +1,85 @@
+name: Discovery
+description: Frame a problem before committing to a spec.
+title: "<problem statement, not solution>"
+labels:
+  - "phase:discovery"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this when the problem is still vague. The output of a discovery
+        issue is **understanding** — options considered, framing accepted,
+        recommended next step. It often becomes a feature issue afterwards
+        (or gets closed because the problem dissolved). See
+        [`CONTRIBUTING.md`](../../CONTRIBUTING.md).
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: |
+        What is the pain, in concrete terms? Examples beat hypotheticals.
+        Resist the urge to write the title as a solution.
+    validations:
+      required: true
+
+  - type: textarea
+    id: why-now
+    attributes:
+      label: Why now
+      description: What changed, or what costs grow if we ignore this?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: ux
+    attributes:
+      label: UX scope
+      description: |
+        Does this change something the user sees or interacts with — a
+        screen, a flow, a copy element? If yes, `/discover` runs the UX
+        research branch (use-case + competitors + internal code) and
+        produces three framed options inside this issue. If no, the
+        discovery skips that branch.
+
+        Heuristic: API-only, worker-only, infra, tooling, or skill
+        changes are `not-applicable`. Anything that renders new UI,
+        alters an existing flow, or introduces user-facing copy is
+        `required`. Bug fixes that reword existing copy count as
+        `required`.
+      options:
+        - not-applicable
+        - required
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: validation-signal
+    attributes:
+      label: How would we know this is resolved?
+      description: |
+        The observable signal that the pain is gone. Behavior, not feature.
+        ("After X, the user sees Y" beats "we add a button.")
+    validations:
+      required: true
+
+  - type: textarea
+    id: options
+    attributes:
+      label: Options considered
+      description: |
+        Optional at open. Fill in as exploration progresses. Each option:
+        one-line description + rough effort + main trade-off.
+    validations:
+      required: false
+
+  - type: textarea
+    id: next-step
+    attributes:
+      label: Recommended next step
+      description: |
+        Optional at open. By close: either "open feature issue with spec X"
+        or "close — problem does not justify a spec right now".
+    validations:
+      required: false
