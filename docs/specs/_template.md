@@ -2,7 +2,7 @@
 
 | Field    | Value                                                                                |
 | -------- | ------------------------------------------------------------------------------------ |
-| Issue    | [#N](https://github.com/andrenx/taskdump/issues/N)                                   |
+| Issue    | [#N](https://github.com/andrenx/dumpit/issues/N)                                     |
 | Branch   | `feat/N-<slug>`                                                                      |
 | Status   | Draft \| Under review \| Approved \| Implementing \| Shipped                         |
 | Type     | feature \| chore \| bug                                                              |

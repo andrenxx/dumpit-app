@@ -2,7 +2,7 @@
 
 @AGENTS.md
 
-Configuration for Claude Code working on **taskdump** — an AI-powered task
+Configuration for Claude Code working on **DumpIt** — an AI-powered task
 manager in Brazilian Portuguese. The product lets a user dump their tasks in
 natural language, have the AI parse them into a Kanban board automatically,
 and close the day with a check-in routine. Differentiator: first product of
@@ -145,7 +145,7 @@ the issue title.
   Supabase calls.
 - Never import from `src/` in `api/` or vice versa — they are separate
   runtime contexts.
-- CORS: only `taskdump.com.br`, `www.taskdump.com.br`, and
+- CORS: only `dumpit.com.br`, `www.dumpit.com.br`, and
   `http://localhost:5173` (dev) are allowed origins. Add the CORS headers
   to every function response.
 

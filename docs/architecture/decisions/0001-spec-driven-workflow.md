@@ -7,7 +7,7 @@
 
 ## Context
 
-taskdump is built by a solo founder with AI coding agents (Claude Code)
+DumpIt is built by a solo founder with AI coding agents (Claude Code)
 as the primary implementation driver. Without a forcing function, AI
 agents drift — they add scope, skip edge cases, or implement things
 that were never discussed. The cost of a wrong implementation is higher

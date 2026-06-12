@@ -28,7 +28,7 @@ constraints live in [`docs/architecture/decisions/`](docs/architecture/decisions
 
 # Product context
 
-**taskdump** is a conversational AI task manager in PT-BR. The user
+**DumpIt** is a conversational AI task manager in PT-BR. The user
 dumps what they have to do in natural language; the AI parses it into an
 organized Kanban. Freemium: free plan allows unlimited manual Kanban +
 one AI call. Paid plan (R$25/mês) unlocks unlimited AI calls and daily
