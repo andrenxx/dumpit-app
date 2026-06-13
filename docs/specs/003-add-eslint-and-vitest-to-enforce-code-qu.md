@@ -79,10 +79,14 @@ export default [
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
     },
-    settings: { react: { version: 'detect' } },
+    settings: { react: { version: '18' } },
   },
 ]
 ```
+
+> **Implementation note:** `version: 'detect'` was replaced with `'18'` because
+> `eslint-plugin-react` 7.x + ESLint 10 flat config breaks the detection API
+> (`contextOrFilename.getFilename is not a function`).
 
 `lint` script: `"lint": "eslint src"`.
 
@@ -106,8 +110,13 @@ And a `test` field:
 ```js
 test: {
   environment: 'jsdom',
+  passWithNoTests: true,
 }
 ```
+
+> **Implementation note:** `passWithNoTests: true` is required because Vitest
+> exits with code 1 when no test files are found (the default), which would
+> break the sanity gate before any tests exist.
 
 Install `jsdom` as a dev dependency for the DOM environment.
 
