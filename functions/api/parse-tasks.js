@@ -137,15 +137,26 @@ export async function onRequestPost(context) {
     parsed_tasks: parsedTasks,
   })
 
-  // 9. Record ai_usage (upsert by user_id + date)
+  // 9. Record ai_usage — increment calls_count accurately
+  // supabase-js upsert doesn't support column expressions, so use SELECT + INSERT/UPDATE
   const today = new Date().toISOString().split('T')[0]
-  await supabase.from('ai_usage').upsert(
-    { user_id: userId, date: today, calls_count: 1 },
-    {
-      onConflict: 'user_id,date',
-      ignoreDuplicates: false,
-    },
-  )
+  const { data: existingUsage } = await supabase
+    .from('ai_usage')
+    .select('id, calls_count')
+    .eq('user_id', userId)
+    .eq('date', today)
+    .single()
+
+  if (existingUsage) {
+    await supabase
+      .from('ai_usage')
+      .update({ calls_count: existingUsage.calls_count + 1 })
+      .eq('id', existingUsage.id)
+  } else {
+    await supabase
+      .from('ai_usage')
+      .insert({ user_id: userId, date: today, calls_count: 1 })
+  }
 
   return json({ tasks: insertedTasks }, 200, origin)
 }
