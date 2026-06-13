@@ -24,3 +24,5 @@ npm-debug.log*
 # Supabase local
 supabase/.branches
 supabase/.temp
+.vite/
+package-lock.json
