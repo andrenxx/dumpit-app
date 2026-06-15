@@ -26,3 +26,4 @@ supabase/.branches
 supabase/.temp
 .vite/
 package-lock.json
+test-parse.html
