@@ -28,9 +28,8 @@ contributor opens an implementation issue and proceeds via the standard
   on the request context, not `process.env`.
 - **Database + Auth:** Supabase (Postgres + Row Level Security + magic-link auth).
   Local dev via `supabase start` or direct Supabase project.
-- **AI — parsing:** `gemini-2.0-flash` (Google AI Studio, free tier). Used in `functions/parse-tasks.js`.
-  Bootstrap choice — swap to `claude-sonnet-4-6` (Anthropic) when budget allows.
-- **AI — summary:** `gemini-2.0-flash` (Google AI Studio). Used in `functions/checkin-summary.js`.
+- **AI — parsing:** `claude-haiku-4-5-20251001` (Anthropic). Used in `functions/parse-tasks.js`.
+- **AI — summary:** `claude-haiku-4-5-20251001` (Anthropic). Used in `functions/checkin-summary.js`.
 - **Push notifications:** Web Push API + VAPID keys (`web-push` npm package, bundled for Workers).
 - **Cron (check-in push):** Cloudflare Workers Cron Trigger — configured in `wrangler.toml`,
   fires the send-checkin worker daily at 21:00 UTC (18h BRT).
@@ -46,7 +45,7 @@ secrets — that prefix exposes the value in the frontend bundle.
 VITE_SUPABASE_URL          # public, protected by RLS
 VITE_SUPABASE_ANON_KEY     # public, protected by RLS
 SUPABASE_SERVICE_ROLE_KEY  # server-only (Workers env)
-GEMINI_API_KEY             # server-only — NEVER VITE_ prefix (Google AI Studio)
+CLAUDE_API_KEY             # server-only — NEVER VITE_ prefix (Anthropic)
 VAPID_PUBLIC_KEY           # server-only (Workers env)
 VAPID_PRIVATE_KEY          # server-only (Workers env)
 VAPID_SUBJECT              # server-only (mailto:)
@@ -169,7 +168,7 @@ the issue title.
 
 ### AI calls
 
-- Use `claude-sonnet-4-6` for task parsing (`functions/parse-tasks.js`).
+- Use `claude-haiku-4-5-20251001` for task parsing (`functions/parse-tasks.js`).
 - Use `claude-haiku-4-5-20251001` for daily summaries (`functions/checkin-summary.js`).
 - The Claude API key (`CLAUDE_API_KEY`) lives server-side only. It must
   **never** appear in any `VITE_`-prefixed variable or be referenced in

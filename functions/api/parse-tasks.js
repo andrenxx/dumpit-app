@@ -31,46 +31,43 @@ Each task object must have:
 - "priority": "alta" | "media" | "baixa"
 - "status": always "a_fazer"
 
+Priority rules:
+- "alta": explicit deadline (today, tomorrow, specific time), words like urgente/hoje/amanhã/antes das X, client-facing, financial impact
+- "media": active work task with no clear deadline
+- "baixa": errands, personal chores, shopping, no deadline
+
 Return ONLY valid JSON — no markdown, no explanation, no code blocks.
 Example: [{"title":"Ligar para o cliente","priority":"alta","status":"a_fazer"}]`
 
 export async function onRequestPost(context) {
   const origin = context.request.headers.get('Origin') || ''
+  const supabase = createClient(context.env.SUPABASE_URL, context.env.SUPABASE_SERVICE_ROLE_KEY)
 
-  const supabase = createClient(
-    context.env.SUPABASE_URL,
-    context.env.SUPABASE_SERVICE_ROLE_KEY,
-  )
+  // DEV BYPASS — skips auth and DB writes; remove before shipping
+  const devBypass = context.env.DEV_BYPASS === 'true'
+  let userId = null
 
-  // 1. Extract JWT
-  const authHeader = context.request.headers.get('Authorization') || ''
-  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null
-  if (!token) return json({ error: 'unauthorized' }, 401, origin)
+  if (!devBypass) {
+    // 1. Extract JWT
+    const authHeader = context.request.headers.get('Authorization') || ''
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null
+    if (!token) return json({ error: 'unauthorized' }, 401, origin)
 
-  // 2. Verify JWT
-  const { data: { user }, error: authError } = await supabase.auth.getUser(token)
-  if (authError || !user) return json({ error: 'unauthorized' }, 401, origin)
+    // 2. Verify JWT
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+    if (authError || !user) return json({ error: 'unauthorized' }, 401, origin)
+    userId = user.id
 
-  const userId = user.id
+    // 3. Fetch user plan
+    const { data: profile, error: profileError } = await supabase
+      .from('users').select('plan').eq('id', userId).single()
+    if (profileError || !profile) return json({ error: 'unauthorized' }, 401, origin)
 
-  // 3. Fetch user plan
-  const { data: profile, error: profileError } = await supabase
-    .from('users')
-    .select('plan')
-    .eq('id', userId)
-    .single()
-
-  if (profileError || !profile) return json({ error: 'unauthorized' }, 401, origin)
-
-  // 4. Freemium gate — free plan: 1 call lifetime
-  if (profile.plan === 'free') {
-    const { count, error: usageError } = await supabase
-      .from('ai_usage')
-      .select('*', { count: 'exact', head: true })
-      .eq('user_id', userId)
-
-    if (!usageError && count >= 1) {
-      return json({ error: 'upgrade_required' }, 402, origin)
+    // 4. Freemium gate — free plan: 1 call lifetime
+    if (profile.plan === 'free') {
+      const { count, error: usageError } = await supabase
+        .from('ai_usage').select('*', { count: 'exact', head: true }).eq('user_id', userId)
+      if (!usageError && count >= 1) return json({ error: 'upgrade_required' }, 402, origin)
     }
   }
 
@@ -81,35 +78,43 @@ export async function onRequestPost(context) {
   } catch {
     return json({ error: 'invalid_json' }, 400, origin)
   }
-
   const text = (body?.text || '').trim()
   if (!text) return json({ error: 'text_required' }, 400, origin)
 
-  // 6. Call Gemini API
+  // 6. Call Claude API
   let parsedTasks
   try {
-    const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${context.env.GEMINI_API_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: { parts: [{ text: CLAUDE_SYSTEM_PROMPT }] },
-          contents: [{ role: 'user', parts: [{ text }] }],
-          generationConfig: { responseMimeType: 'application/json' },
-        }),
+    const claudeRes = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': context.env.CLAUDE_API_KEY,
+        'anthropic-version': '2023-06-01',
       },
-    )
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1024,
+        system: CLAUDE_SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: text }],
+      }),
+    })
 
-    if (!geminiRes.ok) return json({ error: 'ai_unavailable' }, 502, origin)
+    if (!claudeRes.ok) return json({ error: 'ai_unavailable' }, 502, origin)
 
-    const geminiData = await geminiRes.json()
-    const rawContent = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || ''
-    parsedTasks = JSON.parse(rawContent)
+    const claudeData = await claudeRes.json()
+    const rawContent = claudeData?.content?.[0]?.text || ''
+    // strip markdown fences if model wrapped the JSON
+    const cleaned = rawContent.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim()
+    parsedTasks = JSON.parse(cleaned)
 
     if (!Array.isArray(parsedTasks)) throw new Error('not an array')
   } catch {
     return json({ error: 'ai_unavailable' }, 502, origin)
+  }
+
+  // In dev bypass mode skip DB writes and return parsed tasks directly
+  if (devBypass) {
+    return json({ tasks: parsedTasks }, 200, origin)
   }
 
   // 7. Insert tasks into public.tasks
@@ -122,10 +127,7 @@ export async function onRequestPost(context) {
   }))
 
   const { data: insertedTasks, error: tasksError } = await supabase
-    .from('tasks')
-    .insert(taskRows)
-    .select()
-
+    .from('tasks').insert(taskRows).select()
   if (tasksError) return json({ error: 'db_error' }, 500, origin)
 
   // 8. Log ai_conversation
@@ -135,25 +137,14 @@ export async function onRequestPost(context) {
     parsed_tasks: parsedTasks,
   })
 
-  // 9. Record ai_usage — increment calls_count accurately
-  // supabase-js upsert doesn't support column expressions, so use SELECT + INSERT/UPDATE
+  // 9. Record ai_usage — two-step SELECT + INSERT/UPDATE for correct increment
   const today = new Date().toISOString().split('T')[0]
   const { data: existingUsage } = await supabase
-    .from('ai_usage')
-    .select('id, calls_count')
-    .eq('user_id', userId)
-    .eq('date', today)
-    .single()
-
+    .from('ai_usage').select('id, calls_count').eq('user_id', userId).eq('date', today).single()
   if (existingUsage) {
-    await supabase
-      .from('ai_usage')
-      .update({ calls_count: existingUsage.calls_count + 1 })
-      .eq('id', existingUsage.id)
+    await supabase.from('ai_usage').update({ calls_count: existingUsage.calls_count + 1 }).eq('id', existingUsage.id)
   } else {
-    await supabase
-      .from('ai_usage')
-      .insert({ user_id: userId, date: today, calls_count: 1 })
+    await supabase.from('ai_usage').insert({ user_id: userId, date: today, calls_count: 1 })
   }
 
   return json({ tasks: insertedTasks }, 200, origin)
@@ -161,8 +152,6 @@ export async function onRequestPost(context) {
 
 export async function onRequest(context) {
   const origin = context.request.headers.get('Origin') || ''
-  if (context.request.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: corsHeaders(origin) })
-  }
+  if (context.request.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders(origin) })
   return json({ error: 'method_not_allowed' }, 405, origin)
 }
