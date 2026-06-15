@@ -4,7 +4,7 @@
 | ------ | ---------------------------------------------------------------------------------- |
 | Issue  | [#5](https://github.com/andrenxx/dumpit/issues/5)                                  |
 | Branch | `feat/5-ai-parse-tasks-endpoint-parse-natural-la`                                  |
-| Status | Draft — awaiting review                                                            |
+| Status | spec:approved                                                                      |
 | Type   | feature                                                                            |
 
 ## 1. Context
@@ -115,6 +115,11 @@ Each task object must have:
 - "priority": "alta" | "media" | "baixa"
 - "status": always "a_fazer"
 
+Priority rules:
+- "alta": explicit deadline (today, tomorrow, specific time), words like urgente/hoje/amanhã/antes das X, client-facing, financial impact
+- "media": active work task with no clear deadline
+- "baixa": errands, personal chores, shopping, no deadline
+
 Return ONLY valid JSON — no markdown, no explanation, no code blocks.
 Example: [{"title":"Ligar para o cliente","priority":"alta","status":"a_fazer"}]
 ```
@@ -154,7 +159,7 @@ Accessed via `context.env.*` (Workers runtime — no `process.env`):
 
 Set in `.dev.vars` for local Wrangler dev; Cloudflare Dashboard for production.
 
-## 4.5 UX decision
+## 4.8 UX decision
 
 N/A — no user-facing UI in this spec.
 

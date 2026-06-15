@@ -43,8 +43,8 @@ export async function onRequestPost(context) {
   const origin = context.request.headers.get('Origin') || ''
   const supabase = createClient(context.env.SUPABASE_URL, context.env.SUPABASE_SERVICE_ROLE_KEY)
 
-  // DEV BYPASS — skips auth and DB writes; remove before shipping
-  const devBypass = context.env.DEV_BYPASS === 'true'
+  // DEV BYPASS — skips auth and DB writes; only active outside main branch
+  const devBypass = context.env.DEV_BYPASS === 'true' && context.env.CF_PAGES_BRANCH !== 'main'
   let userId = null
 
   if (!devBypass) {
