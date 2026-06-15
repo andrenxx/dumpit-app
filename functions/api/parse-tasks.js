@@ -85,28 +85,26 @@ export async function onRequestPost(context) {
   const text = (body?.text || '').trim()
   if (!text) return json({ error: 'text_required' }, 400, origin)
 
-  // 6. Call Claude API
+  // 6. Call Gemini API
   let parsedTasks
   try {
-    const claudeRes = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': context.env.CLAUDE_API_KEY,
-        'anthropic-version': '2023-06-01',
+    const geminiRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${context.env.GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: CLAUDE_SYSTEM_PROMPT }] },
+          contents: [{ role: 'user', parts: [{ text }] }],
+          generationConfig: { responseMimeType: 'application/json' },
+        }),
       },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1024,
-        system: CLAUDE_SYSTEM_PROMPT,
-        messages: [{ role: 'user', content: text }],
-      }),
-    })
+    )
 
-    if (!claudeRes.ok) return json({ error: 'ai_unavailable' }, 502, origin)
+    if (!geminiRes.ok) return json({ error: 'ai_unavailable' }, 502, origin)
 
-    const claudeData = await claudeRes.json()
-    const rawContent = claudeData?.content?.[0]?.text || ''
+    const geminiData = await geminiRes.json()
+    const rawContent = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || ''
     parsedTasks = JSON.parse(rawContent)
 
     if (!Array.isArray(parsedTasks)) throw new Error('not an array')

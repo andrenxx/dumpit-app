@@ -28,8 +28,11 @@ show value); paid plan = unlimited AI calls. Manual Kanban remains free forever.
   requests with 401.
 - Free-plan users who have already used their 1 lifetime AI call receive 402 with
   JSON body `{ "error": "upgrade_required" }`.
-- The endpoint calls `claude-sonnet-4-6` with the raw text and returns structured
+- The endpoint calls `gemini-2.0-flash` with the raw text and returns structured
   tasks (title, priority, status).
+  > **Bootstrap decision:** using Gemini 2.0 Flash (free tier, 1500 req/day) for
+  > the initial launch. Swap to `claude-sonnet-4-6` via `CLAUDE_API_KEY` when
+  > budget allows — the prompt and response shape are identical.
 - Parsed tasks are inserted into `public.tasks` for the authenticated user.
 - The raw input + parsed result is logged in `public.ai_conversations`.
 - The user's lifetime AI usage is recorded so the gate works on the next call.
@@ -102,7 +105,7 @@ onRequestPost(context):
   13. Return 200 { tasks: [inserted rows] }
 ```
 
-### 4.4 Claude prompt
+### 4.4 AI prompt
 
 **System:**
 ```
@@ -150,7 +153,7 @@ Accessed via `context.env.*` (Workers runtime — no `process.env`):
 | --- | --- |
 | `SUPABASE_URL` | Supabase project URL |
 | `SUPABASE_SERVICE_ROLE_KEY` | Service role key (server-only) |
-| `CLAUDE_API_KEY` | Anthropic API key (server-only) |
+| `GEMINI_API_KEY` | Google AI Studio API key (server-only, free tier) |
 
 Set in `.dev.vars` for local Wrangler dev; Cloudflare Dashboard for production.
 
