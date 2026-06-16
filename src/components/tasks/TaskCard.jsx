@@ -1,3 +1,5 @@
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { Badge } from '../ui/Badge'
 
 const priorityToBadge = {
@@ -8,16 +10,28 @@ const priorityToBadge = {
 
 export function TaskCard({ task }) {
   const done = task.status === 'feito'
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: task.id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    background: 'var(--bg-card)',
+    border: '0.5px solid var(--border-default)',
+    borderRadius: 16,
+    padding: '13px 15px',
+    cursor: 'grab',
+    userSelect: 'none',
+    opacity: isDragging ? 0.35 : (done ? 0.5 : 1),
+  }
 
   return (
-    <div style={{
-      background: 'var(--bg-card)', border: '0.5px solid var(--border-default)',
-      borderRadius: 16, padding: '13px 15px', cursor: 'grab',
-      transition: 'border-color 0.18s', userSelect: 'none',
-      opacity: done ? 0.5 : 1,
-    }}
-    onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--brand-hover)' }}
-    onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-default)' }}
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--brand-hover)' }}
+      onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-default)' }}
     >
       <div style={{
         display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',

@@ -4,13 +4,6 @@ import { KanbanBoard } from '../components/tasks/KanbanBoard'
 
 const COLUMN_IDS = ['a_fazer', 'fazendo', 'feito']
 
-function groupByStatus(tasks) {
-  return COLUMN_IDS.reduce((acc, status) => {
-    acc[status] = tasks.filter((t) => t.status === status)
-    return acc
-  }, {})
-}
-
 function SkeletonBoard() {
   return (
     <div style={{ display: 'flex', gap: 12, padding: '0 20px 20px', overflowX: 'auto', flex: 1 }}>
@@ -36,6 +29,7 @@ function SkeletonBoard() {
 export function TasksPage() {
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
+  const [errorToast, setErrorToast] = useState(false)
 
   useEffect(() => {
     let active = true
@@ -57,7 +51,10 @@ export function TasksPage() {
     return () => { active = false }
   }, [])
 
-  const grouped = groupByStatus(tasks)
+  const showError = () => {
+    setErrorToast(true)
+    setTimeout(() => setErrorToast(false), 3000)
+  }
 
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -68,7 +65,20 @@ export function TasksPage() {
         </div>
       </div>
 
-      {loading ? <SkeletonBoard /> : <KanbanBoard grouped={grouped} />}
+      {errorToast && (
+        <div style={{
+          margin: '0 20px 12px', background: 'var(--bg-card)',
+          border: '0.5px solid rgba(184,58,36,0.2)', borderRadius: 12,
+          padding: '10px 14px', fontSize: 13, color: 'var(--text-primary)',
+          flexShrink: 0,
+        }}>
+          Algo deu errado. Tente novamente.
+        </div>
+      )}
+
+      {loading
+        ? <SkeletonBoard />
+        : <KanbanBoard tasks={tasks} onTasksChange={setTasks} onError={showError} />}
     </div>
   )
 }
