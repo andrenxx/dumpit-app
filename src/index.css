@@ -1,3 +1,33 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --bg-app: #FAF8F4;
+  --bg-card: #FFFFFF;
+  --bg-accent-light: #EEEAFF;
+
+  --text-primary: #1C1714;
+  --text-secondary: #8A7A6E;
+  --text-hint: #C8BAB0;
+
+  --brand: #2B1C9A;
+  --brand-hover: rgba(43, 28, 154, 0.25);
+  --brand-light: rgba(43, 28, 154, 0.07);
+
+  --border-default: rgba(60, 40, 20, 0.09);
+  --border-strong: rgba(60, 40, 20, 0.15);
+
+  --badge-urgente-bg: #FFF0EE;
+  --badge-urgente-text: #B83A24;
+  --badge-normal-bg: #FFF6E2;
+  --badge-normal-text: #8A6200;
+  --badge-depois-bg: #F2EFE9;
+  --badge-depois-text: #7A6A5A;
+}
+
+body {
+  background: var(--bg-app);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--text-primary);
+}

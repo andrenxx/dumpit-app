@@ -179,10 +179,20 @@ restante. `line-height: 1.65` em textareas e parágrafos.
 
 ### 4.3 App.jsx — shell e roteamento
 
-Duas páginas, sem React Router para a navegação interna (estado local):
+> **Nota de implementação (deviation):** `App.jsx` já existia com
+> React Router (`/` → `Landing`, `/dashboard` → `AuthGuard` +
+> `Dashboard`) do trabalho de auth shipado na issue #1. O router
+> público é mantido; o shell abaixo (`AppShell`) substitui o conteúdo
+> que era renderizado em `Dashboard` na rota `/dashboard`, ainda
+> dentro do `AuthGuard`. Navegação **dentro** do shell (Dump ↔
+> Tarefas) continua sem React Router, via estado local, como descrito
+> originalmente.
+
+Duas páginas dentro do shell autenticado, sem React Router para a
+navegação interna (estado local):
 
 ```jsx
-export default function App() {
+function AppShell() {
   const [activePage, setActivePage] = useState('dump') // 'dump' | 'tasks'
   const [loading, setLoading] = useState(false)
 
@@ -199,6 +209,16 @@ export default function App() {
       <BottomNav activePage={activePage} onChange={setActivePage} />
     </div>
   )
+}
+
+// App.jsx default export — router preservado da issue #1
+const router = createBrowserRouter([
+  { path: '/', element: <Landing /> },
+  { path: '/dashboard', element: <AuthGuard><AppShell /></AuthGuard> },
+])
+
+export default function App() {
+  return <RouterProvider router={router} />
 }
 ```
 
@@ -361,7 +381,8 @@ Não há opções alternativas a avaliar aqui.
 | ---- | ------ | ----- |
 | `docs/wireframe_v3.html` | create | Referência visual estática, cópia do wireframe fornecido |
 | `src/index.css` | modify | Adiciona os design tokens (§4.2) |
-| `src/App.jsx` | modify | Shell com `activePage` e `loading` state (§4.3) |
+| `src/App.jsx` | modify | Router preservado (issue #1) + `AppShell` com `activePage`/`loading` state na rota `/dashboard` (§4.3) |
+| `src/pages/Dashboard.jsx` | delete | Substituído por `AppShell` em `App.jsx` |
 | `src/components/layout/TopBar.jsx` | create | §4.4 |
 | `src/components/layout/BottomNav.jsx` | create | §4.4 |
 | `src/pages/DumpPage.jsx` | create | §4.5 |
