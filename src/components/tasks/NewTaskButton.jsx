@@ -1,22 +1,18 @@
+import { motion } from 'framer-motion'
+
 export function NewTaskButton() {
   return (
-    <div style={{
-      width: '100%', padding: 11, background: 'var(--bg-card)',
-      border: '0.5px solid rgba(60,40,20,0.10)', borderRadius: 14,
-      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-      fontSize: 12, fontWeight: 400, color: 'var(--text-hint)', cursor: 'pointer',
-      transition: 'border-color 0.18s, color 0.18s', flexShrink: 0,
-    }}
-    onMouseEnter={(e) => {
-      e.currentTarget.style.borderColor = 'var(--brand-hover)'
-      e.currentTarget.style.color = 'var(--brand)'
-    }}
-    onMouseLeave={(e) => {
-      e.currentTarget.style.borderColor = 'rgba(60,40,20,0.10)'
-      e.currentTarget.style.color = 'var(--text-hint)'
-    }}
+    <motion.button
+      whileHover={{ borderColor: '#5B3DF2', color: '#5B3DF2' }}
+      whileTap={{ scale: 0.98 }}
+      className="w-full flex items-center justify-center gap-1.5 glass-surface rounded-[14px] text-[12px] font-medium text-text-hint cursor-pointer flex-shrink-0"
+      style={{
+        padding: 11,
+        border: '1px dashed rgba(91,61,242,0.25)',
+        background: 'rgba(255,255,255,0.45)',
+      }}
     >
-      <span style={{ color: 'var(--brand)', fontSize: 15 }}>+</span> Nova task
-    </div>
+      <span className="text-brand text-[15px]">+</span> Nova task
+    </motion.button>
   )
 }
