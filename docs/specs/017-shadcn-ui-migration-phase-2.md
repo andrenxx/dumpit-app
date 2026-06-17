@@ -85,20 +85,11 @@ shadcn also needs `--radius` (border radius): set to `0.625rem` (≈ 10px, match
 
 ### 4.3 Components to add
 
-Run `npx shadcn@latest add` for each:
-
-```
-npx shadcn@latest add button
-npx shadcn@latest add input
-npx shadcn@latest add card
-npx shadcn@latest add badge
-```
-
-Each command copies a JSX file into `src/components/ui/`. The shadcn `badge.jsx` (lowercase) coexists with the DumpIt `Badge.jsx` wrapper — see §4.4 for the distinction.
+Components are written manually (shadcn CLI is interactive and unsuitable for automation). Files created in `src/components/ui/`: `button.jsx`, `input.jsx`, `card.jsx`. The `badge` primitive is **skipped** — on macOS the case-insensitive filesystem maps `badge.jsx` to the existing `Badge.jsx`, which would destroy the DumpIt variants (see §4.4).
 
 ### 4.4 Call-site migrations
 
-**`src/components/ui/Badge.jsx`** — **not modified.** The DumpIt badge wrapper keeps its existing inline-style implementation (three variants: `urgente`, `normal`, `depois` with custom colours not mapped to the global token set). The shadcn `badge.jsx` (lowercase) added in §4.3 coexists without conflict — JS module resolution is case-sensitive on Linux and the import paths are distinct. `Badge.jsx` is intentionally excluded from §5 (Files).
+**`src/components/ui/Badge.jsx`** — **not modified.** The DumpIt badge wrapper keeps its existing inline-style implementation (three variants: `urgente`, `normal`, `depois` with custom colours not mapped to the global token set). A shadcn `badge.jsx` is not created because macOS's case-insensitive filesystem would resolve it to the same inode as `Badge.jsx`, overwriting the DumpIt variants. Since no current call-site needs the shadcn badge primitive, it is deferred to a future phase on a case-sensitive environment.
 
 **`src/components/dump/DumpInput.jsx`** — replace the `<button>` element with the shadcn `<Button>` component from `src/components/ui/button.jsx`. The outer card wrapper and textarea remain as-is (they are unique to this component and are not generic primitives). Button receives: no variant override needed if we configure `--primary` correctly; use `size="sm"` or custom padding via className override.
 
@@ -133,7 +124,7 @@ N/A — this is a purely structural migration with no user-visible UX change.
 
 - [ ] `components.json` committed, `npx shadcn@latest` does not error on subsequent runs.
 - [ ] `src/lib/utils.js` exports a `cn()` function.
-- [ ] shadcn `button.jsx`, `input.jsx`, `card.jsx`, `badge.jsx` present in `src/components/ui/`.
+- [ ] shadcn `button.jsx`, `input.jsx`, `card.jsx` present in `src/components/ui/` (`badge.jsx` skipped — macOS case collision).
 - [ ] `tailwind.config.js` references CSS variables for `primary`, `background`, `card`, `foreground`, `border`, `input`, `accent`, `muted`.
 - [ ] `src/index.css` contains shadcn `:root` variable block with DumpIt token values.
 - [ ] `LoginModal` renders with shadcn Input (focus ring uses `--primary`) and shadcn Button (`--primary` background).
