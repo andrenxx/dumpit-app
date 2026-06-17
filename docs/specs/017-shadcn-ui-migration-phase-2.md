@@ -94,13 +94,11 @@ npx shadcn@latest add card
 npx shadcn@latest add badge
 ```
 
-Each command copies a JSX file into `src/components/ui/`. Existing `Badge.jsx` will be replaced by the shadcn version.
+Each command copies a JSX file into `src/components/ui/`. The shadcn `badge.jsx` (lowercase) coexists with the DumpIt `Badge.jsx` wrapper — see §4.4 for the distinction.
 
 ### 4.4 Call-site migrations
 
-**`src/components/ui/Badge.jsx`** — replaced entirely by the shadcn `badge.jsx`. Add three variant mappings (`urgente`, `normal`, `depois`) using `class-variance-authority` (cva) variants, preserving the exact badge colours via inline style overrides on top of the shadcn base, since the badge colours are custom and not mapped to the global token set.
-
-Alternatively (simpler): keep the existing `Badge.jsx` wrapper unchanged but have it render `<span>` as before — the shadcn `badge` is more useful for future cases. Decision: **keep the existing `Badge.jsx` wrapper** and only replace if it conflicts with the shadcn badge import name. Name the shadcn file `badge.jsx` (lowercase), keep the wrapper as `Badge.jsx` (capital B). No conflict.
+**`src/components/ui/Badge.jsx`** — **not modified.** The DumpIt badge wrapper keeps its existing inline-style implementation (three variants: `urgente`, `normal`, `depois` with custom colours not mapped to the global token set). The shadcn `badge.jsx` (lowercase) added in §4.3 coexists without conflict — JS module resolution is case-sensitive on Linux and the import paths are distinct. `Badge.jsx` is intentionally excluded from §5 (Files).
 
 **`src/components/dump/DumpInput.jsx`** — replace the `<button>` element with the shadcn `<Button>` component from `src/components/ui/button.jsx`. The outer card wrapper and textarea remain as-is (they are unique to this component and are not generic primitives). Button receives: no variant override needed if we configure `--primary` correctly; use `size="sm"` or custom padding via className override.
 
