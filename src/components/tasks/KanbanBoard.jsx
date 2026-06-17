@@ -1,22 +1,19 @@
+import { toast } from 'sonner'
+import { AnimatePresence } from 'framer-motion'
 import { DndContext, PointerSensor, useSensor, useSensors, closestCorners } from '@dnd-kit/core'
 import { KanbanColumn } from './KanbanColumn'
 import { supabase } from '../../lib/supabase'
 
-const COLUMNS = [
-  { id: 'a_fazer', dotColor: '#C8BAB0', label: 'A fazer' },
-  { id: 'fazendo', dotColor: '#F59E0B', label: 'Fazendo' },
-  { id: 'feito', dotColor: '#22C55E', label: 'Feito' },
-]
-const COLUMN_IDS = COLUMNS.map((c) => c.id)
+const COLUMNS = ['a_fazer', 'fazendo', 'feito']
 
 function groupByStatus(tasks) {
-  return COLUMN_IDS.reduce((acc, status) => {
+  return COLUMNS.reduce((acc, status) => {
     acc[status] = tasks.filter((t) => t.status === status)
     return acc
   }, {})
 }
 
-export function KanbanBoard({ tasks, onTasksChange, onError }) {
+export function KanbanBoard({ tasks, onTasksChange, onError, loading }) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   )
@@ -29,7 +26,7 @@ export function KanbanBoard({ tasks, onTasksChange, onError }) {
     const activeTask = tasks.find((t) => t.id === active.id)
     if (!activeTask) return
 
-    const targetStatus = COLUMN_IDS.includes(over.id)
+    const targetStatus = COLUMNS.includes(over.id)
       ? over.id
       : tasks.find((t) => t.id === over.id)?.status
 
@@ -49,7 +46,11 @@ export function KanbanBoard({ tasks, onTasksChange, onError }) {
 
     if (error) {
       onTasksChange(prevTasks)
-      onError()
+      if (onError) {
+        onError()
+      } else {
+        toast.error('Algo deu errado. Tente novamente.')
+      }
     }
   }
 
@@ -59,15 +60,16 @@ export function KanbanBoard({ tasks, onTasksChange, onError }) {
         display: 'flex', gap: 12, padding: '0 20px 20px',
         overflowX: 'auto', flex: 1,
       }}>
-        {COLUMNS.map((col) => (
-          <KanbanColumn
-            key={col.id}
-            id={col.id}
-            dotColor={col.dotColor}
-            label={col.label}
-            tasks={grouped[col.id] || []}
-          />
-        ))}
+        <AnimatePresence>
+          {COLUMNS.map((id) => (
+            <KanbanColumn
+              key={id}
+              id={id}
+              tasks={grouped[id] || []}
+              loading={loading}
+            />
+          ))}
+        </AnimatePresence>
       </div>
     </DndContext>
   )
