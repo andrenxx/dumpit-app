@@ -40,6 +40,9 @@ export function NewTaskButton({ onCreateTask }) {
       setEditing(false)
       setTitle('')
       setPriority('media')
+    } else if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      formRef.current?.requestSubmit()
     }
   }
 
