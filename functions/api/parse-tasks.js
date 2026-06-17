@@ -118,12 +118,24 @@ export async function onRequestPost(context) {
   }
 
   // 7. Insert tasks into public.tasks
+  const { data: maxRow } = await supabase
+    .from('tasks')
+    .select('position')
+    .eq('user_id', userId)
+    .eq('status', 'a_fazer')
+    .is('deleted_at', null)
+    .order('position', { ascending: false })
+    .limit(1)
+    .single()
+
+  const basePosition = maxRow ? maxRow.position + 1 : 0
+
   const taskRows = parsedTasks.map((t, i) => ({
     user_id: userId,
     title: String(t.title || '').slice(0, 200),
     priority: ['alta', 'media', 'baixa'].includes(t.priority) ? t.priority : 'media',
     status: 'a_fazer',
-    position: i,
+    position: basePosition + i,
   }))
 
   const { data: insertedTasks, error: tasksError } = await supabase
