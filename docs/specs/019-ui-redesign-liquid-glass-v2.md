@@ -168,7 +168,7 @@ npx shadcn@latest add textarea badge skeleton sonner dialog --yes
 
 | Path | Action | Notes |
 | ---- | ------ | ----- |
-| `docs/wireframe_v7.html` | create | Reference wireframe (already copied to repo) |
+| `docs/wireframe_v7.html` | committed | Reference wireframe — already committed in this spec's first commit; no further edits needed |
 | `tailwind.config.js` | modify | New tokens: colors, backdropBlur, boxShadow, keyframes, animation |
 | `src/index.css` | modify | Glass utility classes + updated body |
 | `package.json` | modify | Add `sonner` dep (shadcn adds via CLI) |
@@ -207,11 +207,13 @@ npx shadcn@latest add textarea badge skeleton sonner dialog --yes
 - [ ] `npm run lint` exits 0.
 - [ ] `npm run build` exits 0.
 
+> **Note:** this project has no automated unit/integration test gate yet (CLAUDE.md §Sanity gates). Visual correctness is validated via the §2.5 manual oracle (localhost vs wireframe).
+
 ## 7. Risks
 
 | Risk | Mitigation |
 | ---- | ---------- |
-| `motion.div layout` + dnd-kit transform conflict | Use `useSortable` ref on `motion.div` directly; no `layout` prop on cards while dragging (guard with `isDragging` flag) |
+| `motion.div layout` + dnd-kit transform conflict | Use `useSortable` ref on `motion.div` directly; do not use the dnd-kit CSS transform via Framer — apply dnd transform via `style` prop only, not Framer's `animate`. The `layout` prop is dropped on `motion.div` while `isDragging` is true to avoid Framer fighting dnd position updates. |
 | `backdrop-filter` not supported in old Chromium/WebKit | Progressive enhancement: glassmorphism degrades to white/translucent without blur; no functional loss |
 | `sonner` peer-dep conflict with `eslint@10` | Install with `--legacy-peer-deps` (same pattern as framer-motion) |
 | shadcn `badge.jsx` vs `Badge.jsx` case collision on macOS | See spec #017 — shadcn CLI is run in CI (Linux, case-sensitive FS); on macOS the file is written manually if needed |
