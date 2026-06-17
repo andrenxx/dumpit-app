@@ -11,14 +11,13 @@ const STATUS_CONFIG = {
   feito:   { label: 'Feito',   tint: 'rgba(0,210,160,0.11)',  dot: '#00D2A0' },
 }
 
-export function KanbanColumn({ id, tasks, loading }) {
+export function KanbanColumn({ id, tasks, loading, onEdit, onCreateTask }) {
   const { setNodeRef, isOver } = useDroppable({ id })
   const taskIds = tasks.map((t) => t.id)
   const config = STATUS_CONFIG[id] || { label: id, tint: 'transparent', dot: '#ccc' }
 
   return (
     <div style={{ minWidth: 240, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
-      {/* column header */}
       <div
         className="glass-surface flex items-center justify-between rounded-[14px] px-3 py-2"
         style={{ background: config.tint }}
@@ -33,7 +32,6 @@ export function KanbanColumn({ id, tasks, loading }) {
         </span>
       </div>
 
-      {/* drop zone */}
       <div
         ref={setNodeRef}
         className={`flex flex-col gap-[7px] flex-1 overflow-y-auto p-[1px] rounded-[16px] transition-colors ${isOver ? 'glass-inset-highlight' : ''}`}
@@ -54,10 +52,19 @@ export function KanbanColumn({ id, tasks, loading }) {
           <>
             <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
               <AnimatePresence>
-                {tasks.map((task) => <TaskCard key={task.id} task={task} />)}
+                {tasks.map((task) => (
+                  <TaskCard key={task.id} task={task} onEdit={onEdit} />
+                ))}
               </AnimatePresence>
             </SortableContext>
-            <NewTaskButton />
+
+            {tasks.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '20px 8px', color: '#ACA4C8', fontSize: 12 }}>
+                Nada aqui ainda
+              </div>
+            )}
+
+            <NewTaskButton columnStatus={id} onCreateTask={onCreateTask} />
           </>
         )}
       </div>
