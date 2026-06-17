@@ -1,3 +1,5 @@
+import { Button } from '../ui/button'
+
 const MAX_LENGTH = 1000
 
 export function DumpInput({ value, onChange, onSubmit, disabled, inputRef }) {
@@ -26,20 +28,14 @@ export function DumpInput({ value, onChange, onSubmit, disabled, inputRef }) {
         <span style={{ fontSize: 11, color: 'var(--text-hint)' }}>
           {value.length} / {MAX_LENGTH}
         </span>
-        <button
+        <Button
           onClick={onSubmit}
           disabled={disabled}
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: 5,
-            padding: '9px 18px', background: 'var(--brand)', color: '#fff',
-            border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 500,
-            cursor: disabled ? 'default' : 'pointer',
-            opacity: disabled ? 0.45 : 1, transition: 'opacity 0.15s',
-            fontFamily: 'inherit',
-          }}
+          size="sm"
+          style={{ fontFamily: 'inherit', fontSize: 13 }}
         >
           Dump ✦
-        </button>
+        </Button>
       </div>
     </div>
   )

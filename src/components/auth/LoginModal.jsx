@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useAuth } from '../../hooks/useAuth'
+import { Button } from '../ui/button'
+import { Input } from '../ui/input'
 
 const modalVariants = {
   hidden:  { opacity: 0, scale: 0.95 },
@@ -65,21 +67,18 @@ export function LoginModal({ isOpen, onClose }) {
         {step === 'email' ? (
           <form onSubmit={handleEmailSubmit}>
             <h2 className="text-xl font-semibold mb-4">Entrar no DumpIt</h2>
-            <input
+            <Input
               type="email"
               placeholder="seu@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full border rounded px-3 py-2 mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="mb-3"
             />
             {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
-            <button
-              type="submit"
-              className="w-full bg-indigo-700 text-white py-2 rounded hover:bg-indigo-800"
-            >
+            <Button type="submit" className="w-full">
               Entrar
-            </button>
+            </Button>
           </form>
         ) : (
           <form onSubmit={handleCodeSubmit}>
@@ -87,7 +86,7 @@ export function LoginModal({ isOpen, onClose }) {
             <p className="text-gray-500 text-sm mb-4">
               Enviamos um código de 6 dígitos para <strong>{email}</strong>
             </p>
-            <input
+            <Input
               type="text"
               inputMode="numeric"
               placeholder="000000"
@@ -97,22 +96,20 @@ export function LoginModal({ isOpen, onClose }) {
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
               required
               autoFocus
-              className="w-full border rounded px-3 py-2 mb-3 text-center text-2xl tracking-widest focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="mb-3 text-center text-2xl tracking-widest"
             />
             {codeError && <p className="text-red-500 text-sm mb-3">{codeError}</p>}
-            <button
-              type="submit"
-              className="w-full bg-indigo-700 text-white py-2 rounded hover:bg-indigo-800"
-            >
+            <Button type="submit" className="w-full">
               Verificar
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="ghost"
               onClick={handleResend}
-              className="w-full mt-3 text-sm text-indigo-600 hover:underline"
+              className="w-full mt-3 text-sm"
             >
               Reenviar código
-            </button>
+            </Button>
           </form>
         )}
       </motion.div>
