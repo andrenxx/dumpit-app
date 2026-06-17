@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DumpIt — v6 Liquid Glass</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-app: #FAF9FC;
+  --text-primary: #1A1530;
+  --text-secondary: #5E5878;
+  --text-hint: #ACA4C8;
+
+  --brand: #5B3DF2;
+  --brand-deep: #4427D6;
+
+  --coral: #FF6F52;
+  --mint: #00D2A0;
+  --yellow: #FFCB47;
+
+  --glass-bg: rgba(255,255,255,0.55);
+  --glass-bg-strong: rgba(255,255,255,0.75);
+  --glass-border: rgba(255,255,255,0.8);
+  --glass-shadow: 0 8px 32px rgba(91,61,242,0.12);
+
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg-app);
+  color: var(--text-primary);
+  height: 100vh;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  max-width: 480px; margin: 0 auto;
+  position: relative;
+}
+
+/* ─── BLOBS DE FUNDO AMBIENTE (cor viva, fixos, criam o "ambiente" pro glass) ─── */
+.ambient-blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(60px);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.22;
+}
+.blob-1 { width: 260px; height: 260px; background: var(--brand); top: -80px; right: -90px; }
+.blob-2 { width: 220px; height: 220px; background: var(--coral); bottom: 40px; left: -100px; opacity: 0.16; }
+.blob-3 { width: 180px; height: 180px; background: var(--mint); top: 45%; right: -80px; opacity: 0.14; }
+
+.app-shell { position: relative; z-index: 1; display: flex; flex-direction: column; height: 100%; }
+
+/* ─── TOP BAR (glass) ─── */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px; flex-shrink: 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid var(--glass-border);
+  position: relative; z-index: 5;
+}
+.logo { font-size: 18px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; display: flex; align-items: center; gap: 3px; }
+.logo-it {
+  color: var(--brand);
+  background: rgba(91,61,242,0.07);
+  backdrop-filter: blur(8px);
+  padding: 1px 8px 2px; border-radius: 9px;
+  border: 1px solid rgba(91,61,242,0.12);
+}
+.avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(145deg, var(--coral), #FFA988);
+  color: white; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+  border: 1.5px solid rgba(255,255,255,0.6);
+  box-shadow: 0 3px 10px rgba(255,111,82,0.22);
+}
+
+/* ─── PAGES ─── */
+.page { display: none; flex-direction: column; flex: 1; overflow: hidden; position: relative; }
+.page.active { display: flex; }
+
+/* ─── BOTTOM NAV (glass dock estilo iOS) ─── */
+.bottom-nav-wrap { padding: 10px 16px 14px; flex-shrink: 0; position: relative; z-index: 5; }
+.bottom-nav {
+  display: flex; gap: 6px;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  border-radius: 26px;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 28px rgba(91,61,242,0.18), inset 0 1px 0 rgba(255,255,255,0.9);
+  padding: 6px;
+}
+.nav-item {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 11px 0; cursor: pointer; border: none; background: transparent;
+  font-family: var(--font); color: var(--text-hint);
+  border-radius: 20px;
+  transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+  position: relative;
+}
+.nav-item.active {
+  background: linear-gradient(145deg, var(--brand), var(--brand-deep));
+  color: white;
+  box-shadow: 0 4px 14px rgba(91,61,242,0.28), inset 0 1px 0 rgba(255,255,255,0.25);
+}
+.nav-item:active { transform: scale(0.95); }
+.nav-icon { font-size: 17px; line-height: 1; }
+.nav-label { font-size: 12.5px; font-weight: 700; }
+.nav-dot {
+  position: absolute; top: 4px; right: 18%;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--coral); border: 1.5px solid white; display: none;
+}
+.nav-dot.show { display: block; }
+
+/* ─── DUMP PAGE ─── */
+.dump-page { padding: 18px 18px 0; justify-content: space-between; }
+
+.dump-hero { display: flex; flex-direction: column; gap: 8px; padding: 6px 0 20px; }
+.dump-hero h1 { font-size: 31px; font-weight: 800; color: var(--text-primary); letter-spacing: -1px; line-height: 1.12; }
+.dump-hero h1 .hl {
+  background: linear-gradient(120deg, rgba(255,203,71,0.32), rgba(255,203,71,0.14));
+  padding: 0 7px; border-radius: 10px;
+}
+.dump-hero p { font-size: 14px; color: var(--text-secondary); line-height: 1.5; font-weight: 500; }
+
+.dump-input-area { flex: 1; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; padding-bottom: 16px; }
+
+/* GLASS INPUT BOX */
+.input-box {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  border: 1px solid var(--glass-border);
+  border-radius: 26px;
+  padding: 18px 18px 14px;
+  box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.9);
+  transition: box-shadow 0.25s, transform 0.2s;
+}
+.input-box:focus-within {
+  box-shadow: 0 12px 38px rgba(91,61,242,0.22), inset 0 1px 0 rgba(255,255,255,0.95);
+  transform: translateY(-2px);
+}
+
+.dump-textarea {
+  width: 100%; min-height: 130px;
+  border: none; outline: none; resize: none;
+  font-family: var(--font); font-size: 15px; font-weight: 500;
+  line-height: 1.6; color: var(--text-primary); background: transparent;
+}
+.dump-textarea::placeholder { color: var(--text-hint); font-weight: 500; }
+
+.input-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 12px; border-top: 1px solid rgba(91,61,242,0.1); margin-top: 10px;
+}
+.char-count { font-size: 11px; color: var(--text-hint); font-weight: 600; }
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 11px 20px;
+  background: linear-gradient(145deg, var(--brand), var(--brand-deep));
+  color: #fff; border: none; border-radius: 18px;
+  font-family: var(--font); font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 6px 16px rgba(91,61,242,0.25), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(91,61,242,0.32), inset 0 1px 0 rgba(255,255,255,0.25); }
+.btn-primary:active { transform: translateY(0) scale(0.97); }
+.btn-primary:disabled { opacity: 0.4; cursor: default; box-shadow: none; }
+
+.example-card {
+  background: rgba(255,255,255,0.45);
+  backdrop-filter: blur(18px) saturate(1.3);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  border: 1px solid rgba(255,255,255,0.7);
+  border-radius: 22px; padding: 15px 18px;
+  cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(0,210,160,0.06);
+}
+.example-card:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(0,210,160,0.1); }
+.example-label {
+  font-size: 11px; font-weight: 700; color: var(--mint);
+  background: rgba(0,210,160,0.08);
+  display: inline-block; padding: 3px 9px; border-radius: 8px;
+  margin-bottom: 8px;
+}
+.example-card p { font-size: 13px; color: var(--text-primary); line-height: 1.55; font-weight: 500; }
+
+/* Loading */
+.loading-overlay {
+  display: none; position: absolute; inset: 0;
+  background: rgba(244,241,255,0.85);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  z-index: 50; flex-direction: column; align-items: center; justify-content: center;
+  gap: 18px; text-align: center; padding: 40px;
+}
+.loading-overlay.show { display: flex; }
+.loading-blob {
+  width: 84px; height: 84px;
+  background: linear-gradient(145deg, var(--brand), var(--coral));
+  border-radius: 40% 60% 60% 40% / 50% 40% 60% 50%;
+  animation: blob-morph 2s ease-in-out infinite;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; color: white;
+  box-shadow: 0 10px 26px rgba(91,61,242,0.22);
+}
+@keyframes blob-morph {
+  0%, 100% { border-radius: 40% 60% 60% 40% / 50% 40% 60% 50%; transform: rotate(0deg) scale(1); }
+  33% { border-radius: 60% 40% 35% 65% / 60% 35% 65% 40%; transform: rotate(10deg) scale(1.06); }
+  66% { border-radius: 45% 55% 70% 30% / 35% 60% 40% 65%; transform: rotate(-8deg) scale(0.96); }
+}
+.loading-text { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+.loading-sub { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+.loading-progress { width: 150px; height: 5px; background: rgba(91,61,242,0.12); border-radius: 6px; overflow: hidden; margin-top: 4px; }
+.loading-progress-fill { height: 100%; background: linear-gradient(90deg, var(--brand), var(--coral)); width: 0%; transition: width 2s linear; }
+
+/* Freemium */
+.freemium-banner {
+  display: none;
+  background: rgba(255,111,82,0.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255,111,82,0.16);
+  border-radius: 22px; padding: 16px 18px; gap: 12px; align-items: flex-start;
+}
+.freemium-banner.show { display: flex; }
+.freemium-icon { font-size: 20px; flex-shrink: 0; }
+.freemium-text strong { font-size: 14px; font-weight: 700; display: block; margin-bottom: 4px; }
+.freemium-text p { font-size: 12.5px; color: var(--text-secondary); line-height: 1.5; font-weight: 500; }
+.btn-upgrade {
+  margin-top: 10px; display: inline-flex; padding: 9px 18px;
+  background: linear-gradient(145deg, var(--coral), #FFA988);
+  color: white; border: none; border-radius: 16px;
+  font-family: var(--font); font-size: 12.5px; font-weight: 700; cursor: pointer;
+  box-shadow: 0 4px 12px rgba(255,111,82,0.25);
+}
+
+/* ─── TAREFAS PAGE ─── */
+.tarefas-page { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.tarefas-header { padding: 16px 18px 14px; flex-shrink: 0; }
+
+.progress-card {
+  background: linear-gradient(135deg, rgba(91,61,242,0.82), rgba(68,39,214,0.85));
+  backdrop-filter: blur(20px);
+  border-radius: 24px; padding: 18px 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 8px 24px rgba(91,61,242,0.22), inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.progress-card::before {
+  content: ''; position: absolute;
+  width: 100px; height: 100px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 45% 55% 50% 50% / 55% 45% 55% 45%;
+  top: -35px; right: -25px;
+  filter: blur(4px);
+}
+.progress-left { position: relative; z-index: 1; }
+.progress-row { display: flex; align-items: baseline; gap: 8px; }
+.progress-number { font-size: 42px; font-weight: 800; color: white; letter-spacing: -1.5px; line-height: 1; }
+.progress-label { font-size: 13px; color: rgba(255,255,255,0.75); font-weight: 600; padding-bottom: 5px; }
+.progress-sub { font-size: 11.5px; color: rgba(255,255,255,0.6); font-weight: 600; margin-top: 2px; }
+
+.ux-toggle {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 8px 13px;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.8);
+  border-radius: 14px;
+  font-family: var(--font); font-size: 11px; font-weight: 700; color: var(--text-primary);
+  cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(91,61,242,0.1);
+}
+.ux-toggle.on { background: rgba(255,203,71,0.32); }
+
+.kanban-board { display: flex; gap: 14px; padding: 0 18px 16px; overflow-x: auto; flex: 1; }
+.kanban-board::-webkit-scrollbar { height: 0; }
+
+.kanban-col { min-width: 250px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; }
+
+.col-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 15px; border-radius: 18px;
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border: 1px solid var(--glass-border);
+  flex-shrink: 0;
+}
+.kanban-col[data-col="a_fazer"] .col-header { background: rgba(255,203,71,0.14); }
+.kanban-col[data-col="fazendo"] .col-header { background: rgba(255,111,82,0.11); }
+.kanban-col[data-col="feito"] .col-header { background: rgba(0,210,160,0.11); }
+
+.col-name { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+.col-count { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 20px; background: rgba(255,255,255,0.7); color: var(--text-primary); }
+
+.col-cards { display: flex; flex-direction: column; gap: 9px; flex: 1; overflow-y: auto; padding: 2px; min-height: 60px; }
+.col-cards::-webkit-scrollbar { width: 0; }
+.col-cards.drag-over {
+  background: rgba(91,61,242,0.08); border-radius: 20px;
+  outline: 2px dashed rgba(91,61,242,0.35); outline-offset: 3px;
+}
+
+/* GLASS TASK CARD */
+.task-card {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(18px) saturate(1.5);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px; padding: 14px 16px;
+  cursor: grab; transition: all 0.2s;
+  user-select: none;
+  animation: card-in 0.35s ease-out;
+  box-shadow: 0 3px 12px rgba(91,61,242,0.06), inset 0 1px 0 rgba(255,255,255,0.8);
+}
+@keyframes card-in { from { opacity: 0; transform: translateY(8px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.task-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(91,61,242,0.12), inset 0 1px 0 rgba(255,255,255,0.9); }
+.task-card:active { cursor: grabbing; }
+.task-card.dragging { opacity: 0.4; }
+.task-card.done { opacity: 0.55; background: rgba(255,255,255,0.35); }
+.task-card.done .card-title { text-decoration: line-through; color: var(--text-hint); }
+.task-card.just-completed { animation: pop-complete 0.4s ease-out; }
+@keyframes pop-complete { 0% { transform: scale(1); } 40% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+.card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.card-title { font-size: 14px; font-weight: 600; color: var(--text-primary); line-height: 1.35; flex: 1; }
+.card-edit { color: var(--text-hint); font-size: 12px; flex-shrink: 0; padding-top: 2px; }
+
+.card-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 10px; font-weight: 500;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.card-meta-left { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.card-time { font-size: 11px; color: var(--text-hint); font-weight: 600; display: inline-flex; align-items: center; gap: 3px; }
+.card-handle { color: var(--text-hint); font-size: 14px; opacity: 0; transition: opacity 0.15s; }
+.task-card:hover .card-handle { opacity: 1; }
+
+/* GLASS BADGES */
+.badge {
+  display: inline-block; padding: 4px 10px; border-radius: 10px;
+  font-size: 11px; font-weight: 700;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.5);
+}
+.badge-urgente { background: rgba(255,111,82,0.22); color: #C24A33; }
+.badge-normal  { background: rgba(255,203,71,0.28); color: #8A6418; }
+.badge-depois  { background: rgba(0,210,160,0.16); color: #1A8A6C; }
+
+/* Nova task btn */
+.btn-new-task {
+  width: 100%; padding: 12px;
+  background: rgba(255,255,255,0.3);
+  backdrop-filter: blur(10px);
+  border: 1.5px dashed rgba(91,61,242,0.25);
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  font-family: var(--font); font-size: 12.5px; font-weight: 600;
+  color: var(--text-hint); cursor: pointer;
+  transition: all 0.2s; flex-shrink: 0;
+}
+.btn-new-task:hover { border-color: var(--brand); border-style: solid; color: var(--brand); background: rgba(255,255,255,0.6); }
+.btn-new-task-plus { color: var(--brand); font-size: 16px; font-weight: 800; }
+
+.ux-panel {
+  display: none;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--glass-border);
+  padding: 16px 18px; flex-shrink: 0; overflow-y: auto; max-height: 250px;
+}
+.ux-panel.show { display: block; }
+.ux-panel-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--brand); margin-bottom: 10px; }
+.ux-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(195px,1fr)); gap: 9px; }
+.ux-note { background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.7); border-left: 3px solid var(--brand); border-radius: 14px; padding: 11px 13px; }
+.ux-note-title { font-size: 11px; font-weight: 700; color: var(--brand); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.3px; }
+.ux-note p { font-size: 11.5px; color: var(--text-secondary); line-height: 1.5; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<!-- AMBIENT BLOBS -->
+<div class="ambient-blob blob-1"></div>
+<div class="ambient-blob blob-2"></div>
+<div class="ambient-blob blob-3"></div>
+
+<div class="app-shell">
+
+<div class="topbar">
+  <div class="logo">dump<span class="logo-it">it</span></div>
+  <div class="avatar">A</div>
+</div>
+
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loading-blob">✦</div>
+  <div class="loading-text">Organizando suas tarefas...</div>
+  <div class="loading-sub">A IA está lendo e classificando tudo</div>
+  <div class="loading-progress"><div class="loading-progress-fill" id="progress-fill"></div></div>
+</div>
+
+<!-- ── PAGE: DUMP ── -->
+<div class="page dump-page active" id="page-dump">
+
+  <div class="dump-hero">
+    <h1>O que tá na sua <span class="hl">cabeça?</span></h1>
+    <p>Joga tudo aqui. A IA organiza pra você.</p>
+  </div>
+
+  <div class="dump-input-area">
+
+    <div class="input-box">
+      <textarea class="dump-textarea" id="dump-input"
+        placeholder="ex: reunião amanhã às 9h com o cliente, relatório urgente pra hoje, comprar café, ligar pro fornecedor essa semana..."
+        oninput="updateCount()"></textarea>
+      <div class="input-footer">
+        <span class="char-count" id="char-count">0 / 1000</span>
+        <button class="btn-primary" id="dump-btn" onclick="simulateParse()">Dump ✦</button>
+      </div>
+    </div>
+
+    <div class="example-card" onclick="fillExample()">
+      <div class="example-label">💡 testar com exemplo</div>
+      <p>"Preciso entregar o relatório pro cliente hoje, reunião amanhã às 9h, ligar pro fornecedor essa semana, comprar café e pagar a conta de luz antes de sexta"</p>
+    </div>
+
+    <div class="freemium-banner" id="freemium-banner">
+      <div class="freemium-icon">✦</div>
+      <div class="freemium-text">
+        <strong>Você já usou seu crédito gratuito</strong>
+        <p>A IA é paga. O Kanban manual é pra sempre grátis.<br>R$25/mês pra continuar usando a IA.</p>
+        <button class="btn-upgrade">Assinar plano pago</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── PAGE: TAREFAS ── -->
+<div class="page tarefas-page" id="page-tarefas">
+
+  <div class="tarefas-header">
+    <div style="display:flex; align-items:flex-start; gap:10px;">
+      <div class="progress-card" style="flex:1;">
+        <div class="progress-left">
+          <div class="progress-row">
+            <span class="progress-number" id="progress-number">2</span>
+            <span class="progress-label">de <strong id="progress-total">5</strong></span>
+          </div>
+          <div class="progress-sub">feitas hoje 🔥</div>
+        </div>
+      </div>
+      <button class="ux-toggle" id="ux-toggle" onclick="toggleUX()">◎ UX</button>
+    </div>
+  </div>
+
+  <div class="kanban-board">
+
+    <div class="kanban-col" data-col="a_fazer">
+      <div class="col-header">
+        <span class="col-name">⚡ A fazer</span>
+        <span class="col-count" id="count-a_fazer">3</span>
+      </div>
+      <div class="col-cards" id="col-a_fazer" ondragover="onDragOver(event)" ondrop="onDrop(event,'a_fazer')" ondragleave="onDragLeave(event)">
+
+        <div class="task-card" draggable="true" ondragstart="onDragStart(event)" ondragend="onDragEnd(event)">
+          <div class="card-top"><span class="card-title">Entregar relatório pro cliente</span><span class="card-edit">✎</span></div>
+          <div class="card-desc">Inclui análise de receita Q2 e gráfico comparativo</div>
+          <div class="card-bottom">
+            <div class="card-meta-left"><span class="badge badge-urgente">Urgente</span><span class="card-time">⏱ hoje</span></div>
+            <span class="card-handle">⠿</span>
+          </div>
+        </div>
+
+        <div class="task-card" draggable="true" ondragstart="onDragStart(event)" ondragend="onDragEnd(event)">
+          <div class="card-top"><span class="card-title">Ligar pro fornecedor</span><span class="card-edit">✎</span></div>
+          <div class="card-bottom">
+            <div class="card-meta-left"><span class="badge badge-normal">Normal</span><span class="card-time">⏱ essa semana</span></div>
+            <span class="card-handle">⠿</span>
+          </div>
+        </div>
+
+        <div class="task-card" draggable="true" ondragstart="onDragStart(event)" ondragend="onDragEnd(event)">
+          <div class="card-top"><span class="card-title">Comprar café</span><span class="card-edit">✎</span></div>
+          <div class="card-bottom">
+            <div class="card-meta-left"><span class="badge badge-depois">Quando der</span></div>
+            <span class="card-handle">⠿</span>
+          </div>
+        </div>
+
+        <button class="btn-new-task"><span class="btn-new-task-plus">+</span> Nova task</button>
+      </div>
+    </div>
+
+    <div class="kanban-col" data-col="fazendo">
+      <div class="col-header">
+        <span class="col-name">🔨 Fazendo</span>
+        <span class="col-count" id="count-fazendo">1</span>
+      </div>
+      <div class="col-cards" id="col-fazendo" ondragover="onDragOver(event)" ondrop="onDrop(event,'fazendo')" ondragleave="onDragLeave(event)">
+
+        <div class="task-card" draggable="true" ondragstart="onDragStart(event)" ondragend="onDragEnd(event)">
+          <div class="card-top"><span class="card-title">Reunião com cliente Acme</span><span class="card-edit">✎</span></div>
+          <div class="card-desc">Apresentar proposta de renovação de contrato anual</div>
+          <div class="card-bottom">
+            <div class="card-meta-left"><span class="badge badge-urgente">Urgente</span><span class="card-time">⏱ amanhã 9h</span></div>
+            <span class="card-handle">⠿</span>
+          </div>
+        </div>
+
+        <button class="btn-new-task"><span class="btn-new-task-plus">+</span> Nova task</button>
+      </div>
+    </div>
+
+    <div class="kanban-col" data-col="feito">
+      <div class="col-header">
+        <span class="col-name">✅ Feito</span>
+        <span class="col-count" id="count-feito">2</span>
+      </div>
+      <div class="col-cards" id="col-feito" ondragover="onDragOver(event)" ondrop="onDrop(event,'feito')" ondragleave="onDragLeave(event)">
+
+        <div class="task-card done" draggable="true" ondragstart="onDragStart(event)" ondragend="onDragEnd(event)">
+          <div class="card-top"><span class="card-title">Pagar conta de luz</span><span class="card-edit">✎</span></div>
+          <div class="card-bottom">
+            <div class="card-meta-left"><span class="badge badge-depois">Quando der</span><span class="card-time">✓ concluído</span></div>
+            <span class="card-handle">⠿</span>
+          </div>
+        </div>
+
+        <div class="task-card done" draggable="true" ondragstart="onDragStart(event)" ondragend="onDragEnd(event)">
+          <div class="card-top"><span class="card-title">Responder email do contador</span><span class="card-edit">✎</span></div>
+          <div class="card-bottom">
+            <div class="card-meta-left"><span class="badge badge-normal">Normal</span><span class="card-time">✓ concluído</span></div>
+            <span class="card-handle">⠿</span>
+          </div>
+        </div>
+
+        <button class="btn-new-task"><span class="btn-new-task-plus">+</span> Nova task</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="ux-panel" id="ux-panel">
+    <div class="ux-panel-label">◎ O que mudou na v6 (Liquid Glass)</div>
+    <div class="ux-grid">
+      <div class="ux-note"><div class="ux-note-title">Blobs de fundo ambiente</div><p>3 blobs coloridos enormes, borrados, fixos na tela inteira — criam o "ambiente" de cor que o glass refrata e capta. Sem eles, o glass não tem o que refletir.</p></div>
+      <div class="ux-note"><div class="ux-note-title">backdrop-filter: blur()</div><p>Toda superfície (cards, nav, topbar, badges) usa blur + saturação aumentada. Isso que cria a sensação de "vidro" — o conteúdo atrás borra mas a cor passa.</p></div>
+      <div class="ux-note"><div class="ux-note-title">Inset highlight</div><p>Uma borda de luz fina no topo de cada elemento (inset box-shadow branco) simula reflexo de luz na borda do vidro — truque clássico de glassmorphism.</p></div>
+      <div class="ux-note"><div class="ux-note-title">Gradientes suaves voltam</div><p>Botões e o card de progresso usam gradiente diagonal sutil — dá volume 3D ao "vidro" sem ficar plano.</p></div>
+      <div class="ux-note"><div class="ux-note-title">Nav vira "dock" flutuante</div><p>A bottom nav agora é uma pílula de vidro flutuante com margem das bordas, não mais colada — referência direta ao dock do iOS.</p></div>
+      <div class="ux-note"><div class="ux-note-title">Sombras coloridas, não cinza</div><p>As sombras pegam a cor do elemento (sombra roxa no botão indigo, sombra coral no avatar) — mais vivo que sombra cinza neutra.</p></div>
+      <div class="ux-note"><div class="ux-note-title">Menos contorno preto</div><p>Saiu o contorno duro de 2px preto da v5. As bordas agora são finas e claras (rgba branco), o que é a marca registrada do liquid glass.</p></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="bottom-nav-wrap">
+  <div class="bottom-nav">
+    <button class="nav-item active" id="nav-dump" onclick="goTo('dump')">
+      <span class="nav-icon">✦</span><span class="nav-label">Dump</span>
+    </button>
+    <button class="nav-item" id="nav-tarefas" onclick="goTo('tarefas')">
+      <span class="nav-icon">☰</span><span class="nav-label">Tarefas</span>
+      <span class="nav-dot" id="nav-dot"></span>
+    </button>
+  </div>
+</div>
+
+</div>
+
+<script>
+  function goTo(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.getElementById('nav-' + page).classList.add('active');
+    if (page === 'tarefas') document.getElementById('nav-dot').classList.remove('show');
+  }
+  function updateCount() {
+    const len = document.getElementById('dump-input').value.length;
+    document.getElementById('char-count').textContent = len + ' / 1000';
+  }
+  function fillExample() {
+    document.getElementById('dump-input').value =
+      'Preciso entregar o relatório pro cliente hoje, reunião amanhã às 9h, ligar pro fornecedor essa semana, comprar café e pagar a conta de luz antes de sexta';
+    updateCount();
+    document.getElementById('dump-input').focus();
+  }
+  function simulateParse() {
+    const input = document.getElementById('dump-input').value.trim();
+    if (!input) { document.getElementById('dump-input').focus(); return; }
+    document.getElementById('loading-overlay').classList.add('show');
+    requestAnimationFrame(() => { document.getElementById('progress-fill').style.width = '100%'; });
+    setTimeout(() => {
+      document.getElementById('loading-overlay').classList.remove('show');
+      document.getElementById('progress-fill').style.width = '0%';
+      document.getElementById('dump-input').value = '';
+      updateCount();
+      document.getElementById('nav-dot').classList.add('show');
+      goTo('tarefas');
+    }, 2000);
+  }
+  let draggedCard = null;
+  function onDragStart(e) { draggedCard = e.currentTarget; draggedCard.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; }
+  function onDragEnd(e) {
+    if (draggedCard) draggedCard.classList.remove('dragging');
+    document.querySelectorAll('.col-cards').forEach(c => c.classList.remove('drag-over'));
+    draggedCard = null; updateCounts();
+  }
+  function onDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+  function onDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+  function onDrop(e, colId) {
+    e.preventDefault();
+    const col = document.getElementById('col-' + colId);
+    col.classList.remove('drag-over');
+    if (!draggedCard) return;
+    const btn = col.querySelector('.btn-new-task');
+    col.insertBefore(draggedCard, btn);
+    const wasDone = draggedCard.classList.contains('done');
+    draggedCard.classList.toggle('done', colId === 'feito');
+    if (colId === 'feito' && !wasDone) {
+      draggedCard.classList.add('just-completed');
+      setTimeout(() => draggedCard.classList.remove('just-completed'), 400);
+    }
+    updateCounts(); updateProgress();
+  }
+  function updateCounts() {
+    let total = 0;
+    ['a_fazer','fazendo','feito'].forEach(col => {
+      const n = document.getElementById('col-' + col).querySelectorAll('.task-card').length;
+      document.getElementById('count-' + col).textContent = n;
+      total += n;
+    });
+    document.getElementById('progress-total').textContent = total;
+  }
+  function updateProgress() {
+    const done = document.getElementById('col-feito').querySelectorAll('.task-card').length;
+    document.getElementById('progress-number').textContent = done;
+  }
+  let uxVisible = false;
+  function toggleUX() {
+    uxVisible = !uxVisible;
+    document.getElementById('ux-panel').classList.toggle('show', uxVisible);
+    const btn = document.getElementById('ux-toggle');
+    btn.classList.toggle('on', uxVisible);
+    btn.textContent = uxVisible ? '◎ Ocultar' : '◎ UX';
+  }
+</script>
+</body>
+</html>
