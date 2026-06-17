@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion, useAnimationControls } from 'framer-motion'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -15,9 +15,11 @@ const PRIORITY_LABEL = { alta: 'Alta', media: 'Média', baixa: 'Baixa' }
 export function TaskCard({ task }) {
   const done = task.status === 'feito'
   const controls = useAnimationControls()
+  const mounted = useRef(false)
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: task.id })
 
   useEffect(() => {
+    if (!mounted.current) { mounted.current = true; return }
     if (done) {
       controls.start({ scale: [1, 1.06, 1], transition: { duration: 0.3 } })
     }

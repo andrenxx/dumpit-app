@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
 import { supabase } from '../lib/supabase'
 import { KanbanBoard } from '../components/tasks/KanbanBoard'
 import { ProgressCard } from '../components/tasks/ProgressCard'
@@ -42,7 +41,6 @@ export function TasksPage() {
       <KanbanBoard
         tasks={tasks}
         onTasksChange={setTasks}
-        onError={() => toast.error('Algo deu errado. Tente novamente.')}
         loading={loading}
       />
     </div>

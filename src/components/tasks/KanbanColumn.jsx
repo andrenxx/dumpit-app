@@ -51,13 +51,15 @@ export function KanbanColumn({ id, tasks, loading }) {
             <Skeleton className="h-16 rounded-[16px]" />
           </>
         ) : (
-          <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
-            <AnimatePresence>
-              {tasks.map((task) => <TaskCard key={task.id} task={task} />)}
-            </AnimatePresence>
-          </SortableContext>
+          <>
+            <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
+              <AnimatePresence>
+                {tasks.map((task) => <TaskCard key={task.id} task={task} />)}
+              </AnimatePresence>
+            </SortableContext>
+            <NewTaskButton />
+          </>
         )}
-        <NewTaskButton />
       </div>
     </div>
   )

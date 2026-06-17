@@ -13,7 +13,7 @@ function groupByStatus(tasks) {
   }, {})
 }
 
-export function KanbanBoard({ tasks, onTasksChange, onError, loading }) {
+export function KanbanBoard({ tasks, onTasksChange, loading }) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   )
@@ -46,11 +46,7 @@ export function KanbanBoard({ tasks, onTasksChange, onError, loading }) {
 
     if (error) {
       onTasksChange(prevTasks)
-      if (onError) {
-        onError()
-      } else {
-        toast.error('Algo deu errado. Tente novamente.')
-      }
+      toast.error('Algo deu errado. Tente novamente.')
     }
   }
 
