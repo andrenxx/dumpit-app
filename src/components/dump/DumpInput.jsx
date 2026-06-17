@@ -1,42 +1,57 @@
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { Textarea } from '../ui/textarea'
 import { Button } from '../ui/button'
 
 const MAX_LENGTH = 1000
 
 export function DumpInput({ value, onChange, onSubmit, disabled, inputRef }) {
+  const [focused, setFocused] = useState(false)
+
   return (
-    <div style={{
-      background: 'var(--bg-card)', border: '1.5px solid var(--brand)',
-      borderRadius: 20, padding: '16px 16px 14px',
-    }}>
-      <textarea
+    <motion.div
+      animate={{
+        y: focused ? -2 : 0,
+        boxShadow: focused
+          ? '0 10px 28px rgba(91,61,242,0.18)'
+          : '0 6px 18px rgba(91,61,242,0.12)',
+      }}
+      transition={{ duration: 0.2 }}
+      className="glass-surface-strong glass-inset-highlight rounded-[26px]"
+      style={{ padding: '18px 18px 14px' }}
+    >
+      <Textarea
         ref={inputRef}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         maxLength={MAX_LENGTH}
-        placeholder="ex: reunião amanhã às 9h com o cliente, relatório urgente pra hoje, comprar café, ligar pro fornecedor essa semana..."
-        style={{
-          width: '100%', minHeight: 160, border: 'none', outline: 'none',
-          resize: 'none', fontSize: 14, lineHeight: 1.65,
-          color: 'var(--text-primary)', background: 'transparent',
-          fontFamily: 'inherit',
-        }}
+        placeholder="ex: reunião amanhã às 9h com o cliente, relatório urgente pra hoje..."
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        className="border-none shadow-none focus-visible:ring-0 resize-none min-h-[150px] text-[14px] leading-[1.65] bg-transparent placeholder:text-text-hint"
+        style={{ fontFamily: 'inherit' }}
       />
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        paddingTop: 12, borderTop: '0.5px solid rgba(60,40,20,0.08)', marginTop: 10,
-      }}>
-        <span style={{ fontSize: 11, color: 'var(--text-hint)' }}>
+      <div
+        className="flex items-center justify-between pt-3 mt-2"
+        style={{ borderTop: '0.5px solid rgba(91,61,242,0.08)' }}
+      >
+        <span className="text-[11px] text-text-hint">
           {value.length} / {MAX_LENGTH}
         </span>
         <Button
           onClick={onSubmit}
           disabled={disabled}
           size="sm"
-          style={{ fontFamily: 'inherit', fontSize: 13 }}
+          className="rounded-[18px] shadow-glass-button text-[13px] font-medium text-white"
+          style={{
+            background: 'linear-gradient(135deg, #5B3DF2, #4427D6)',
+            fontFamily: 'inherit',
+            border: 'none',
+          }}
         >
           Dump ✦
         </Button>
       </div>
-    </div>
+    </motion.div>
   )
 }
