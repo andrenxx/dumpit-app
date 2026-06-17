@@ -121,7 +121,7 @@ N/A — this is a purely structural migration with no user-visible UX change.
 | `src/components/ui/button.jsx` | create | shadcn Button component |
 | `src/components/ui/input.jsx` | create | shadcn Input component |
 | `src/components/ui/card.jsx` | create | shadcn Card / CardContent components |
-| `src/components/ui/badge.jsx` | create | shadcn Badge component (not the DumpIt wrapper) |
+| `src/components/ui/badge.jsx` | skip | macOS case-insensitive fs: `badge.jsx` and `Badge.jsx` resolve to the same inode; shadcn badge primitive omitted to preserve the DumpIt Badge.jsx variants |
 | `src/components/auth/LoginModal.jsx` | modify | use shadcn Button + Input |
 | `src/components/dump/DumpInput.jsx` | modify | use shadcn Button |
 | `src/components/tasks/TaskCard.jsx` | modify | use shadcn Card + CardContent |
