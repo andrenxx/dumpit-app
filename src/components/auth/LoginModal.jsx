@@ -49,71 +49,76 @@ export function LoginModal({ isOpen, onClose }) {
   return (
     <AnimatePresence>
       {isOpen && (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <motion.div
-        className="bg-white rounded-lg p-8 w-full max-w-sm relative"
-        variants={modalVariants}
-        initial="hidden"
-        animate="visible"
-        exit="exit"
-      >
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+        <div
+          className="fixed inset-0 flex items-center justify-center z-50"
+          style={{ background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)' }}
         >
-          ✕
-        </button>
-
-        {step === 'email' ? (
-          <form onSubmit={handleEmailSubmit}>
-            <h2 className="text-xl font-semibold mb-4">Entrar no DumpIt</h2>
-            <Input
-              type="email"
-              placeholder="seu@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="mb-3"
-            />
-            {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
-            <Button type="submit" className="w-full">
-              Entrar
-            </Button>
-          </form>
-        ) : (
-          <form onSubmit={handleCodeSubmit}>
-            <h2 className="text-xl font-semibold mb-2">Digite o código</h2>
-            <p className="text-gray-500 text-sm mb-4">
-              Enviamos um código de 6 dígitos para <strong>{email}</strong>
-            </p>
-            <Input
-              type="text"
-              inputMode="numeric"
-              placeholder="000000"
-              maxLength={6}
-              pattern="\d{6}"
-              value={code}
-              onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
-              required
-              autoFocus
-              className="mb-3 text-center text-2xl tracking-widest"
-            />
-            {codeError && <p className="text-red-500 text-sm mb-3">{codeError}</p>}
-            <Button type="submit" className="w-full">
-              Verificar
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={handleResend}
-              className="w-full mt-3 text-sm"
+          <motion.div
+            className="glass-surface-strong glass-inset-highlight rounded-[24px] w-full relative"
+            style={{ maxWidth: 340, margin: '0 20px', padding: '32px 28px', boxShadow: '0 12px 36px rgba(91,61,242,0.18)' }}
+            variants={modalVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 text-text-hint hover:text-text-secondary"
+              style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 16, lineHeight: 1 }}
             >
-              Reenviar código
-            </Button>
-          </form>
-        )}
-      </motion.div>
-    </div>
+              ✕
+            </button>
+
+            {step === 'email' ? (
+              <form onSubmit={handleEmailSubmit}>
+                <h2 className="text-[18px] font-semibold text-text-primary mb-4">Entrar no DumpIt</h2>
+                <Input
+                  type="email"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="mb-3"
+                />
+                {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
+                <Button type="submit" className="w-full">
+                  Entrar
+                </Button>
+              </form>
+            ) : (
+              <form onSubmit={handleCodeSubmit}>
+                <h2 className="text-[18px] font-semibold text-text-primary mb-2">Digite o código</h2>
+                <p className="text-[13px] text-text-secondary mb-4">
+                  Enviamos um código de 6 dígitos para <strong>{email}</strong>
+                </p>
+                <Input
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="000000"
+                  maxLength={6}
+                  pattern="\d{6}"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+                  required
+                  autoFocus
+                  className="mb-3 text-center text-2xl tracking-widest"
+                />
+                {codeError && <p className="text-red-500 text-sm mb-3">{codeError}</p>}
+                <Button type="submit" className="w-full">
+                  Verificar
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={handleResend}
+                  className="w-full mt-3 text-sm"
+                >
+                  Reenviar código
+                </Button>
+              </form>
+            )}
+          </motion.div>
+        </div>
       )}
     </AnimatePresence>
   )
