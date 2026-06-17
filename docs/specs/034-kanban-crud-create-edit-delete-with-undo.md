@@ -77,6 +77,8 @@ In `KanbanBoard`, `pendingDeleteRef = useRef(null)` stores the active timeout id
 
 ### 4.4 Reorder within column
 
+`onTasksChange` is the prop received from `TasksPage` (`<KanbanBoard onTasksChange={setTasks} />`), not a local state setter — consistent with the existing cross-column drag implementation.
+
 Extend `handleDragEnd` in `KanbanBoard` using `arrayMove` from `@dnd-kit/sortable`:
 
 ```js
