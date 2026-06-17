@@ -4,6 +4,7 @@ const ALLOWED_ORIGINS = [
   'https://dumpit.com.br',
   'https://www.dumpit.com.br',
   'http://localhost:5173',
+  'http://localhost:8788',
 ]
 
 function corsHeaders(origin) {
