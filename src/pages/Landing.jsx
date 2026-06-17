@@ -1,8 +1,18 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth'
 import { LoginModal } from '../components/auth/LoginModal'
 
 export function Landing() {
   const [showLogin, setShowLogin] = useState(false)
+  const { user, loading } = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate('/dashboard', { replace: true })
+    }
+  }, [user, loading, navigate])
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white">

@@ -95,8 +95,9 @@ N/A — no discovery was opened for this feature; the approach is unambiguous gi
 
 | Path | Action | Notes |
 | ---- | ------ | ----- |
-| `src/hooks/useAuth.js` | modify | Add `verifyOtp` function |
+| `src/hooks/useAuth.js` | modify | Add `verifyOtp` function; remove `emailRedirectTo` to force OTP flow |
 | `src/components/auth/LoginModal.jsx` | modify | Add `code` step with input and resend |
+| `src/pages/Landing.jsx` | modify | Redirect to `/dashboard` on auth state change after OTP success |
 
 ## 6. Acceptance
 
