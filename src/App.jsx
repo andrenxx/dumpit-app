@@ -3,9 +3,11 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Landing } from './pages/Landing'
 import { AuthGuard } from './components/auth/AuthGuard'
+import { AmbientBlobs } from './components/layout/AmbientBlobs'
 import { TopBar } from './components/layout/TopBar'
 import { BottomNav } from './components/layout/BottomNav'
 import { LoadingOverlay } from './components/ui/LoadingOverlay'
+import { Toaster } from './components/ui/sonner'
 import { DumpPage } from './pages/DumpPage'
 import { TasksPage } from './pages/TasksPage'
 
@@ -29,8 +31,10 @@ function AppShell() {
   return (
     <div style={{
       display: 'flex', flexDirection: 'column', height: '100vh',
-      maxWidth: 480, margin: '0 auto', overflow: 'hidden', background: 'var(--bg-app)',
+      maxWidth: 480, margin: '0 auto', overflow: 'hidden', background: 'transparent',
     }}>
+      <AmbientBlobs />
+      <Toaster position="top-center" />
       <TopBar />
       <LoadingOverlay visible={loading} />
       <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>

@@ -1,33 +1,46 @@
+import { motion } from 'framer-motion'
+
 const items = [
-  { id: 'dump', icon: '✦', label: 'Dump' },
+  { id: 'dump',    icon: '✦', label: 'Dump' },
   { id: 'tarefas', icon: '☰', label: 'Tarefas' },
 ]
 
 export function BottomNav({ activePage, onChange }) {
   return (
-    <div style={{
-      display: 'flex', background: 'var(--bg-card)',
-      borderTop: '0.5px solid var(--border-default)', height: 64, flexShrink: 0,
-    }}>
-      {items.map((item) => {
-        const active = activePage === item.id
-        return (
-          <button
-            key={item.id}
-            onClick={() => onChange(item.id)}
-            style={{
-              flex: 1, display: 'flex', flexDirection: 'column',
-              alignItems: 'center', justifyContent: 'center', gap: 4,
-              padding: '10px 0', border: 'none', background: 'transparent',
-              cursor: 'pointer', transition: 'color 0.15s',
-              color: active ? 'var(--brand)' : 'var(--text-hint)',
-            }}
-          >
-            <span style={{ fontSize: 20, lineHeight: 1 }}>{item.icon}</span>
-            <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.2px' }}>{item.label}</span>
-          </button>
-        )
-      })}
+    <div className="flex justify-center pb-5 pt-2 flex-shrink-0">
+      <div
+        className="glass-surface-strong glass-inset-highlight flex rounded-[26px] p-1.5 gap-1"
+        style={{ boxShadow: '0 8px 28px rgba(91,61,242,0.14)' }}
+      >
+        {items.map((item) => {
+          const active = activePage === item.id
+          return (
+            <button
+              key={item.id}
+              onClick={() => onChange(item.id)}
+              className="relative flex flex-col items-center justify-center gap-1 px-8 py-2.5 rounded-[20px] text-xs font-medium transition-colors"
+              style={{
+                color: active ? '#fff' : '#ACA4C8',
+                minWidth: 90,
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+              }}
+            >
+              {active && (
+                <motion.div
+                  layoutId="nav-active-pill"
+                  className="absolute inset-0 rounded-[20px]"
+                  style={{ background: 'linear-gradient(135deg, #5B3DF2, #4427D6)' }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10 text-[18px] leading-none">{item.icon}</span>
+              <span className="relative z-10">{item.label}</span>
+            </button>
+          )
+        })}
+      </div>
     </div>
   )
 }
