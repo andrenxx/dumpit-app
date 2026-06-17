@@ -12,18 +12,26 @@ const PRIORITY_CLASS = {
 
 const PRIORITY_LABEL = { alta: 'Alta', media: 'Média', baixa: 'Baixa' }
 
-export function TaskCard({ task }) {
+export function TaskCard({ task, onEdit }) {
   const done = task.status === 'feito'
   const controls = useAnimationControls()
   const mounted = useRef(false)
+  const didDrag = useRef(false)
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: task.id })
 
   useEffect(() => {
     if (!mounted.current) { mounted.current = true; return }
-    if (done) {
-      controls.start({ scale: [1, 1.06, 1], transition: { duration: 0.3 } })
-    }
+    if (done) controls.start({ scale: [1, 1.06, 1], transition: { duration: 0.3 } })
   }, [done, controls])
+
+  useEffect(() => {
+    if (isDragging) didDrag.current = true
+  }, [isDragging])
+
+  function handleClick() {
+    if (didDrag.current) { didDrag.current = false; return }
+    onEdit?.(task)
+  }
 
   return (
     <motion.div
@@ -31,6 +39,7 @@ export function TaskCard({ task }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2, ease: 'easeOut' }}
+      onClick={handleClick}
     >
       <motion.div
         ref={setNodeRef}
