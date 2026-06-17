@@ -1,29 +1,27 @@
 import { useAuth } from '../../hooks/useAuth'
 
-function getInitials(email) {
-  if (!email) return ''
-  return email[0].toUpperCase()
+function getInitial(email) {
+  return email ? email[0].toUpperCase() : ''
 }
 
 export function TopBar() {
   const { user } = useAuth()
-
   return (
-    <div style={{
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: '14px 20px 10px', background: 'var(--bg-app)', flexShrink: 0,
-    }}>
-      <div style={{ fontSize: 17, fontWeight: 500, color: 'var(--brand)', letterSpacing: '-0.3px' }}>
-        dumpit
+    <div className="glass-surface sticky top-0 z-20 flex items-center justify-between px-5 py-3 border-b border-white/40 flex-shrink-0">
+      <div className="flex items-center gap-1.5 text-[17px] font-medium tracking-tight text-text-primary">
+        dump
+        <span className="px-[7px] py-[2px] rounded-[9px] bg-brand/[0.07] border border-brand/[0.12] backdrop-blur-xs text-brand text-[15px]">
+          it
+        </span>
       </div>
       <div style={{
-        width: 30, height: 30, borderRadius: '50%',
-        background: 'var(--bg-accent-light)', color: 'var(--brand)',
-        border: '1px solid rgba(43,28,154,0.15)',
+        width: 32, height: 32, borderRadius: '50%',
+        background: 'linear-gradient(145deg, #FF6F52, #FFA988)',
+        boxShadow: '0 3px 10px rgba(255,111,82,0.22)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: 11, fontWeight: 500,
+        fontSize: 12, fontWeight: 600, color: '#fff',
       }}>
-        {getInitials(user?.email)}
+        {getInitial(user?.email)}
       </div>
     </div>
   )
