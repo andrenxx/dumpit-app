@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Badge } from '../ui/Badge'
@@ -25,6 +26,11 @@ export function TaskCard({ task }) {
   }
 
   return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
+    >
     <div
       ref={setNodeRef}
       style={style}
@@ -51,5 +57,6 @@ export function TaskCard({ task }) {
         <span style={{ color: 'var(--text-hint)', fontSize: 13 }}>⠿</span>
       </div>
     </div>
+    </motion.div>
   )
 }

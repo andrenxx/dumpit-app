@@ -1,5 +1,12 @@
 import { useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useAuth } from '../../hooks/useAuth'
+
+const modalVariants = {
+  hidden:  { opacity: 0, scale: 0.95 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.18, ease: 'easeOut' } },
+  exit:    { opacity: 0, scale: 0.95, transition: { duration: 0.14 } },
+}
 
 export function LoginModal({ isOpen, onClose }) {
   const { signInWithEmail, verifyOtp } = useAuth()
@@ -8,8 +15,6 @@ export function LoginModal({ isOpen, onClose }) {
   const [step, setStep] = useState('email')
   const [error, setError] = useState(null)
   const [codeError, setCodeError] = useState(null)
-
-  if (!isOpen) return null
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault()
@@ -40,8 +45,16 @@ export function LoginModal({ isOpen, onClose }) {
   }
 
   return (
+    <AnimatePresence>
+      {isOpen && (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-8 w-full max-w-sm relative">
+      <motion.div
+        className="bg-white rounded-lg p-8 w-full max-w-sm relative"
+        variants={modalVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+      >
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
@@ -102,7 +115,9 @@ export function LoginModal({ isOpen, onClose }) {
             </button>
           </form>
         )}
-      </div>
+      </motion.div>
     </div>
+      )}
+    </AnimatePresence>
   )
 }
