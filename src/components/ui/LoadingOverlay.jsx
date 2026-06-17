@@ -8,24 +8,44 @@ export function LoadingOverlay({ visible }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.25 }}
           style={{
-            position: 'absolute', inset: 0, zIndex: 50, background: 'var(--bg-app)',
+            position: 'absolute', inset: 0, zIndex: 50,
+            background: 'rgba(250,249,252,0.92)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
             display: 'flex', flexDirection: 'column', alignItems: 'center',
-            justifyContent: 'center', gap: 16, textAlign: 'center', padding: 40,
+            justifyContent: 'center', gap: 20, textAlign: 'center', padding: 40,
           }}
         >
-          <div style={{
-            width: 36, height: 36, border: '2px solid #F0ECE6',
-            borderTopColor: 'var(--brand)', borderRadius: '50%',
-            animation: 'dumpit-spin 0.8s linear infinite',
-          }} />
-          <style>{'@keyframes dumpit-spin { to { transform: rotate(360deg); } }'}</style>
-          <div style={{ fontSize: 15, fontWeight: 500, color: 'var(--text-primary)' }}>
-            Organizando suas tarefas...
+          <motion.div
+            className="animate-blob-morph"
+            style={{
+              width: 84, height: 84,
+              background: 'linear-gradient(135deg, #5B3DF2, #FF6F52)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: '#fff', fontSize: 32,
+            }}
+          >
+            ✦
+          </motion.div>
+
+          <div>
+            <div style={{ fontSize: 15, fontWeight: 500, color: '#1A1530', marginBottom: 6 }}>
+              Organizando suas tarefas...
+            </div>
+            <div style={{ fontSize: 13, color: '#5E5878' }}>
+              A IA está lendo e classificando tudo
+            </div>
           </div>
-          <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
-            A IA está lendo e classificando tudo
+
+          <div style={{ width: 160, height: 3, background: 'rgba(91,61,242,0.12)', borderRadius: 2, overflow: 'hidden' }}>
+            <motion.div
+              initial={{ width: '0%' }}
+              animate={{ width: '100%' }}
+              transition={{ duration: 2, ease: 'easeInOut' }}
+              style={{ height: '100%', background: 'linear-gradient(90deg, #5B3DF2, #FF6F52)', borderRadius: 2 }}
+            />
           </div>
         </motion.div>
       )}

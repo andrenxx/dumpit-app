@@ -1,27 +1,31 @@
+import { motion } from 'framer-motion'
+
 const EXAMPLE_TEXT = 'Preciso entregar o relatório pro cliente hoje, reunião amanhã às 9h, ' +
   'ligar pro fornecedor essa semana, comprar café e pagar a conta de luz antes de sexta'
 
 export function ExampleCard({ onFill }) {
   return (
-    <div
+    <motion.div
+      whileHover={{ y: -1 }}
+      whileTap={{ scale: 0.98 }}
       onClick={() => onFill(EXAMPLE_TEXT)}
-      style={{
-        background: 'var(--bg-card)', border: '0.5px solid var(--border-default)',
-        borderRadius: 16, padding: '14px 16px', cursor: 'pointer',
-        transition: 'border-color 0.18s',
-      }}
-      onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--brand-hover)' }}
-      onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-default)' }}
+      className="glass-surface rounded-[20px] cursor-pointer"
+      style={{ padding: '14px 16px', boxShadow: '0 3px 12px rgba(91,61,242,0.06)' }}
     >
-      <div style={{
-        fontSize: 11, fontWeight: 500, color: 'var(--text-hint)',
-        textTransform: 'uppercase', letterSpacing: '0.4px', marginBottom: 6,
-      }}>
-        💡 Clique pra testar
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-[10px] font-semibold tracking-wider text-text-hint uppercase">
+          💡 Clique pra testar
+        </span>
+        <span
+          className="text-[10px] font-medium px-2 py-0.5 rounded-full"
+          style={{ background: 'rgba(0,210,160,0.16)', color: '#1A8A6C' }}
+        >
+          exemplo
+        </span>
       </div>
-      <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+      <p className="text-[13px] text-text-secondary leading-relaxed">
         &ldquo;{EXAMPLE_TEXT}&rdquo;
       </p>
-    </div>
+    </motion.div>
   )
 }
