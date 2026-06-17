@@ -3,10 +3,16 @@
   "autoPort": true,
   "configurations": [
     {
-      "name": "next-dev",
+      "name": "dumpit-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "apps/web", "run", "dev"],
-      "port": 3000
+      "runtimeArgs": ["run", "dev"],
+      "port": 5173
+    },
+    {
+      "name": "dumpit-fullstack",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["wrangler", "pages", "dev", "dist", "--compatibility-date", "2024-01-01", "--port", "8788"],
+      "port": 8788
     }
   ]
 }
