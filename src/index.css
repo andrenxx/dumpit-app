@@ -24,6 +24,21 @@
   --badge-normal-text: #8A6200;
   --badge-depois-bg: #F2EFE9;
   --badge-depois-text: #7A6A5A;
+
+  /* shadcn/ui CSS variable slots — mapped from DumpIt design tokens */
+  --background: 38 33% 97%;
+  --foreground: 20 17% 10%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 17% 10%;
+  --primary: 247 69% 35%;
+  --primary-foreground: 0 0% 100%;
+  --muted: 25 14% 75%;
+  --muted-foreground: 25 12% 49%;
+  --accent: 247 69% 35%;
+  --accent-foreground: 0 0% 100%;
+  --border: 30 20% 31%;
+  --input: 30 20% 31%;
+  --radius: 0.625rem;
 }
 
 body {
