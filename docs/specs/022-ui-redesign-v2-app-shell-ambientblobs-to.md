@@ -29,7 +29,8 @@ Run `npm run dev` and open `http://localhost:5173/dashboard` (after auth). Verif
 
 - DumpPage component changes (chunk #23).
 - TasksPage component changes (chunk #24).
-- LoadingOverlay redesign (chunk #23 scope).
+- LoadingOverlay redesign (chunk #23 scope) — `<LoadingOverlay />` is already wired in `App.jsx`; its visual redesign is chunk #23's responsibility; this chunk leaves its import and usage untouched.
+- `AnimatePresence` page transitions — already implemented in `App.jsx` (`motion.div` with `pageVariants`); this chunk does not modify that logic.
 - Auth flow changes.
 
 ## 4. Design
@@ -171,6 +172,9 @@ N/A — discovery marked ux: not-applicable.
 | Tailwind `backdrop-blur-xs` undefined | Token added in spec #21 (merged); rebase branch on main before implementing |
 | `glass-surface` / `glass-surface-strong` not purged by Tailwind | Classes are raw CSS utilities in `index.css`; always bundled regardless of purge |
 | `motion.div layoutId` spring fires on initial render | `initial={false}` not needed here — the pill appearing is the desired animation |
+| `src/components/ui/sonner.jsx` not found at import time | File created in spec #21 (merged); this branch must be rebased on main before implementing |
+| AmbientBlobs `z-index: -10` hidden behind `body` background | `body` background is `#FAF9FC` (opaque); blobs will only show behind transparent/translucent surfaces. The blob `filter: blur(60px)` extends visually; on the app shell `background: transparent`, blobs are visible through the glass layers |
+| `useAuth()` hook returning undefined `user` before session loads | `getInitial(user?.email)` already guards with optional chaining — returns empty string; avatar renders as blank circle on initial load (acceptable) |
 
 ## 8. Rollout
 
@@ -179,3 +183,9 @@ Single commit:
 1. `feat(#22): App shell — AmbientBlobs, TopBar, BottomNav glass redesign`
 
 Chunks #23 and #24 are parallelisable after this merges.
+
+**Pre-condition:** `main` must carry spec #21 (design tokens + `sonner.jsx`). Rebase before implementing.
+
+**Decomposition verdict:** single
+
+This chunk is already the smallest independently-shippable unit: `AmbientBlobs` + `TopBar` + `BottomNav` + the `App.jsx` wiring are visually coupled (half-done would show broken layout with blobs but no glass nav). Splitting further (e.g., blobs-only vs. nav-only) fails the Ship isolation test — each fragment leaves the UI in an incoherent state. Single PR is correct.
