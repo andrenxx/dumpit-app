@@ -18,11 +18,14 @@ export function useAuth() {
   }, [])
 
   const signInWithEmail = async (email) => {
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: window.location.origin + '/dashboard' },
-    })
+    const { error } = await supabase.auth.signInWithOtp({ email })
     if (error) console.error('signInWithEmail:', error)
+    return { error }
+  }
+
+  const verifyOtp = async (email, token) => {
+    const { error } = await supabase.auth.verifyOtp({ email, token, type: 'email' })
+    if (error) console.error('verifyOtp:', error)
     return { error }
   }
 
@@ -30,5 +33,5 @@ export function useAuth() {
     await supabase.auth.signOut()
   }
 
-  return { user, loading, signInWithEmail, signOut }
+  return { user, loading, signInWithEmail, verifyOtp, signOut }
 }
