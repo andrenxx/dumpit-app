@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion'
-import Mascot from '../ui/Mascot'
 
 export function ProgressCard({ tasks }) {
   const done = tasks.filter((t) => t.status === 'feito').length
@@ -41,19 +40,20 @@ export function ProgressCard({ tasks }) {
       </div>
 
       <div
-        className="relative flex-shrink-0 self-end overflow-hidden"
-        style={{ zIndex: 2, width: 118, height: 132 }}
+        className="flex-shrink-0 self-end overflow-hidden"
+        style={{
+          zIndex: 2,
+          width: 150,
+          height: 72,
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'center',
+        }}
       >
         <img
           src="/mascote/mascote-kanban.svg"
           alt=""
-          style={{
-            width: 180,
-            height: 240,
-            position: 'absolute',
-            top: 0,
-            left: -24,
-          }}
+          style={{ width: 210, height: 'auto', objectFit: 'contain', display: 'block' }}
         />
       </div>
     </div>

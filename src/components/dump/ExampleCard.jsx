@@ -1,5 +1,3 @@
-import Mascot from '../ui/Mascot'
-
 const EXAMPLE_TEXT = 'Preciso entregar o relatório pro cliente hoje, reunião amanhã às 9h, ' +
   'ligar pro fornecedor essa semana, comprar café e pagar a conta de luz antes de sexta'
 
@@ -11,11 +9,11 @@ export function ExampleCard({ onFill }) {
       style={{ minHeight: 108, boxShadow: '0 4px 16px rgba(91,61,242,0.06)' }}
     >
       <div
-        className="flex-shrink-0 self-end ml-1.5"
+        className="flex-shrink-0 ml-1.5"
         style={{
           zIndex: 2,
+          alignSelf: 'stretch',
           width: 84,
-          height: 108,
           backgroundImage: 'url(/mascote/mascote-dump.svg)',
           backgroundSize: '240px 160px',
           backgroundRepeat: 'no-repeat',

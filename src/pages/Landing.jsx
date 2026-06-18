@@ -24,10 +24,11 @@ export function Landing() {
           pose="login"
           className="relative"
           style={{
-            width: 180,
-            height: 260,
+            width: 150,
+            height: 'auto',
+            objectFit: 'contain',
             zIndex: 1,
-            marginBottom: -80,
+            marginBottom: -54,
             opacity: 0.92,
             filter: 'drop-shadow(0 14px 24px rgba(91,61,242,0.18))',
           }}
