@@ -12,11 +12,58 @@ const PRIORITY_CLASS = {
 
 const PRIORITY_LABEL = { alta: 'Alta', media: 'Média', baixa: 'Baixa' }
 
-export function TaskCard({ task, onEdit }) {
+function CardBody({ task }) {
   const done = task.status === 'feito'
+  return (
+    <div
+      className="glass-surface-strong glass-inset-highlight rounded-[20px] shadow-glass-sm"
+      style={{ padding: '12px 14px' }}
+    >
+      <div style={{
+        fontSize: 13,
+        fontWeight: 500,
+        lineHeight: 1.45,
+        color: done ? '#ACA4C8' : '#1A1530',
+        textDecoration: done ? 'line-through' : 'none',
+        marginBottom: task.description ? 6 : 10,
+        display: '-webkit-box',
+        WebkitLineClamp: 2,
+        WebkitBoxOrient: 'vertical',
+        overflow: 'hidden',
+      }}>
+        {task.title}
+      </div>
+
+      {task.description && (
+        <div style={{
+          fontSize: 11.5,
+          lineHeight: 1.55,
+          color: '#ACA4C8',
+          marginBottom: 10,
+          display: '-webkit-box',
+          WebkitLineClamp: 3,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+        }}>
+          {task.description}
+        </div>
+      )}
+
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <ShadcnBadge className={PRIORITY_CLASS[task.priority] || PRIORITY_CLASS.media}>
+          {PRIORITY_LABEL[task.priority] || task.priority}
+        </ShadcnBadge>
+        <span style={{ color: '#ACA4C8', fontSize: 13, lineHeight: 1 }}>⠿</span>
+      </div>
+    </div>
+  )
+}
+
+export function TaskCard({ task, onEdit }) {
   const controls = useAnimationControls()
   const mounted = useRef(false)
   const didDrag = useRef(false)
+  const done = task.status === 'feito'
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: task.id })
 
   useEffect(() => {
@@ -46,35 +93,26 @@ export function TaskCard({ task, onEdit }) {
         animate={controls}
         whileHover={!isDragging ? { y: -2 } : {}}
         layout={!isDragging}
-        className="glass-surface-strong glass-inset-highlight rounded-[20px] shadow-glass-sm"
         style={{
           transform: CSS.Transform.toString(transform),
           transition,
           cursor: 'grab',
           userSelect: 'none',
-          opacity: isDragging ? 0.35 : 1,
-          padding: '12px 14px',
+          opacity: isDragging ? 0 : 1,
         }}
         {...attributes}
         {...listeners}
       >
-        <div style={{
-          fontSize: 13,
-          fontWeight: 500,
-          lineHeight: 1.45,
-          color: done ? '#ACA4C8' : '#1A1530',
-          textDecoration: done ? 'line-through' : 'none',
-          marginBottom: 10,
-        }}>
-          {task.title}
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <ShadcnBadge className={PRIORITY_CLASS[task.priority] || PRIORITY_CLASS.media}>
-            {PRIORITY_LABEL[task.priority] || task.priority}
-          </ShadcnBadge>
-          <span style={{ color: '#ACA4C8', fontSize: 13, lineHeight: 1 }}>⠿</span>
-        </div>
+        <CardBody task={task} />
       </motion.div>
     </motion.div>
+  )
+}
+
+export function TaskCardDragClone({ task }) {
+  return (
+    <div style={{ opacity: 0.92, transform: 'rotate(2deg)', cursor: 'grabbing' }}>
+      <CardBody task={task} />
+    </div>
   )
 }

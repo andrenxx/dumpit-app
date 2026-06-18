@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../hooks/useAuth'
 import { KanbanBoard } from '../components/tasks/KanbanBoard'
 import { ProgressCard } from '../components/tasks/ProgressCard'
 
 export function TasksPage() {
+  const { user } = useAuth()
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -42,6 +44,7 @@ export function TasksPage() {
         tasks={tasks}
         onTasksChange={setTasks}
         loading={loading}
+        user={user}
       />
     </div>
   )

@@ -11,13 +11,13 @@ const STATUS_CONFIG = {
   feito:   { label: 'Feito',   tint: 'rgba(0,210,160,0.11)',  dot: '#00D2A0' },
 }
 
-export function KanbanColumn({ id, tasks, loading, onEdit, onCreateTask }) {
+export function KanbanColumn({ id, tasks, loading, onEdit, onNewTask }) {
   const { setNodeRef, isOver } = useDroppable({ id })
   const taskIds = tasks.map((t) => t.id)
   const config = STATUS_CONFIG[id] || { label: id, tint: 'transparent', dot: '#ccc' }
 
   return (
-    <div style={{ minWidth: 240, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+    <div style={{ flex: '0 0 300px', width: 300, display: 'flex', flexDirection: 'column', gap: 8 }}>
       <div
         className="glass-surface flex items-center justify-between rounded-[14px] px-3 py-2"
         style={{ background: config.tint }}
@@ -64,7 +64,7 @@ export function KanbanColumn({ id, tasks, loading, onEdit, onCreateTask }) {
               </div>
             )}
 
-            <NewTaskButton columnStatus={id} onCreateTask={onCreateTask} />
+            <NewTaskButton onNewTask={onNewTask} />
           </>
         )}
       </div>
