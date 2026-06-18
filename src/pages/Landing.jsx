@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { AmbientBlobs } from '../components/layout/AmbientBlobs'
 import { LoginModal } from '../components/auth/LoginModal'
+import Mascot from '../components/ui/Mascot'
 
 export function Landing() {
   const [showLogin, setShowLogin] = useState(false)
@@ -16,23 +17,39 @@ export function Landing() {
   }, [user, loading, navigate])
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center" style={{ position: 'relative' }}>
+    <div className="min-h-screen flex flex-col items-center justify-center px-6" style={{ position: 'relative' }}>
       <AmbientBlobs />
-      <div
-        className="glass-surface glass-inset-highlight rounded-[28px] flex flex-col items-center text-center"
-        style={{ padding: '40px 36px', maxWidth: 340, width: '90%', boxShadow: '0 8px 28px rgba(91,61,242,0.14)' }}
-      >
-        <div className="flex items-center gap-1.5 text-[22px] font-medium tracking-tight text-text-primary mb-2">
-          dump<span className="px-[8px] py-[3px] rounded-[10px] bg-brand/[0.07] border border-brand/[0.12] text-brand text-[20px]">it</span>
-        </div>
-        <p className="text-[13px] text-text-secondary mb-8">dump it, nós organizamos</p>
-        <button
-          onClick={() => setShowLogin(true)}
-          className="w-full rounded-[18px] py-3 text-[14px] font-medium text-white shadow-glass-button"
-          style={{ background: 'linear-gradient(135deg, #5B3DF2, #4427D6)', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
+      <div className="relative w-full flex flex-col items-center" style={{ maxWidth: 340 }}>
+        <Mascot
+          pose="login"
+          className="relative"
+          style={{
+            width: 150,
+            height: 'auto',
+            zIndex: 1,
+            marginBottom: -54,
+            opacity: 0.92,
+            filter: 'drop-shadow(0 14px 24px rgba(91,61,242,0.18))',
+          }}
+        />
+        <div
+          className="relative glass-surface-strong glass-inset-highlight rounded-[28px] w-full text-center"
+          style={{ zIndex: 2, paddingTop: 56, paddingBottom: 28, paddingLeft: 24, paddingRight: 24, boxShadow: '0 12px 36px rgba(91,61,242,0.16)' }}
         >
-          Entrar
-        </button>
+          <div className="flex items-center justify-center gap-1.5 text-[19px] font-extrabold tracking-tight text-text-primary mb-1">
+            dump<span className="px-2 py-0.5 rounded-[9px] bg-brand/[0.07] border border-brand/[0.12] text-brand">it</span>
+          </div>
+          <p className="text-[13px] text-text-secondary font-medium leading-relaxed mb-5">
+            Organize sua bagunça mental com IA.
+          </p>
+          <button
+            onClick={() => setShowLogin(true)}
+            className="w-full rounded-2xl py-3 text-[14px] font-bold text-white mb-2.5"
+            style={{ background: 'linear-gradient(135deg, #5B3DF2, #4427D6)', border: 'none', cursor: 'pointer', fontFamily: 'inherit', boxShadow: '0 6px 16px rgba(91,61,242,0.25)' }}
+          >
+            Entrar com email
+          </button>
+        </div>
       </div>
       <LoginModal isOpen={showLogin} onClose={() => setShowLogin(false)} />
     </div>
