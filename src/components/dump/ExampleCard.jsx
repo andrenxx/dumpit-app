@@ -11,11 +11,17 @@ export function ExampleCard({ onFill }) {
       style={{ minHeight: 108, boxShadow: '0 4px 16px rgba(91,61,242,0.06)' }}
     >
       <div
-        className="relative flex-shrink-0 flex items-end justify-center self-end ml-1.5"
-        style={{ zIndex: 2, width: 84 }}
-      >
-        <Mascot pose="dump" style={{ width: 108, height: 'auto' }} />
-      </div>
+        className="flex-shrink-0 self-end ml-1.5"
+        style={{
+          zIndex: 2,
+          width: 84,
+          height: 108,
+          backgroundImage: 'url(/mascote/mascote-dump.svg)',
+          backgroundSize: '240px 160px',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: '-88px -8px',
+        }}
+      />
 
       <div className="relative flex-1 py-3.5 pr-4 pl-1.5" style={{ zIndex: 2 }}>
         <div className="flex items-center gap-1.5 mb-1.5">

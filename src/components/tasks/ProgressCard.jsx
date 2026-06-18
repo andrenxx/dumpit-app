@@ -41,12 +41,19 @@ export function ProgressCard({ tasks }) {
       </div>
 
       <div
-        className="relative flex-shrink-0 flex items-end justify-center self-end overflow-hidden"
+        className="relative flex-shrink-0 self-end overflow-hidden"
         style={{ zIndex: 2, width: 118, height: 132 }}
       >
-        <Mascot
-          pose="kanban"
-          style={{ width: 128, height: 'auto', position: 'relative', bottom: -4 }}
+        <img
+          src="/mascote/mascote-kanban.svg"
+          alt=""
+          style={{
+            width: 180,
+            height: 240,
+            position: 'absolute',
+            top: 0,
+            left: -24,
+          }}
         />
       </div>
     </div>
