@@ -1,10 +1,19 @@
+// src/pages/Landing.jsx
+//
+// Mascote em corpo INTEIRO, sem nenhum corte. Fica atrás do modal de
+// login via margin-bottom negativo (o modal, que vem depois no DOM e
+// tem z-index maior, cobre a parte inferior do corpo do mascote).
+//
+// Princípio de design: o mascote aqui é presença de marca, NÃO
+// personagem se apresentando. Sem nome, sem fala, sem balão de diálogo.
+
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { AmbientBlobs } from '../components/layout/AmbientBlobs'
 import { LoginModal } from '../components/auth/LoginModal'
-import Mascot from '../components/ui/Mascot'
 import { Button } from '../components/ui/button'
+import Mascot from '../components/ui/Mascot'
 
 export function Landing() {
   const [showLogin, setShowLogin] = useState(false)
@@ -24,22 +33,35 @@ export function Landing() {
 
         <Mascot
           pose="login"
-          className="w-[150px] h-auto relative z-[1] opacity-[0.92]"
+          width={150}
+          className="relative z-10 opacity-[0.92]"
           style={{
-            objectFit: 'contain',
-            marginBottom: '-54px',
+            marginBottom: -54,
             filter: 'drop-shadow(0 14px 24px rgba(91,61,242,0.18))',
           }}
         />
 
-        <div className="relative z-[2] w-full glass-surface-strong
-                        rounded-[28px] pt-14 pb-7 px-6
-                        shadow-[0_12px_36px_rgba(91,61,242,0.16)]
-                        text-center">
-
+        <div
+          className="relative z-20 w-full rounded-[28px] pt-14 pb-7 px-6 text-center"
+          style={{
+            background: 'rgba(255,255,255,0.75)',
+            backdropFilter: 'blur(26px) saturate(1.6)',
+            WebkitBackdropFilter: 'blur(26px) saturate(1.6)',
+            border: '1px solid rgba(255,255,255,0.8)',
+            boxShadow: '0 12px 36px rgba(91,61,242,0.16)',
+          }}
+        >
           <div className="text-[19px] font-extrabold text-text-primary tracking-tight mb-1">
-            dump<span className="text-brand bg-brand/[0.07] border border-brand/[0.12]
-                                  px-2 py-0.5 rounded-[9px]">it</span>
+            dump
+            <span
+              className="text-brand px-2 py-0.5 rounded-[9px] ml-0.5"
+              style={{
+                background: 'rgba(91,61,242,0.07)',
+                border: '1px solid rgba(91,61,242,0.12)',
+              }}
+            >
+              it
+            </span>
           </div>
 
           <p className="text-[13px] text-text-secondary font-medium leading-relaxed mb-5">
@@ -48,17 +70,23 @@ export function Landing() {
 
           <Button
             onClick={() => setShowLogin(true)}
-            className="w-full mb-2.5 bg-gradient-to-br from-brand to-brand-deep
-                        rounded-2xl py-3 text-[14px] font-bold text-white
-                        shadow-[0_6px_16px_rgba(91,61,242,0.25)]"
+            className="w-full mb-2.5 rounded-2xl py-3 text-[14px] font-bold text-white"
+            style={{
+              background: 'linear-gradient(145deg, #5B3DF2, #4427D6)',
+              boxShadow: '0 6px 16px rgba(91,61,242,0.25)',
+            }}
           >
             Entrar com email
           </Button>
 
           <Button
             variant="outline"
-            className="w-full glass-surface rounded-2xl py-3
-                        text-[13px] font-semibold text-text-primary"
+            className="w-full rounded-2xl py-3 text-[13px] font-semibold text-text-primary"
+            style={{
+              background: 'rgba(255,255,255,0.5)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid rgba(255,255,255,0.8)',
+            }}
           >
             <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
               <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
@@ -75,3 +103,13 @@ export function Landing() {
     </div>
   )
 }
+
+// ─────────────────────────────────────────────────────────────
+// Valores que NÃO devem ser alterados sem comparar com
+// docs/wireframe_v7.html:
+//   - width={150} no Mascot
+//   - marginBottom: -54
+//   - opacity: 0.92
+//   - pt-14 (56px) no modal — é o espaço reservado pra cabeça do
+//     mascote aparecer por cima da borda superior do modal
+// ─────────────────────────────────────────────────────────────
