@@ -20,8 +20,8 @@
 import { motion } from 'framer-motion'
 import Mascot from '../ui/Mascot'
 
-const MASCOT_WIDTH = 210
-const MASCOT_CROP_HEIGHT = 84 // = (210 / 1.5003) * 0.60
+const MASCOT_WIDTH = 250
+const MASCOT_CROP_HEIGHT = 100 // = (250 / 1.5003) * 0.60
 
 export function ProgressCard({ tasks }) {
   const done = tasks.filter((t) => t.status === 'feito').length
@@ -75,6 +75,7 @@ export function ProgressCard({ tasks }) {
           width: MASCOT_WIDTH,
           height: MASCOT_CROP_HEIGHT,
           overflow: 'hidden',
+          marginRight: -60,
         }}
       >
         <Mascot pose="kanban" width={MASCOT_WIDTH} />
