@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { toast } from 'sonner'
 import { AnimatePresence } from 'framer-motion'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors, closestCorners } from '@dnd-kit/core'
@@ -27,6 +27,21 @@ export function KanbanBoard({ tasks, onTasksChange, loading, user }) {
   const pendingDeleteRef = useRef(null)
   const tempIdRef = useRef(0)
   const grouped = groupByStatus(tasks)
+
+  // Flush any pending soft-delete when the board unmounts (e.g., user navigates to DumpPage
+  // within the 4-second undo window). Without this, deleted tasks reappear on remount.
+  useEffect(() => {
+    return () => {
+      if (pendingDeleteRef.current) {
+        clearTimeout(pendingDeleteRef.current.timeout)
+        supabase
+          .from('tasks')
+          .update({ deleted_at: new Date().toISOString() })
+          .eq('id', pendingDeleteRef.current.id)
+        pendingDeleteRef.current = null
+      }
+    }
+  }, [])
 
   function handleDragStart(event) {
     const task = tasks.find((t) => t.id === event.active.id)
