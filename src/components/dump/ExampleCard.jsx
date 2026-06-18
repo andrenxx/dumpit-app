@@ -11,8 +11,8 @@
 
 import Mascot from '../ui/Mascot'
 
-const MASCOT_WIDTH = 120
-const MASCOT_CROP_HEIGHT = 48 // = (120 / 1.5) * 0.60
+const MASCOT_WIDTH = 160
+const MASCOT_CROP_HEIGHT = 64 // = (160 / 1.5) * 0.60
 
 export function ExampleCard({ onFill }) {
   return (
