@@ -23,9 +23,11 @@ export default function Mascot({ pose, width, className = '', style = {} }) {
       className={className}
       style={{
         width,
+        minWidth: width,
         height: 'auto',
         objectFit: 'contain',
         display: 'block',
+        flexShrink: 0,
         ...style,
       }}
     />
