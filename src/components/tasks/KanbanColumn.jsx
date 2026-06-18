@@ -17,7 +17,7 @@ export function KanbanColumn({ id, tasks, loading, onEdit, onNewTask }) {
   const config = STATUS_CONFIG[id] || { label: id, tint: 'transparent', dot: '#ccc' }
 
   return (
-    <div style={{ flex: '0 0 240px', width: 240, display: 'flex', flexDirection: 'column', gap: 8 }}>
+    <div style={{ flex: '0 0 300px', width: 300, display: 'flex', flexDirection: 'column', gap: 8 }}>
       <div
         className="glass-surface flex items-center justify-between rounded-[14px] px-3 py-2"
         style={{ background: config.tint }}
