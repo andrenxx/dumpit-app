@@ -4,7 +4,7 @@
 | -------- | ------------------------------------------------------------------------------------ |
 | Issue    | [#23](https://github.com/andrenxx/dumpit/issues/23)                                  |
 | Branch   | `feat/23-ui-redesign-v2-dumppage-components`                                         |
-| Status   | Draft — awaiting review                                                               |
+| Status   | Implemented — merged to main                                                          |
 | Type     | feature                                                                               |
 
 ## 1. Context
@@ -279,3 +279,22 @@ Single commit:
 1. `feat(#23): DumpPage — DumpInput, ExampleCard, FreemiumBanner, LoadingOverlay glass redesign`
 
 **Pre-conditions:** main must carry specs #21 (tokens + animate-blob-morph) and #22 (App shell). Rebase before implementing.
+
+---
+
+## 9. Post-implementation additions
+
+### 9.1 Mascot integration in ExampleCard
+
+`ExampleCard` gained a `Mascot` component (`src/components/ui/Mascot.jsx`) rendered at the bottom-left of the card. The SVG used is `public/mascote/mascote-dump.svg` (viewBox 1536×1024, aspect ratio 1.5).
+
+**Crop strategy:** the card's own `overflow:hidden` + `rounded-[22px]` clips the mascot at the bottom instead of a separate inner container. The mascot image (`width: 230px`) is wider than its wrapper (`width: 110px`), so it bleeds left/right; `marginLeft: -12px` pulls the character into frame and `marginBottom: -45px` pushes the feet below the card edge so the rounded corner produces the natural bottom crop.
+
+Key constants in `ExampleCard.jsx`:
+```js
+const MASCOT_WIDTH = 230           // rendered image width
+const MASCOT_CONTAINER_WIDTH = 110 // visible window (narrower than image)
+// marginBottom: -45 on the container (fine-tuned visually)
+```
+
+**`Mascot` component contract:** `flexShrink: 0` and `minWidth: width` are set inside the component so flex containers never shrink the image below its explicit width — a required invariant for overflow-crop wrappers to work.

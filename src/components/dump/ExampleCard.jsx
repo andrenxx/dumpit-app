@@ -1,19 +1,20 @@
 // src/components/dump/ExampleCard.jsx
 //
 // mascote-dump.svg: viewBox 1536×1024, aspect ratio 1.5.
-// Crop "cintura pra cima" igual ao ProgressCard:
-//   width=120 → altura total = 120/1.5 = 80px
-//   crop height = 80 × 0.60 = 48px (mostra cabeça + prancheta)
-// IMPORTANTE: container width DEVE ser igual a MASCOT_WIDTH.
-// Se forem diferentes, o flex encolhe a imagem e o crop não funciona.
-// NÃO ALTERE MASCOT_WIDTH sem recalcular MASCOT_CROP_HEIGHT.
-// Fórmula: MASCOT_CROP_HEIGHT = (MASCOT_WIDTH / 1.5) * 0.60
+//
+// Crop strategy: the card's own overflow:hidden (rounded-[22px]) clips the
+// mascot at the bottom. The inner container is narrower than MASCOT_WIDTH so
+// the image bleeds left/right; marginLeft pulls the character into frame and
+// marginBottom (negative) pushes the feet below the card edge so the card's
+// rounded corner does the natural bottom crop — no separate overflow:hidden needed.
+//
+// To adjust the crop point: change marginBottom. More negative = higher crop.
+// To adjust character size: change MASCOT_WIDTH (container width is independent).
 
 import Mascot from '../ui/Mascot'
 
-const MASCOT_WIDTH = 230
-const MASCOT_CROP_HEIGHT = 92 // = (230 / 1.5) * 0.60
-const MASCOT_CONTAINER_WIDTH = 110 // menor que MASCOT_WIDTH; overflow é clipado
+const MASCOT_WIDTH = 230          // rendered image width
+const MASCOT_CONTAINER_WIDTH = 110 // visible window width (narrower than image)
 
 export function ExampleCard({ onFill }) {
   return (

@@ -4,7 +4,7 @@
 | -------- | ------------------------------------------------------------------------------------ |
 | Issue    | [#24](https://github.com/andrenxx/dumpit/issues/24)                                  |
 | Branch   | `feat/24-ui-redesign-v2-taskspage-components`                                        |
-| Status   | Draft — awaiting review                                                               |
+| Status   | Implemented — merged to main                                                          |
 | Type     | feature                                                                               |
 
 ## 1. Context
@@ -195,3 +195,20 @@ Single commit:
 1. `feat(#24): TasksPage — ProgressCard, KanbanBoard, KanbanColumn, TaskCard, NewTaskButton glass redesign`
 
 **Pre-conditions:** `main` must carry specs #21 (tokens, `ShadcnBadge`, `sonner`) and #22 (App shell). Rebase before implementing.
+
+---
+
+## 9. Post-implementation additions
+
+### 9.1 Mascot integration in ProgressCard
+
+`ProgressCard` gained a `Mascot` component (`src/components/ui/Mascot.jsx`) at the bottom-right of the purple gradient card. The SVG used is `public/mascote/mascote-kanban.svg` (viewBox 2048×1365, aspect ratio 1.5003).
+
+**Crop strategy:** fixed-height container (`overflow:hidden`) clips the bottom at the waist. Container `width` equals `MASCOT_WIDTH` (required — otherwise flex shrinks the image). `marginRight: -60px` shifts the character right so it partially bleeds out of the card; the card's own `overflow:hidden` rounds the crop edge.
+
+Key constants in `ProgressCard.jsx`:
+```js
+const MASCOT_WIDTH = 250
+const MASCOT_CROP_HEIGHT = 100 // = (250 / 1.5003) * 0.60 — tested visually
+// marginRight: -60 on the container
+```

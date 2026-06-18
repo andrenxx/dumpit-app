@@ -1,21 +1,13 @@
 // src/components/tasks/ProgressCard.jsx
 //
-// O crop "cintura pra cima" deste mascote foi MEDIDO E TESTADO
-// visualmente (não calculado em teoria) nos valores abaixo:
+// mascote-kanban.svg: viewBox 2048×1365, aspect ratio 1.5003.
 //
-//   width da imagem completa: 210px
-//   altura total da imagem completa nesse width: 140px (aspect ratio do viewBox = 2048/1365)
-//   altura do container (crop): 84px = 60% de 140px
+// Crop strategy: fixed-height container (overflow:hidden) clips the bottom.
+// Container width equals MASCOT_WIDTH so flex doesn't shrink the image.
+// marginRight (negative) shifts the character further right so it bleeds
+// out of the card; the card's overflow:hidden rounds the crop edge.
 //
-// Esses 60% foram escolhidos comparando visualmente várias opções
-// (45% a 70%) e é o ponto exato em que a linha de corte passa logo
-// abaixo dos cotovelos/mãos na cintura, mostrando os braços completos
-// sem cortar de forma estranha.
-//
-// NÃO ALTERE o width=210 sem recalcular a altura do container.
-// Se precisar de outro tamanho, a fórmula é:
-//   alturaContainer = (novoWidth / 1.5003) * 0.60
-// (1.5003 = 2048/1365, o aspect ratio do viewBox do arquivo mascote-kanban.svg)
+// MASCOT_CROP_HEIGHT = (MASCOT_WIDTH / 1.5003) * 0.60 — tested visually.
 
 import { motion } from 'framer-motion'
 import Mascot from '../ui/Mascot'
@@ -36,7 +28,6 @@ export function ProgressCard({ tasks }) {
         boxShadow: '0 10px 28px rgba(91,61,242,0.28)',
       }}
     >
-      {/* blob decorativo interno */}
       <div
         className="absolute -top-[35px] -right-[25px]"
         style={{
@@ -66,9 +57,6 @@ export function ProgressCard({ tasks }) {
         </div>
       </div>
 
-      {/* ── Container de crop: ESTA altura fixa (84px) menor que a
-          imagem completa (140px) é o que produz o corte. O overflow
-          hidden esconde tudo que está abaixo dessa altura. ── */}
       <div
         className="relative z-10 flex-shrink-0 flex items-start justify-center self-end"
         style={{

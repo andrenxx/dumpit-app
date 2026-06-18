@@ -1,13 +1,12 @@
 // src/components/ui/Mascot.jsx
 //
-// Componente base do mascote. NÃO contém lógica de crop — cada tela usa
-// este componente dentro de um wrapper próprio (ver LoginMascot.jsx,
-// ExampleCard.jsx, ProgressCard.jsx) porque o enquadramento varia.
+// Renders one of the three mascot SVGs. Crop logic lives in each consumer
+// (ExampleCard, ProgressCard, Landing) because framing differs per screen.
 //
-// O objectFit: 'contain' é OBRIGATÓRIO e não deve ser removido.
-// Dois dos três SVGs (login e kanban) têm preserveAspectRatio="none",
-// o que faz o navegador esticar/distorcer a imagem para caber em
-// qualquer caixa, a menos que objectFit force a proporção correta.
+// flexShrink:0 + minWidth prevent flex containers from shrinking the image
+// below its explicit width, which would break overflow-based crop wrappers.
+// objectFit:'contain' is required: mascote-login.svg and mascote-kanban.svg
+// carry preserveAspectRatio="none", which distorts without this override.
 
 export default function Mascot({ pose, width, className = '', style = {} }) {
   const sources = {

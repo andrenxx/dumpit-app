@@ -4,7 +4,7 @@
 | -------- | ------------------------------------------------------------------------------------- |
 | Issue    | [#29](https://github.com/andrenxx/dumpit/issues/29)                                   |
 | Branch   | `feat/29-ui-redesign-v2-landing-loginmodal-glass`                                     |
-| Status   | Draft — awaiting review                                                                |
+| Status   | Implemented — merged to main                                                           |
 | Type     | feature                                                                                |
 
 ## 1. Context
@@ -128,3 +128,38 @@ Single commit:
 **Decomposition verdict:** single
 
 Three files, all visual-only, ship together as one coherent "unauthenticated shell" pass.
+
+---
+
+## 9. Post-implementation additions
+
+### 9.1 Mascot integration in Landing
+
+`Landing.jsx` gained a `Mascot` component (`src/components/ui/Mascot.jsx`) floating above the glass card. The SVG used is `public/mascote/mascote-login.svg` (viewBox 2048×1365, aspect ratio 1.5003).
+
+The mascot renders in full (no crop) and overlaps the card via a negative `marginBottom`, so the card's `pt-14` creates visual space for the mascot's lower body to tuck behind the card top edge.
+
+```jsx
+<Mascot
+  pose="login"
+  width={270}
+  className="relative z-10 opacity-[0.92]"
+  style={{
+    marginBottom: -100,
+    filter: 'drop-shadow(0 14px 24px rgba(91,61,242,0.18))',
+  }}
+/>
+```
+
+### 9.2 Button component on Landing
+
+The original spec used a plain `<button>`. The implementation uses the shadcn `<Button>` component (from spec #21) for both "Entrar com email" and "Continuar com Google" actions, with inline `style` overrides for gradient and glass backgrounds. The Google button includes an inline SVG Google logo.
+
+### 9.3 SVG assets
+
+Three mascot SVGs were added under `public/mascote/`:
+- `mascote-login.svg` — login screen pose (waving)
+- `mascote-dump.svg` — dump screen pose (writing on clipboard), transparent background
+- `mascote-kanban.svg` — kanban screen pose (arms crossed)
+
+`mascote-login.svg` and `mascote-kanban.svg` originally carried `preserveAspectRatio="none"` which caused distortion; this was corrected to `"xMidYMid meet"`. The `Mascot` component sets `objectFit: 'contain'` as a safeguard.
