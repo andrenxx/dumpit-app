@@ -11,8 +11,8 @@
 
 import Mascot from '../ui/Mascot'
 
-const MASCOT_WIDTH = 200
-const MASCOT_CROP_HEIGHT = 80 // = (200 / 1.5) * 0.60
+const MASCOT_WIDTH = 230
+const MASCOT_CROP_HEIGHT = 92 // = (230 / 1.5) * 0.60
 const MASCOT_CONTAINER_WIDTH = 110 // menor que MASCOT_WIDTH; overflow é clipado
 
 export function ExampleCard({ onFill }) {
@@ -30,8 +30,8 @@ export function ExampleCard({ onFill }) {
       }}
     >
       <div
-        className="flex-shrink-0 flex items-start justify-center self-end ml-1.5"
-        style={{ width: MASCOT_CONTAINER_WIDTH, height: MASCOT_CROP_HEIGHT, overflow: 'hidden' }}
+        className="flex-shrink-0 flex items-start justify-center self-end"
+        style={{ width: MASCOT_CONTAINER_WIDTH, marginLeft: -12, marginBottom: -76 }}
       >
         <Mascot pose="dump" width={MASCOT_WIDTH} />
       </div>
