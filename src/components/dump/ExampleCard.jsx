@@ -31,7 +31,7 @@ export function ExampleCard({ onFill }) {
     >
       <div
         className="flex-shrink-0 flex items-start justify-center self-end"
-        style={{ width: MASCOT_CONTAINER_WIDTH, marginLeft: -12, marginBottom: -90 }}
+        style={{ width: MASCOT_CONTAINER_WIDTH, marginLeft: -12, marginBottom: -45 }}
       >
         <Mascot pose="dump" width={MASCOT_WIDTH} />
       </div>
