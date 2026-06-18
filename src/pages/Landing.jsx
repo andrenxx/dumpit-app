@@ -33,10 +33,10 @@ export function Landing() {
 
         <Mascot
           pose="login"
-          width={150}
+          width={270}
           className="relative z-10 opacity-[0.92]"
           style={{
-            marginBottom: -54,
+            marginBottom: -100,
             filter: 'drop-shadow(0 14px 24px rgba(91,61,242,0.18))',
           }}
         />
