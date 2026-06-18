@@ -26,6 +26,10 @@ function CardBody({ task }) {
         color: done ? '#ACA4C8' : '#1A1530',
         textDecoration: done ? 'line-through' : 'none',
         marginBottom: task.description ? 6 : 10,
+        display: '-webkit-box',
+        WebkitLineClamp: 2,
+        WebkitBoxOrient: 'vertical',
+        overflow: 'hidden',
       }}>
         {task.title}
       </div>
@@ -33,11 +37,11 @@ function CardBody({ task }) {
       {task.description && (
         <div style={{
           fontSize: 11.5,
-          lineHeight: 1.5,
+          lineHeight: 1.55,
           color: '#ACA4C8',
           marginBottom: 10,
           display: '-webkit-box',
-          WebkitLineClamp: 2,
+          WebkitLineClamp: 3,
           WebkitBoxOrient: 'vertical',
           overflow: 'hidden',
         }}>
