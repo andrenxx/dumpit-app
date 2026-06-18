@@ -165,9 +165,8 @@ export function KanbanBoard({ tasks, onTasksChange, loading, user }) {
       id,
       task: taskToDelete,
       timeout: setTimeout(async () => {
-        const { error } = await supabase.from('tasks').delete().eq('id', id)
-        if (error) {
-          console.error('delete error:', error)
+        const { error, count } = await supabase.from('tasks').delete({ count: 'exact' }).eq('id', id)
+        if (error || count === 0) {
           onTasksChange((prev) => [...prev, taskToDelete])
           toast.error('Não foi possível excluir a task.')
         }
