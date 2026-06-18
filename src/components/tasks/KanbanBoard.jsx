@@ -28,16 +28,12 @@ export function KanbanBoard({ tasks, onTasksChange, loading, user }) {
   const tempIdRef = useRef(0)
   const grouped = groupByStatus(tasks)
 
-  // Flush any pending soft-delete when the board unmounts (e.g., user navigates to DumpPage
-  // within the 4-second undo window). Without this, deleted tasks reappear on remount.
+  // Flush pending delete on unmount (user navigates away within the 4-second undo window).
   useEffect(() => {
     return () => {
       if (pendingDeleteRef.current) {
         clearTimeout(pendingDeleteRef.current.timeout)
-        supabase
-          .from('tasks')
-          .update({ deleted_at: new Date().toISOString() })
-          .eq('id', pendingDeleteRef.current.id)
+        supabase.from('tasks').delete().eq('id', pendingDeleteRef.current.id)
         pendingDeleteRef.current = null
       }
     }
@@ -159,7 +155,7 @@ export function KanbanBoard({ tasks, onTasksChange, loading, user }) {
 
     if (pendingDeleteRef.current) {
       clearTimeout(pendingDeleteRef.current.timeout)
-      supabase.from('tasks').update({ deleted_at: new Date().toISOString() }).eq('id', pendingDeleteRef.current.id)
+      supabase.from('tasks').delete().eq('id', pendingDeleteRef.current.id)
       pendingDeleteRef.current = null
     }
 
@@ -169,7 +165,12 @@ export function KanbanBoard({ tasks, onTasksChange, loading, user }) {
       id,
       task: taskToDelete,
       timeout: setTimeout(async () => {
-        await supabase.from('tasks').update({ deleted_at: new Date().toISOString() }).eq('id', id)
+        const { error } = await supabase.from('tasks').delete().eq('id', id)
+        if (error) {
+          console.error('delete error:', error)
+          onTasksChange((prev) => [...prev, taskToDelete])
+          toast.error('Não foi possível excluir a task.')
+        }
         pendingDeleteRef.current = null
       }, 4000),
     }
