@@ -1,10 +1,11 @@
 import { useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { AnimatePresence } from 'framer-motion'
-import { DndContext, PointerSensor, useSensor, useSensors, closestCorners } from '@dnd-kit/core'
+import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors, closestCorners } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import { KanbanColumn } from './KanbanColumn'
-import { TaskEditSheet } from './TaskEditSheet'
+import { TaskModal } from './TaskModal'
+import { TaskCardDragClone } from './TaskCard'
 import { supabase } from '../../lib/supabase'
 
 const COLUMNS = ['a_fazer', 'fazendo', 'feito']
@@ -16,16 +17,24 @@ function groupByStatus(tasks) {
   }, {})
 }
 
-export function KanbanBoard({ tasks, onTasksChange, loading }) {
+export function KanbanBoard({ tasks, onTasksChange, loading, user }) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   )
   const [editingTask, setEditingTask] = useState(null)
+  const [creatingColumn, setCreatingColumn] = useState(null)
+  const [activeTask, setActiveTask] = useState(null)
   const pendingDeleteRef = useRef(null)
   const tempIdRef = useRef(0)
   const grouped = groupByStatus(tasks)
 
+  function handleDragStart(event) {
+    const task = tasks.find((t) => t.id === event.active.id)
+    if (task) setActiveTask(task)
+  }
+
   async function handleDragEnd(event) {
+    setActiveTask(null)
     const { active, over } = event
     if (!over) return
 
@@ -62,8 +71,6 @@ export function KanbanBoard({ tasks, onTasksChange, loading }) {
         toast.error('Algo deu errado. Tente novamente.')
       }
     } else {
-      if (targetStatus === activeTask.status) return
-
       const newPosition = grouped[targetStatus].length
       onTasksChange(tasks.map((t) =>
         t.id === activeTask.id ? { ...t, status: targetStatus, position: newPosition } : t
@@ -81,20 +88,30 @@ export function KanbanBoard({ tasks, onTasksChange, loading }) {
     }
   }
 
-  async function handleCreate(columnStatus, { title, priority }) {
+  async function handleCreate(columnStatus, { title, description, priority }) {
+    if (!user) return
     const tempId = `temp-${++tempIdRef.current}`
     const tempTask = {
       id: tempId,
       title,
+      description: description || null,
       priority,
       status: columnStatus,
       position: grouped[columnStatus].length,
+      user_id: user.id,
     }
     onTasksChange([...tasks, tempTask])
 
     const { data, error } = await supabase
       .from('tasks')
-      .insert({ title, priority, status: columnStatus, position: grouped[columnStatus].length })
+      .insert({
+        title,
+        description: description || null,
+        priority,
+        status: columnStatus,
+        position: grouped[columnStatus].length,
+        user_id: user.id,
+      })
       .select()
       .single()
 
@@ -106,11 +123,15 @@ export function KanbanBoard({ tasks, onTasksChange, loading }) {
     }
   }
 
-  async function handleSave({ id, title, priority }) {
+  async function handleSave({ id, title, description, priority }) {
     const prevTasks = tasks
-    onTasksChange(tasks.map((t) => (t.id === id ? { ...t, title, priority } : t)))
+    onTasksChange(tasks.map((t) => (t.id === id ? { ...t, title, description, priority } : t)))
 
-    const { error } = await supabase.from('tasks').update({ title, priority }).eq('id', id)
+    const { error } = await supabase
+      .from('tasks')
+      .update({ title, description: description || null, priority })
+      .eq('id', id)
+
     if (error) {
       onTasksChange(prevTasks)
       toast.error('Algo deu errado. Tente novamente.')
@@ -159,7 +180,12 @@ export function KanbanBoard({ tasks, onTasksChange, loading }) {
   }
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCorners}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
       <div style={{
         display: 'flex', gap: 12, padding: '0 20px 20px',
         overflowX: 'auto', flex: 1,
@@ -172,20 +198,36 @@ export function KanbanBoard({ tasks, onTasksChange, loading }) {
               tasks={grouped[id] || []}
               loading={loading}
               onEdit={setEditingTask}
-              onCreateTask={(payload) => handleCreate(id, payload)}
+              onNewTask={() => setCreatingColumn(id)}
             />
           ))}
         </AnimatePresence>
       </div>
 
-      {editingTask && (
-        <TaskEditSheet
-          task={editingTask}
-          onClose={() => setEditingTask(null)}
-          onSave={handleSave}
-          onDelete={handleDelete}
-        />
-      )}
+      <DragOverlay dropAnimation={{ duration: 180, easing: 'ease' }}>
+        {activeTask ? <TaskCardDragClone task={activeTask} /> : null}
+      </DragOverlay>
+
+      <AnimatePresence>
+        {creatingColumn && (
+          <TaskModal
+            key="create"
+            mode="create"
+            onClose={() => setCreatingColumn(null)}
+            onSave={(payload) => handleCreate(creatingColumn, payload)}
+          />
+        )}
+        {editingTask && (
+          <TaskModal
+            key="edit"
+            mode="edit"
+            task={editingTask}
+            onClose={() => setEditingTask(null)}
+            onSave={handleSave}
+            onDelete={handleDelete}
+          />
+        )}
+      </AnimatePresence>
     </DndContext>
   )
 }

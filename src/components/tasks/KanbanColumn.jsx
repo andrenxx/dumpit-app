@@ -11,7 +11,7 @@ const STATUS_CONFIG = {
   feito:   { label: 'Feito',   tint: 'rgba(0,210,160,0.11)',  dot: '#00D2A0' },
 }
 
-export function KanbanColumn({ id, tasks, loading, onEdit, onCreateTask }) {
+export function KanbanColumn({ id, tasks, loading, onEdit, onNewTask }) {
   const { setNodeRef, isOver } = useDroppable({ id })
   const taskIds = tasks.map((t) => t.id)
   const config = STATUS_CONFIG[id] || { label: id, tint: 'transparent', dot: '#ccc' }
@@ -64,7 +64,7 @@ export function KanbanColumn({ id, tasks, loading, onEdit, onCreateTask }) {
               </div>
             )}
 
-            <NewTaskButton columnStatus={id} onCreateTask={onCreateTask} />
+            <NewTaskButton onNewTask={onNewTask} />
           </>
         )}
       </div>
