@@ -1,22 +1,18 @@
 // src/components/dump/ExampleCard.jsx
 //
-// O mascote-dump.svg tem aspect ratio 1.5 (viewBox 1536x1024).
-// Em width=108px, a imagem completa renderiza com ~72px de altura.
-// O card tem minHeight=108px, então a imagem (72px de altura) cabe
-// INTEIRA dentro do card verticalmente — não há corte vertical aqui,
-// diferente do ProgressCard. O efeito de "canto entrando no card" é
-// só de posicionamento horizontal (mascote ancorado à esquerda).
-//
-// ⚠️ Este SVG específico tem FUNDO BRANCO OPACO (não transparente,
-// diferente dos outros dois arquivos). Se aparecer um quadrado/retângulo
-// branco visível atrás do personagem dentro do card, é esse fundo —
-// nesse caso, seria necessário pedir uma nova exportação do SVG com
-// fundo transparente, ou aplicar um recorte de máscara via CSS
-// (mix-blend-mode não resolve fundo opaco; precisa do SVG correto).
+// mascote-dump.svg: viewBox 1536×1024, aspect ratio 1.5.
+// Crop "cintura pra cima" igual ao ProgressCard:
+//   width=120 → altura total = 120/1.5 = 80px
+//   crop height = 80 × 0.60 = 48px (mostra cabeça + prancheta)
+// IMPORTANTE: container width DEVE ser igual a MASCOT_WIDTH.
+// Se forem diferentes, o flex encolhe a imagem e o crop não funciona.
+// NÃO ALTERE MASCOT_WIDTH sem recalcular MASCOT_CROP_HEIGHT.
+// Fórmula: MASCOT_CROP_HEIGHT = (MASCOT_WIDTH / 1.5) * 0.60
 
 import Mascot from '../ui/Mascot'
 
-const MASCOT_WIDTH = 108
+const MASCOT_WIDTH = 120
+const MASCOT_CROP_HEIGHT = 48 // = (120 / 1.5) * 0.60
 
 export function ExampleCard({ onFill }) {
   return (
@@ -33,8 +29,8 @@ export function ExampleCard({ onFill }) {
       }}
     >
       <div
-        className="flex-shrink-0 flex items-end justify-center self-end ml-1.5"
-        style={{ width: 84 }}
+        className="flex-shrink-0 flex items-start justify-center self-end ml-1.5"
+        style={{ width: MASCOT_WIDTH, height: MASCOT_CROP_HEIGHT, overflow: 'hidden' }}
       >
         <Mascot pose="dump" width={MASCOT_WIDTH} />
       </div>
