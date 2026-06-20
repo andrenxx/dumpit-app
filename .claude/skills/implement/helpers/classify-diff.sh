@@ -53,6 +53,12 @@ classify_path() {
       mark node; return ;;
     eslint.config.*|*/eslint.config.*)
       mark node; return ;;
+    wrangler.toml|wrangler.*.toml|*/wrangler.toml|*/wrangler.*.toml)
+      mark node; return ;;
+    vite.config.*|*/vite.config.*)
+      mark node; return ;;
+    supabase/migrations/*.sql)
+      mark node; return ;;
     *.sh|*.bash)
       mark shell; return ;;
     *.md|*.mdx)

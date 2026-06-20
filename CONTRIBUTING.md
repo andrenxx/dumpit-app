@@ -71,6 +71,53 @@ The full workflow loop is automated by versioned skills under
 `phase:discovery` sits one step upstream when the loop starts from
 `/discover`. Transitions are adjacent-only.
 
+### Large features
+
+`/spec` no longer signals size. The decomposition decision is the
+fresh-context verdict of `/spec-review` (checklist item 12), which
+applies four operational tests — parallelism, runtime isolation,
+ship isolation, test isolation — to candidate chunks.
+
+`/spec-review` emits one of three verdicts:
+
+- **`single`** — the spec is one job-to-be-done; it ships in a single
+  PR with an incremental commit plan. No further action.
+- **`decompose`** — the spec covers multiple independent flows. The
+  audit applies the `spec:requires-decomposition` label and lists the
+  chunks. You then run `/decompose`, which consumes the chunks list,
+  opens one child issue per chunk linked to the parent, and rewrites
+  the parent spec into a decomposition record.
+- **`rescope`** — the spec is one job, but too large to review well.
+  Decomposition would fragment a coherent unit; the right move is to
+  rerun `/spec` (or `/discover`) with narrower framing. The audit
+  blocks `spec:approved` until rescoped.
+
+After `/decompose`:
+
+- Run `/spec-review` against the parent PR — the rewrite reset the
+  approval, so the decomposition record itself needs to be reviewed.
+- For each child, run `/spec <child>` when ready to start it, to
+  scaffold the spec on its branch and replace the placeholder PR.
+- The parent issue stays open until all children ship.
+
+### Handing off work
+
+When you need to stop mid-feature and pass to another contributor:
+
+1. **Author runs `/handoff @<target>`.** The skill captures branch
+   state, asks four short questions (spec progress, open decisions,
+   gotchas, suggested next step), and posts a structured comment on
+   the issue with the marker `### 🔁 Handoff —`. The issue is
+   reassigned.
+2. **Receiver runs `/pickup`.** The skill finds the latest handoff
+   comment, reassigns the issue to `@me`, switches to the branch, and
+   prints a briefing that includes the previous owner's notes plus a
+   deterministic next-step hint.
+
+When pausing without a target (you'll come back), run `/handoff`
+without an argument — the comment is posted and the assignee is
+removed; resume later with `/pickup` after reassigning yourself.
+
 ## Step by step
 
 ### 1. Open an issue
