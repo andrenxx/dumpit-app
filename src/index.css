@@ -14,8 +14,13 @@
   --text-hint:      252 23% 71%;
 
   /* brand */
-  --brand:      256 88% 59%;
-  --brand-deep: 252 70% 50%;
+  --brand:      199 86% 33%;   /* #0E7C9E */
+  --brand-deep: 196 82% 25%;   /* #0A5C76 */
+
+  /* named shadow vars — use instead of inline rgba */
+  --shadow-brand-button: rgba(14, 124, 158, 0.25);
+  --shadow-brand-card:   rgba(14, 124, 158, 0.22);
+  --shadow-brand-input:  rgba(14, 124, 158, 0.22);
 
   /* semantic colors */
   --coral:  14  100% 66%;
@@ -31,7 +36,7 @@
   --foreground:         252 36% 14%;
   --card:               0 0% 100%;
   --card-foreground:    252 36% 14%;
-  --primary:            256 88% 59%;
+  --primary:            199 86% 33%;
   --primary-foreground: 0 0% 100%;
   --muted:              25 14% 75%;
   --muted-foreground:   25 12% 49%;
@@ -59,14 +64,18 @@ html.dark {
   --text-secondary: 249 22% 66%;
   --text-hint:      252 16% 39%;
 
-  --brand:      256 88% 66%;
-  --brand-deep: 256 88% 59%;
+  --brand:      195 78% 44%;   /* #1B9DC6 */
+  --brand-deep: 199 86% 33%;   /* #0E7C9E */
+
+  --shadow-brand-button: rgba(27, 157, 198, 0.35);
+  --shadow-brand-card:   rgba(27, 157, 198, 0.30);
+  --shadow-brand-input:  rgba(27, 157, 198, 0.28);
 
   --background:         245 17% 13%;
   --foreground:         248 100% 97%;
   --card:               244 20% 18%;
   --card-foreground:    248 100% 97%;
-  --primary:            256 88% 66%;
+  --primary:            195 78% 44%;
   --primary-foreground: 0 0% 100%;
   --muted:              252 16% 29%;
   --muted-foreground:   249 22% 66%;
