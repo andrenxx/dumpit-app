@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useAuth } from '../../hooks/useAuth'
+import { useTheme } from '../../hooks/useTheme'
 
 function getInitial(email) {
   return email ? email[0].toUpperCase() : ''
@@ -8,6 +9,7 @@ function getInitial(email) {
 
 export function TopBar() {
   const { user, signOut } = useAuth()
+  const { theme, toggle } = useTheme()
   const [open, setOpen] = useState(false)
 
   return (
@@ -83,6 +85,27 @@ export function TopBar() {
               </div>
 
               <div className="flex-1 px-4 py-5">
+                <button
+                  onClick={toggle}
+                  className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-[16px] mb-2"
+                  style={{
+                    background: 'hsl(var(--brand) / 0.06)',
+                    border: '1px solid hsl(var(--brand) / 0.10)',
+                    color: 'hsl(var(--text-primary))',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                  }}
+                >
+                  <span className="flex items-center gap-2">
+                    <span style={{ fontSize: 15 }}>{theme === 'dark' ? '☀️' : '🌙'}</span>
+                    {theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
+                  </span>
+                  <span style={{ opacity: 0.4, fontSize: 11 }}>
+                    {theme === 'dark' ? 'ativo: escuro' : 'ativo: claro'}
+                  </span>
+                </button>
+
                 <button
                   onClick={async () => { setOpen(false); await signOut() }}
                   className="w-full flex items-center gap-3 px-4 py-3 rounded-[16px] text-left"

@@ -3,48 +3,94 @@
 @tailwind utilities;
 
 :root {
-  --bg-app: #FAF8F4;
-  --bg-card: #FFFFFF;
-  --bg-accent-light: #EEEAFF;
+  /* layout surfaces */
+  --bg-app:          270 33% 99%;
+  --bg-card:         0   0%  100%;
+  --bg-accent-light: 252 100% 95%;
 
-  --text-primary: #1C1714;
-  --text-secondary: #8A7A6E;
-  --text-hint: #C8BAB0;
+  /* text */
+  --text-primary:   252 36% 14%;
+  --text-secondary: 249 13% 41%;
+  --text-hint:      252 23% 71%;
 
-  --brand: #2B1C9A;
-  --brand-hover: rgba(43, 28, 154, 0.25);
-  --brand-light: rgba(43, 28, 154, 0.07);
+  /* brand */
+  --brand:      256 88% 59%;
+  --brand-deep: 252 70% 50%;
 
-  --border-default: rgba(60, 40, 20, 0.09);
-  --border-strong: rgba(60, 40, 20, 0.15);
+  /* semantic colors */
+  --coral:  14  100% 66%;
+  --mint:   163 100% 41%;
+  --yellow: 43  100% 64%;
 
-  --badge-urgente-bg: #FFF0EE;
-  --badge-urgente-text: #B83A24;
-  --badge-normal-bg: #FFF6E2;
-  --badge-normal-text: #8A6200;
-  --badge-depois-bg: #F2EFE9;
-  --badge-depois-text: #7A6A5A;
+  /* borders */
+  --border-default: 30 6% 92%;
+  --border-strong:  30 8% 85%;
 
-  /* shadcn/ui CSS variable slots — mapped from DumpIt design tokens */
-  --background: 38 33% 97%;
-  --foreground: 20 17% 10%;
-  --card: 0 0% 100%;
-  --card-foreground: 20 17% 10%;
-  --primary: 247 69% 35%;
+  /* shadcn/ui slots */
+  --background:         270 33% 99%;
+  --foreground:         252 36% 14%;
+  --card:               0 0% 100%;
+  --card-foreground:    252 36% 14%;
+  --primary:            256 88% 59%;
   --primary-foreground: 0 0% 100%;
-  --muted: 25 14% 75%;
-  --muted-foreground: 25 12% 49%;
-  --accent: 247 69% 35%;
-  --accent-foreground: 0 0% 100%;
-  --border: 30 6% 92%;
-  --input: 30 8% 87%;
-  --radius: 0.625rem;
+  --muted:              25 14% 75%;
+  --muted-foreground:   25 12% 49%;
+  --accent:             256 88% 59%;
+  --accent-foreground:  0 0% 100%;
+  --border:             30 6% 92%;
+  --input:              30 8% 87%;
+  --radius:             0.625rem;
+
+  /* badge tokens — not yet migrated to HSL */
+  --badge-urgente-bg:   #FFF0EE;
+  --badge-urgente-text: #B83A24;
+  --badge-normal-bg:    #FFF6E2;
+  --badge-normal-text:  #8A6200;
+  --badge-depois-bg:    #F2EFE9;
+  --badge-depois-text:  #7A6A5A;
+}
+
+html.dark {
+  --bg-app:          245 17% 13%;
+  --bg-card:         244 20% 18%;
+  --bg-accent-light: 252 30% 22%;
+
+  --text-primary:   248 100% 97%;
+  --text-secondary: 249 22% 66%;
+  --text-hint:      252 16% 39%;
+
+  --brand:      256 88% 66%;
+  --brand-deep: 256 88% 59%;
+
+  --background:         245 17% 13%;
+  --foreground:         248 100% 97%;
+  --card:               244 20% 18%;
+  --card-foreground:    248 100% 97%;
+  --primary:            256 88% 66%;
+  --primary-foreground: 0 0% 100%;
+  --muted:              252 16% 29%;
+  --muted-foreground:   249 22% 66%;
+  --accent:             256 88% 66%;
+  --accent-foreground:  0 0% 100%;
+  --border:             0 0% 100% / 0.08;
+  --input:              0 0% 100% / 0.12;
+}
+
+/* Scope transitions to after mount so initial paint has no flash */
+html.theme-ready *,
+html.theme-ready *::before,
+html.theme-ready *::after {
+  transition:
+    background-color 200ms ease,
+    color            200ms ease,
+    border-color     200ms ease,
+    box-shadow       200ms ease;
 }
 
 body {
-  background: #FAF9FC;
+  background: hsl(var(--bg-app));
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  color: #1A1530;
+  color: hsl(var(--text-primary));
 }
 
 .glass-surface {
@@ -54,6 +100,11 @@ body {
   border: 1px solid rgba(255,255,255,0.8);
 }
 
+html.dark .glass-surface {
+  background: rgba(30,28,50,0.55);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
 .glass-surface-strong {
   background: rgba(255,255,255,0.75);
   backdrop-filter: blur(24px) saturate(1.6);
@@ -61,6 +112,15 @@ body {
   border: 1px solid rgba(255,255,255,0.8);
 }
 
+html.dark .glass-surface-strong {
+  background: rgba(30,28,50,0.75);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
 .glass-inset-highlight {
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+}
+
+html.dark .glass-inset-highlight {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
 }
