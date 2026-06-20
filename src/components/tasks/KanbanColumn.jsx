@@ -27,7 +27,7 @@ export function KanbanColumn({ id, tasks, loading, onEdit, onNewTask }) {
           <span className="text-[12px] font-medium text-text-primary">{config.label}</span>
         </div>
         <span className="text-[11px] px-[7px] py-[1px] rounded-full text-text-hint"
-              style={{ background: 'rgba(255,255,255,0.70)' }}>
+              style={{ background: 'var(--glass-bg-strong)' }}>
           {tasks.length}
         </span>
       </div>

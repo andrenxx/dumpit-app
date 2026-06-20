@@ -10,7 +10,7 @@ export function NewTaskButton({ onNewTask }) {
       style={{
         padding: 11,
         border: '1px dashed hsl(var(--brand) / 0.25)',
-        background: 'rgba(255,255,255,0.45)',
+        background: 'var(--glass-bg)',
       }}
     >
       <span className="text-brand text-[15px]">+</span> Nova task
