@@ -4,7 +4,7 @@
 | ------ | ---------------------------------------------------------------------- |
 | Issue  | [#58](https://github.com/andrenxx/dumpit/issues/58)                    |
 | Branch | `feat/58-brand-color-is-indigo-swap-to-teal-petro`                     |
-| Status | Draft — awaiting review                                                |
+| Status | Approved — implementing                                                |
 | Type   | feature                                                                |
 
 ## 1. Context
@@ -45,8 +45,6 @@ The mascot contrast check is a sub-step of the visual pass: open the Kanban view
 
 ## 3. Non-goals
 
-- Changes to the glassmorphism system, layout, spacing, typography, or border-radius.
-- Updating mascot SVG source files — only a CSS `filter: brightness()` override is permitted if contrast fails, and only if visually required.
 - Redesigning the ambient blob positions, sizes, or blur values.
 - Updating the `coral`, `mint`, or `yellow` semantic colors.
 - Migrating badge hex tokens (`--badge-urgente-bg`, etc.) to HSL — deferred to a future spec.
@@ -147,25 +145,29 @@ conditional — skip if contrast is acceptable as-is.
 
 **New tone-matrix rows proposed**: N/A — no new copy contexts introduced.
 
+**Implementation note — DumpInput focus ring:** `DumpInput.jsx` uses Framer Motion's `animate` prop for the focus `boxShadow`. Framer Motion cannot interpolate CSS `var()` references in animated values, so the focus ring uses raw `rgba(14,124,158,...)` directly instead of `var(--shadow-brand-input)`. This is a known framework constraint, not a spec deviation.
+
 ## 5. Files
 
 | Path | Action | Notes |
 | ---- | ------ | ----- |
-| `src/index.css` | modified | Update `--brand`, `--brand-deep`, `--primary` in `:root` and `html.dark`; add `--shadow-brand-*` vars |
+| `src/index.css` | modified | Update `--brand`, `--brand-deep`, `--primary` in `:root` and `html.dark`; add `--shadow-brand-*` vars; extract glass surface tokens (`--glass-bg`, `--glass-bg-strong`, `--glass-border`, `--glass-overlay`) to fix inline rgba bypassing dark mode |
 | `src/components/layout/AmbientBlobs.jsx` | modified | blob-1 background → `hsl(var(--brand))` |
-| `src/components/ui/LoadingOverlay.jsx` | modified | Replace hardcoded indigo |
-| `src/components/ui/FreemiumBanner.jsx` | modified | Replace hardcoded indigo |
+| `src/components/ui/LoadingOverlay.jsx` | modified | Replace hardcoded indigo; replace `✦` with `<Sparkles>` icon |
+| `src/components/ui/FreemiumBanner.jsx` | modified | Replace hardcoded indigo; replace `✦` with `<Sparkles>` icon |
 | `src/components/tasks/TaskModal.jsx` | modified | Replace hardcoded indigo |
-| `src/components/tasks/ProgressCard.jsx` | modified | Replace hardcoded indigo + shadow rgba |
-| `src/components/tasks/KanbanColumn.jsx` | modified | Replace hardcoded indigo |
-| `src/components/tasks/NewTaskButton.jsx` | modified | Replace hardcoded indigo + shadow rgba |
-| `src/components/dump/ExampleCard.jsx` | modified | Replace hardcoded indigo |
-| `src/components/dump/DumpInput.jsx` | modified | Replace hardcoded indigo + shadow rgba (focus ring) |
-| `src/components/auth/LoginModal.jsx` | modified | Replace hardcoded indigo |
-| `src/components/layout/TopBar.jsx` | modified | Replace hardcoded indigo |
-| `src/components/layout/BottomNav.jsx` | modified | Replace hardcoded indigo |
+| `src/components/tasks/ProgressCard.jsx` | modified | Replace hardcoded indigo + shadow rgba; replace `🔥` with `<Flame>` icon |
+| `src/components/tasks/KanbanColumn.jsx` | modified | Replace hardcoded indigo; fix count badge dark mode (`rgba(255,255,255,0.70)` → `var(--glass-bg-strong)`) |
+| `src/components/tasks/NewTaskButton.jsx` | modified | Replace hardcoded indigo; fix background dark mode (`rgba(255,255,255,0.45)` → `var(--glass-bg)`) |
+| `src/components/tasks/TaskCard.jsx` | modified | Replace `⠿` drag handle with `<GripVertical>` icon |
+| `src/components/dump/ExampleCard.jsx` | modified | Adopt `glass-surface-strong glass-inset-highlight shadow-glass-sm` classes; replace `💡` with `<Lightbulb>` icon |
+| `src/components/dump/DumpInput.jsx` | modified | Replace hardcoded indigo + shadow rgba (focus ring); replace `✦` with `<Sparkles>` icon |
+| `src/components/auth/LoginModal.jsx` | modified | Replace hardcoded indigo; replace `✕` with `<X>` icon |
+| `src/components/layout/TopBar.jsx` | modified | Replace hardcoded indigo; replace `✕`/`☀️`/`🌙`/`↪` with `<X>`/`<Sun>`/`<Moon>`/`<LogOut>` icons; fix drawer glass dark mode |
+| `src/components/layout/BottomNav.jsx` | modified | Replace hardcoded indigo; replace `✦`/`☰` with `<Sparkles>`/`<LayoutList>` icons |
 | `src/pages/Landing.jsx` | modified | Replace hardcoded indigo |
-| `src/components/ui/Mascot.jsx` | modified | Add `className="mascot-img"` **only if** contrast fix is needed per §4.4 |
+| `package.json` | modified | Add `lucide-react` dependency |
+| `public/mascote/mascote-dump.svg` | replaced | New mascot illustration (same viewBox 1536×1024) |
 
 ## 6. Acceptance
 
