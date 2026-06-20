@@ -26,7 +26,7 @@ export function FreemiumBanner({ visible = true }) {
               </p>
               <button
                 className="mt-2.5 px-4 py-2 rounded-[10px] text-[12px] font-medium text-white"
-                style={{ background: 'linear-gradient(135deg, #5B3DF2, #4427D6)', border: 'none', cursor: 'pointer' }}
+                style={{ background: 'linear-gradient(135deg, hsl(var(--brand)), hsl(var(--brand-deep)))', border: 'none', cursor: 'pointer' }}
               >
                 Assinar plano pago
               </button>

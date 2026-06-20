@@ -63,12 +63,12 @@ export function TopBar() {
                 backdropFilter: 'blur(32px) saturate(1.8)',
                 WebkitBackdropFilter: 'blur(32px) saturate(1.8)',
                 borderLeft: '1px solid rgba(255,255,255,0.7)',
-                boxShadow: '-8px 0 40px rgba(91,61,242,0.10)',
+                boxShadow: '-8px 0 40px hsl(var(--brand) / 0.10)',
               }}
             >
               <div
                 className="flex items-center justify-between px-5 pt-14 pb-5"
-                style={{ borderBottom: '1px solid rgba(91,61,242,0.07)' }}
+                style={{ borderBottom: '1px solid hsl(var(--brand) / 0.07)' }}
               >
                 <div>
                   <div className="text-[13px] font-bold text-text-primary">Perfil</div>

@@ -71,7 +71,7 @@ export function TaskModal({ mode, task, onClose, onSave, onDelete }) {
           rows={isCreate ? 3 : 2}
           placeholder="Descrição (opcional)..."
           className="w-full resize-none bg-transparent text-[13px] text-text-secondary placeholder:text-text-hint focus:outline-none"
-          style={{ lineHeight: 1.55, marginBottom: 18, borderTop: '1px solid rgba(91,61,242,0.08)', paddingTop: 10 }}
+          style={{ lineHeight: 1.55, marginBottom: 18, borderTop: '1px solid hsl(var(--brand) / 0.08)', paddingTop: 10 }}
         />
 
         <div className="flex gap-2 mb-5">
@@ -93,7 +93,7 @@ export function TaskModal({ mode, task, onClose, onSave, onDelete }) {
           <button
             onClick={handleSave}
             className="flex-1 py-3 rounded-[16px] text-[14px] font-semibold text-white"
-            style={{ background: 'linear-gradient(135deg, #5B3DF2, #4427D6)', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
+            style={{ background: 'linear-gradient(135deg, hsl(var(--brand)), hsl(var(--brand-deep)))', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
           >
             {isCreate ? 'Criar task' : 'Salvar'}
           </button>

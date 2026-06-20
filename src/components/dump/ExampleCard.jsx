@@ -27,7 +27,7 @@ export function ExampleCard({ onFill }) {
         backdropFilter: 'blur(20px) saturate(1.4)',
         WebkitBackdropFilter: 'blur(20px) saturate(1.4)',
         border: '1px solid rgba(255,255,255,0.8)',
-        boxShadow: '0 4px 16px rgba(91,61,242,0.06)',
+        boxShadow: '0 4px 16px hsl(var(--brand) / 0.06)',
       }}
     >
       <div

@@ -37,8 +37,8 @@ export function KanbanColumn({ id, tasks, loading, onEdit, onNewTask }) {
         className={`flex flex-col gap-[7px] flex-1 overflow-y-auto p-[1px] rounded-[16px] transition-colors ${isOver ? 'glass-inset-highlight' : ''}`}
         style={{
           minHeight: 60,
-          background: isOver ? 'rgba(91,61,242,0.05)' : 'transparent',
-          outline: isOver ? '1.5px dashed rgba(91,61,242,0.2)' : 'none',
+          background: isOver ? 'hsl(var(--brand) / 0.05)' : 'transparent',
+          outline: isOver ? '1.5px dashed hsl(var(--brand) / 0.2)' : 'none',
           outlineOffset: 2,
         }}
       >

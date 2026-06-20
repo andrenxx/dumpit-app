@@ -55,7 +55,7 @@ export function LoginModal({ isOpen, onClose }) {
         >
           <motion.div
             className="glass-surface-strong glass-inset-highlight rounded-[24px] w-full relative"
-            style={{ maxWidth: 340, margin: '0 20px', padding: '32px 28px', boxShadow: '0 12px 36px rgba(91,61,242,0.18)' }}
+            style={{ maxWidth: 340, margin: '0 20px', padding: '32px 28px', boxShadow: '0 12px 36px var(--shadow-brand-card)' }}
             variants={modalVariants}
             initial="hidden"
             animate="visible"
