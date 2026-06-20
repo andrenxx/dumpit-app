@@ -11,7 +11,7 @@ export function LoadingOverlay({ visible }) {
           transition={{ duration: 0.25 }}
           style={{
             position: 'absolute', inset: 0, zIndex: 50,
-            background: 'rgba(250,249,252,0.92)',
+            background: 'var(--glass-overlay)',
             backdropFilter: 'blur(12px)',
             WebkitBackdropFilter: 'blur(12px)',
             display: 'flex', flexDirection: 'column', alignItems: 'center',

@@ -59,10 +59,10 @@ export function TopBar() {
               className="fixed top-0 right-0 bottom-0 z-40 flex flex-col"
               style={{
                 width: 280,
-                background: 'rgba(255,255,255,0.72)',
+                background: 'var(--glass-bg-strong)',
                 backdropFilter: 'blur(32px) saturate(1.8)',
                 WebkitBackdropFilter: 'blur(32px) saturate(1.8)',
-                borderLeft: '1px solid rgba(255,255,255,0.7)',
+                borderLeft: '1px solid var(--glass-border)',
                 boxShadow: '-8px 0 40px hsl(var(--brand) / 0.10)',
               }}
             >

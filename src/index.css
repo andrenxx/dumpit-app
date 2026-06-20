@@ -27,6 +27,12 @@
   --mint:   163 100% 41%;
   --yellow: 43  100% 64%;
 
+  /* glass surfaces */
+  --glass-bg:        rgba(255,255,255,0.55);
+  --glass-bg-strong: rgba(255,255,255,0.75);
+  --glass-border:    rgba(255,255,255,0.8);
+  --glass-overlay:   rgba(250,249,252,0.92);
+
   /* borders */
   --border-default: 30 6% 92%;
   --border-strong:  30 8% 85%;
@@ -59,6 +65,11 @@ html.dark {
   --bg-app:          245 17% 13%;
   --bg-card:         244 20% 18%;
   --bg-accent-light: 252 30% 22%;
+
+  --glass-bg:        rgba(30,28,50,0.55);
+  --glass-bg-strong: rgba(30,28,50,0.75);
+  --glass-border:    rgba(255,255,255,0.08);
+  --glass-overlay:   rgba(26,26,38,0.92);
 
   --text-primary:   248 100% 97%;
   --text-secondary: 249 22% 66%;
@@ -103,27 +114,17 @@ body {
 }
 
 .glass-surface {
-  background: rgba(255,255,255,0.55);
+  background: var(--glass-bg);
   backdrop-filter: blur(20px) saturate(1.4);
   -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  border: 1px solid rgba(255,255,255,0.8);
-}
-
-html.dark .glass-surface {
-  background: rgba(30,28,50,0.55);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid var(--glass-border);
 }
 
 .glass-surface-strong {
-  background: rgba(255,255,255,0.75);
+  background: var(--glass-bg-strong);
   backdrop-filter: blur(24px) saturate(1.6);
   -webkit-backdrop-filter: blur(24px) saturate(1.6);
-  border: 1px solid rgba(255,255,255,0.8);
-}
-
-html.dark .glass-surface-strong {
-  background: rgba(30,28,50,0.75);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid var(--glass-border);
 }
 
 .glass-inset-highlight {

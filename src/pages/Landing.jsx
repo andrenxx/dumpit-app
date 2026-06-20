@@ -44,10 +44,10 @@ export function Landing() {
         <div
           className="relative z-20 w-full rounded-[28px] pt-14 pb-7 px-6 text-center"
           style={{
-            background: 'rgba(255,255,255,0.75)',
+            background: 'var(--glass-bg-strong)',
             backdropFilter: 'blur(26px) saturate(1.6)',
             WebkitBackdropFilter: 'blur(26px) saturate(1.6)',
-            border: '1px solid rgba(255,255,255,0.8)',
+            border: '1px solid var(--glass-border)',
             boxShadow: '0 12px 36px hsl(var(--brand) / 0.16)',
           }}
         >
@@ -83,9 +83,9 @@ export function Landing() {
             variant="outline"
             className="w-full rounded-2xl py-3 text-[13px] font-semibold text-text-primary"
             style={{
-              background: 'rgba(255,255,255,0.5)',
+              background: 'var(--glass-bg)',
               backdropFilter: 'blur(12px)',
-              border: '1px solid rgba(255,255,255,0.8)',
+              border: '1px solid var(--glass-border)',
             }}
           >
             <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">

@@ -23,10 +23,10 @@ export function ExampleCard({ onFill }) {
       className="rounded-[22px] flex items-end cursor-pointer overflow-hidden"
       style={{
         minHeight: 108,
-        background: 'rgba(255,255,255,0.75)',
+        background: 'var(--glass-bg-strong)',
         backdropFilter: 'blur(20px) saturate(1.4)',
         WebkitBackdropFilter: 'blur(20px) saturate(1.4)',
-        border: '1px solid rgba(255,255,255,0.8)',
+        border: '1px solid var(--glass-border)',
         boxShadow: '0 4px 16px hsl(var(--brand) / 0.06)',
       }}
     >
