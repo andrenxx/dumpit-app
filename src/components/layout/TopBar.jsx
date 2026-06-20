@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { Sun, Moon, LogOut, X } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { useTheme } from '../../hooks/useTheme'
 
@@ -59,16 +60,16 @@ export function TopBar() {
               className="fixed top-0 right-0 bottom-0 z-40 flex flex-col"
               style={{
                 width: 280,
-                background: 'rgba(255,255,255,0.72)',
+                background: 'var(--glass-bg-strong)',
                 backdropFilter: 'blur(32px) saturate(1.8)',
                 WebkitBackdropFilter: 'blur(32px) saturate(1.8)',
-                borderLeft: '1px solid rgba(255,255,255,0.7)',
-                boxShadow: '-8px 0 40px rgba(91,61,242,0.10)',
+                borderLeft: '1px solid var(--glass-border)',
+                boxShadow: '-8px 0 40px hsl(var(--brand) / 0.10)',
               }}
             >
               <div
                 className="flex items-center justify-between px-5 pt-14 pb-5"
-                style={{ borderBottom: '1px solid rgba(91,61,242,0.07)' }}
+                style={{ borderBottom: '1px solid hsl(var(--brand) / 0.07)' }}
               >
                 <div>
                   <div className="text-[13px] font-bold text-text-primary">Perfil</div>
@@ -80,7 +81,7 @@ export function TopBar() {
                   onClick={() => setOpen(false)}
                   style={{ fontSize: 18, background: 'none', border: 'none', cursor: 'pointer', color: '#aaa', lineHeight: 1 }}
                 >
-                  ✕
+                  <X size={16} />
                 </button>
               </div>
 
@@ -98,7 +99,7 @@ export function TopBar() {
                   }}
                 >
                   <span className="flex items-center gap-2">
-                    <span style={{ fontSize: 15 }}>{theme === 'dark' ? '☀️' : '🌙'}</span>
+                    {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
                     {theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
                   </span>
                   <span style={{ opacity: 0.4, fontSize: 11 }}>
@@ -118,7 +119,7 @@ export function TopBar() {
                     cursor: 'pointer',
                   }}
                 >
-                  <span style={{ fontSize: 15 }}>↪</span>
+                  <LogOut size={15} />
                   Sair
                 </button>
               </div>

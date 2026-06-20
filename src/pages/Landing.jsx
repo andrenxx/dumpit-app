@@ -37,18 +37,18 @@ export function Landing() {
           className="relative z-10 opacity-[0.92]"
           style={{
             marginBottom: -100,
-            filter: 'drop-shadow(0 14px 24px rgba(91,61,242,0.18))',
+            filter: 'drop-shadow(0 14px 24px hsl(var(--brand) / 0.18))',
           }}
         />
 
         <div
           className="relative z-20 w-full rounded-[28px] pt-14 pb-7 px-6 text-center"
           style={{
-            background: 'rgba(255,255,255,0.75)',
+            background: 'var(--glass-bg-strong)',
             backdropFilter: 'blur(26px) saturate(1.6)',
             WebkitBackdropFilter: 'blur(26px) saturate(1.6)',
-            border: '1px solid rgba(255,255,255,0.8)',
-            boxShadow: '0 12px 36px rgba(91,61,242,0.16)',
+            border: '1px solid var(--glass-border)',
+            boxShadow: '0 12px 36px hsl(var(--brand) / 0.16)',
           }}
         >
           <div className="text-[19px] font-extrabold text-text-primary tracking-tight mb-1">
@@ -56,8 +56,8 @@ export function Landing() {
             <span
               className="text-brand px-2 py-0.5 rounded-[9px] ml-0.5"
               style={{
-                background: 'rgba(91,61,242,0.07)',
-                border: '1px solid rgba(91,61,242,0.12)',
+                background: 'hsl(var(--brand) / 0.07)',
+                border: '1px solid hsl(var(--brand) / 0.12)',
               }}
             >
               it
@@ -72,8 +72,8 @@ export function Landing() {
             onClick={() => setShowLogin(true)}
             className="w-full mb-2.5 rounded-2xl py-3 text-[14px] font-bold text-white"
             style={{
-              background: 'linear-gradient(145deg, #5B3DF2, #4427D6)',
-              boxShadow: '0 6px 16px rgba(91,61,242,0.25)',
+              background: 'linear-gradient(145deg, hsl(var(--brand)), hsl(var(--brand-deep)))',
+              boxShadow: '0 6px 16px var(--shadow-brand-button)',
             }}
           >
             Entrar com email
@@ -83,9 +83,9 @@ export function Landing() {
             variant="outline"
             className="w-full rounded-2xl py-3 text-[13px] font-semibold text-text-primary"
             style={{
-              background: 'rgba(255,255,255,0.5)',
+              background: 'var(--glass-bg)',
               backdropFilter: 'blur(12px)',
-              border: '1px solid rgba(255,255,255,0.8)',
+              border: '1px solid var(--glass-border)',
             }}
           >
             <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">

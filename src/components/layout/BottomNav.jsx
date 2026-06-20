@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion'
+import { Sparkles, LayoutList } from 'lucide-react'
 
 const items = [
-  { id: 'dump',    icon: '✦', label: 'Dump' },
-  { id: 'tarefas', icon: '☰', label: 'Tarefas' },
+  { id: 'dump',    Icon: Sparkles,   label: 'Dump' },
+  { id: 'tarefas', Icon: LayoutList, label: 'Tarefas' },
 ]
 
 export function BottomNav({ activePage, onChange }) {
@@ -10,7 +11,7 @@ export function BottomNav({ activePage, onChange }) {
     <div className="flex justify-center pb-5 pt-2 flex-shrink-0">
       <div
         className="glass-surface-strong glass-inset-highlight flex rounded-[26px] p-1.5 gap-1"
-        style={{ boxShadow: '0 8px 28px rgba(91,61,242,0.14)' }}
+        style={{ boxShadow: '0 8px 28px hsl(var(--brand) / 0.14)' }}
       >
         {items.map((item) => {
           const active = activePage === item.id
@@ -31,11 +32,11 @@ export function BottomNav({ activePage, onChange }) {
                 <motion.div
                   layoutId="nav-active-pill"
                   className="absolute inset-0 rounded-[20px]"
-                  style={{ background: 'linear-gradient(135deg, #5B3DF2, #4427D6)' }}
+                  style={{ background: 'linear-gradient(135deg, hsl(var(--brand)), hsl(var(--brand-deep)))' }}
                   transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                 />
               )}
-              <span className="relative z-10 text-[18px] leading-none">{item.icon}</span>
+              <item.Icon size={18} className="relative z-10" />
               <span className="relative z-10">{item.label}</span>
             </button>
           )

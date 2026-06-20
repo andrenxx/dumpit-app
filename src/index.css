@@ -14,13 +14,24 @@
   --text-hint:      252 23% 71%;
 
   /* brand */
-  --brand:      256 88% 59%;
-  --brand-deep: 252 70% 50%;
+  --brand:      199 86% 33%;   /* #0E7C9E */
+  --brand-deep: 196 82% 25%;   /* #0A5C76 */
+
+  /* named shadow vars — use instead of inline rgba */
+  --shadow-brand-button: rgba(14, 124, 158, 0.25);
+  --shadow-brand-card:   rgba(14, 124, 158, 0.22);
+  --shadow-brand-input:  rgba(14, 124, 158, 0.22);
 
   /* semantic colors */
   --coral:  14  100% 66%;
   --mint:   163 100% 41%;
   --yellow: 43  100% 64%;
+
+  /* glass surfaces */
+  --glass-bg:        rgba(255,255,255,0.55);
+  --glass-bg-strong: rgba(255,255,255,0.75);
+  --glass-border:    rgba(255,255,255,0.8);
+  --glass-overlay:   rgba(250,249,252,0.92);
 
   /* borders */
   --border-default: 30 6% 92%;
@@ -31,7 +42,7 @@
   --foreground:         252 36% 14%;
   --card:               0 0% 100%;
   --card-foreground:    252 36% 14%;
-  --primary:            256 88% 59%;
+  --primary:            199 86% 33%;
   --primary-foreground: 0 0% 100%;
   --muted:              25 14% 75%;
   --muted-foreground:   25 12% 49%;
@@ -55,18 +66,27 @@ html.dark {
   --bg-card:         244 20% 18%;
   --bg-accent-light: 252 30% 22%;
 
+  --glass-bg:        rgba(30,28,50,0.55);
+  --glass-bg-strong: rgba(30,28,50,0.75);
+  --glass-border:    rgba(255,255,255,0.08);
+  --glass-overlay:   rgba(26,26,38,0.92);
+
   --text-primary:   248 100% 97%;
   --text-secondary: 249 22% 66%;
   --text-hint:      252 16% 39%;
 
-  --brand:      256 88% 66%;
-  --brand-deep: 256 88% 59%;
+  --brand:      195 78% 44%;   /* #1B9DC6 */
+  --brand-deep: 199 86% 33%;   /* #0E7C9E */
+
+  --shadow-brand-button: rgba(27, 157, 198, 0.35);
+  --shadow-brand-card:   rgba(27, 157, 198, 0.30);
+  --shadow-brand-input:  rgba(27, 157, 198, 0.28);
 
   --background:         245 17% 13%;
   --foreground:         248 100% 97%;
   --card:               244 20% 18%;
   --card-foreground:    248 100% 97%;
-  --primary:            256 88% 66%;
+  --primary:            195 78% 44%;
   --primary-foreground: 0 0% 100%;
   --muted:              252 16% 29%;
   --muted-foreground:   249 22% 66%;
@@ -94,27 +114,17 @@ body {
 }
 
 .glass-surface {
-  background: rgba(255,255,255,0.55);
+  background: var(--glass-bg);
   backdrop-filter: blur(20px) saturate(1.4);
   -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  border: 1px solid rgba(255,255,255,0.8);
-}
-
-html.dark .glass-surface {
-  background: rgba(30,28,50,0.55);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid var(--glass-border);
 }
 
 .glass-surface-strong {
-  background: rgba(255,255,255,0.75);
+  background: var(--glass-bg-strong);
   backdrop-filter: blur(24px) saturate(1.6);
   -webkit-backdrop-filter: blur(24px) saturate(1.6);
-  border: 1px solid rgba(255,255,255,0.8);
-}
-
-html.dark .glass-surface-strong {
-  background: rgba(30,28,50,0.75);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid var(--glass-border);
 }
 
 .glass-inset-highlight {

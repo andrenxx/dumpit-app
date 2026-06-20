@@ -11,6 +11,7 @@
 // To adjust the crop point: change marginBottom. More negative = higher crop.
 // To adjust character size: change MASCOT_WIDTH (container width is independent).
 
+import { Lightbulb } from 'lucide-react'
 import Mascot from '../ui/Mascot'
 
 const MASCOT_WIDTH = 230          // rendered image width
@@ -20,15 +21,8 @@ export function ExampleCard({ onFill }) {
   return (
     <div
       onClick={onFill}
-      className="rounded-[22px] flex items-end cursor-pointer overflow-hidden"
-      style={{
-        minHeight: 108,
-        background: 'rgba(255,255,255,0.75)',
-        backdropFilter: 'blur(20px) saturate(1.4)',
-        WebkitBackdropFilter: 'blur(20px) saturate(1.4)',
-        border: '1px solid rgba(255,255,255,0.8)',
-        boxShadow: '0 4px 16px rgba(91,61,242,0.06)',
-      }}
+      className="glass-surface-strong glass-inset-highlight shadow-glass-sm rounded-[22px] flex items-end cursor-pointer overflow-hidden"
+      style={{ minHeight: 108 }}
     >
       <div
         className="flex-shrink-0 flex items-start justify-center self-end"
@@ -40,7 +34,7 @@ export function ExampleCard({ onFill }) {
       <div className="flex-1 py-3.5 pr-4 pl-1.5">
         <div className="flex items-center gap-1.5 mb-1.5">
           <span className="text-[10px] font-bold text-text-hint uppercase tracking-wide">
-            💡 clique pra testar
+            <Lightbulb size={10} className="inline-block mr-0.5" /> clique pra testar
           </span>
           <span
             className="text-[10px] font-bold px-2 py-0.5 rounded-full"

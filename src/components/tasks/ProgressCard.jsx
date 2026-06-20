@@ -10,6 +10,7 @@
 // MASCOT_CROP_HEIGHT = (MASCOT_WIDTH / 1.5003) * 0.60 — tested visually.
 
 import { motion } from 'framer-motion'
+import { Flame } from 'lucide-react'
 import Mascot from '../ui/Mascot'
 
 const MASCOT_WIDTH = 250
@@ -24,8 +25,8 @@ export function ProgressCard({ tasks }) {
       className="rounded-[26px] relative overflow-hidden flex items-end"
       style={{
         minHeight: 140,
-        background: 'linear-gradient(135deg, rgba(91,61,242,0.88), rgba(68,39,214,0.92))',
-        boxShadow: '0 10px 28px rgba(91,61,242,0.28)',
+        background: 'linear-gradient(135deg, hsl(var(--brand) / 0.88), hsl(var(--brand-deep) / 0.92))',
+        boxShadow: '0 10px 28px var(--shadow-brand-card)',
       }}
     >
       <div
@@ -53,7 +54,7 @@ export function ProgressCard({ tasks }) {
           </span>
         </div>
         <div className="text-[11px] text-white/60 font-semibold mt-0.5">
-          feitas hoje 🔥
+          feitas hoje <Flame size={11} className="inline-block ml-0.5 mb-px" />
         </div>
       </div>
 

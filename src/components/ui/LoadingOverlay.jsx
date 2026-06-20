@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
+import { Sparkles } from 'lucide-react'
 
 export function LoadingOverlay({ visible }) {
   return (
@@ -11,7 +12,7 @@ export function LoadingOverlay({ visible }) {
           transition={{ duration: 0.25 }}
           style={{
             position: 'absolute', inset: 0, zIndex: 50,
-            background: 'rgba(250,249,252,0.92)',
+            background: 'var(--glass-overlay)',
             backdropFilter: 'blur(12px)',
             WebkitBackdropFilter: 'blur(12px)',
             display: 'flex', flexDirection: 'column', alignItems: 'center',
@@ -22,12 +23,12 @@ export function LoadingOverlay({ visible }) {
             className="animate-blob-morph"
             style={{
               width: 84, height: 84,
-              background: 'linear-gradient(135deg, #5B3DF2, #FF6F52)',
+              background: 'linear-gradient(135deg, hsl(var(--brand)), #FF6F52)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               color: '#fff', fontSize: 32,
             }}
           >
-            ✦
+            <Sparkles size={32} />
           </motion.div>
 
           <div>
@@ -39,12 +40,12 @@ export function LoadingOverlay({ visible }) {
             </div>
           </div>
 
-          <div style={{ width: 160, height: 3, background: 'rgba(91,61,242,0.12)', borderRadius: 2, overflow: 'hidden' }}>
+          <div style={{ width: 160, height: 3, background: 'hsl(var(--brand) / 0.12)', borderRadius: 2, overflow: 'hidden' }}>
             <motion.div
               initial={{ width: '0%' }}
               animate={{ width: '100%' }}
               transition={{ duration: 2, ease: 'easeInOut' }}
-              style={{ height: '100%', background: 'linear-gradient(90deg, #5B3DF2, #FF6F52)', borderRadius: 2 }}
+              style={{ height: '100%', background: 'linear-gradient(90deg, hsl(var(--brand)), #FF6F52)', borderRadius: 2 }}
             />
           </div>
         </motion.div>
