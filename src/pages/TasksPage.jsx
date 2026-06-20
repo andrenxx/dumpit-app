@@ -32,12 +32,12 @@ export function TasksPage() {
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       <div style={{ padding: '4px 20px 14px', flexShrink: 0 }}>
-        <div style={{ fontSize: 14, fontWeight: 500, color: '#1A1530' }}>Tarefas</div>
-        <div style={{ fontSize: 11, color: '#ACA4C8', marginTop: 2 }}>
+        <div style={{ fontSize: 14, fontWeight: 500, color: 'hsl(var(--text-primary))' }}>Tarefas</div>
+        <div style={{ fontSize: 11, color: 'hsl(var(--text-hint))', marginTop: 2 }}>
           {tasks.length} tarefa{tasks.length !== 1 ? 's' : ''}
         </div>
       </div>
-      <div style={{ padding: '0 20px', flexShrink: 0 }}>
+      <div style={{ padding: '0 20px 16px', flexShrink: 0 }}>
         <ProgressCard tasks={tasks} />
       </div>
       <KanbanBoard

@@ -5,28 +5,33 @@ import { CSS } from '@dnd-kit/utilities'
 import { GripVertical } from 'lucide-react'
 import { ShadcnBadge } from '../ui/shadcn-badge'
 
-const PRIORITY_CLASS = {
-  alta:  'bg-coral/[0.22] text-[#C24A33] border-0',
-  media: 'bg-yellow/[0.28] text-[#8A6418] border-0',
-  baixa: 'bg-mint/[0.16] text-[#1A8A6C] border-0',
-}
-
 const PRIORITY_LABEL = { alta: 'Alta', media: 'Média', baixa: 'Baixa' }
+
+const PRIORITY_VAR = {
+  alta:  { bg: 'var(--badge-alta-bg)',   color: 'var(--badge-alta-text)'  },
+  media: { bg: 'var(--badge-media-bg)',  color: 'var(--badge-media-text)' },
+  baixa: { bg: 'var(--badge-baixa-bg)',  color: 'var(--badge-baixa-text)' },
+}
 
 function CardBody({ task }) {
   const done = task.status === 'feito'
+  const badge = PRIORITY_VAR[task.priority] || PRIORITY_VAR.media
   return (
     <div
-      className="glass-surface-strong glass-inset-highlight rounded-[20px] shadow-glass-sm"
-      style={{ padding: '12px 14px' }}
+      className="glass-inset-highlight rounded-[20px] shadow-glass-sm"
+      style={{
+        padding: '12px 14px',
+        background: 'var(--card-bg)',
+        border: '1px solid var(--card-border)',
+      }}
     >
       <div style={{
         fontSize: 13,
-        fontWeight: 500,
-        lineHeight: 1.45,
-        color: done ? '#ACA4C8' : '#1A1530',
+        fontWeight: 600,
+        lineHeight: 1.35,
+        color: done ? 'hsl(var(--text-hint))' : 'hsl(var(--text-primary))',
         textDecoration: done ? 'line-through' : 'none',
-        marginBottom: task.description ? 6 : 10,
+        marginBottom: task.description ? 4 : 10,
         display: '-webkit-box',
         WebkitLineClamp: 2,
         WebkitBoxOrient: 'vertical',
@@ -38,11 +43,12 @@ function CardBody({ task }) {
       {task.description && (
         <div style={{
           fontSize: 11.5,
-          lineHeight: 1.55,
-          color: '#ACA4C8',
-          marginBottom: 10,
+          fontWeight: 400,
+          lineHeight: 1.4,
+          color: 'hsl(var(--text-secondary))',
+          marginBottom: 9,
           display: '-webkit-box',
-          WebkitLineClamp: 3,
+          WebkitLineClamp: 2,
           WebkitBoxOrient: 'vertical',
           overflow: 'hidden',
         }}>
@@ -51,10 +57,13 @@ function CardBody({ task }) {
       )}
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <ShadcnBadge className={PRIORITY_CLASS[task.priority] || PRIORITY_CLASS.media}>
+        <ShadcnBadge
+          className="border-0"
+          style={{ background: badge.bg, color: badge.color }}
+        >
           {PRIORITY_LABEL[task.priority] || task.priority}
         </ShadcnBadge>
-        <GripVertical size={14} style={{ color: '#ACA4C8', flexShrink: 0 }} />
+        <GripVertical size={14} style={{ color: 'hsl(var(--text-hint))', flexShrink: 0 }} />
       </div>
     </div>
   )

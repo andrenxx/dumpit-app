@@ -19,8 +19,13 @@ export function KanbanColumn({ id, tasks, loading, onEdit, onNewTask }) {
   return (
     <div style={{ flex: '0 0 300px', width: 300, display: 'flex', flexDirection: 'column', gap: 8 }}>
       <div
-        className="glass-surface flex items-center justify-between rounded-[14px] px-3 py-2"
-        style={{ background: config.tint }}
+        className="flex items-center justify-between rounded-[14px] px-3 py-2"
+        style={{
+          background: `linear-gradient(${config.tint}, ${config.tint}), var(--col-header-bg)`,
+          border: '1px solid var(--col-header-border)',
+          backdropFilter: 'blur(20px) saturate(1.4)',
+          WebkitBackdropFilter: 'blur(20px) saturate(1.4)',
+        }}
       >
         <div className="flex items-center gap-1.5">
           <div style={{ width: 7, height: 7, borderRadius: '50%', background: config.dot, flexShrink: 0 }} />
@@ -59,8 +64,16 @@ export function KanbanColumn({ id, tasks, loading, onEdit, onNewTask }) {
             </SortableContext>
 
             {tasks.length === 0 && (
-              <div style={{ textAlign: 'center', padding: '20px 8px', color: '#ACA4C8', fontSize: 12 }}>
-                Nada aqui ainda
+              <div style={{
+                textAlign: 'center',
+                padding: '20px 8px',
+                color: 'hsl(var(--text-hint))',
+                fontSize: 11.5,
+                fontWeight: 500,
+                wordBreak: 'break-word',
+                width: '100%',
+              }}>
+                Nada por aqui ainda
               </div>
             )}
 
