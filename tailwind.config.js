@@ -1,44 +1,48 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: ['./index.html', './src/**/*.{js,jsx}'],
   theme: {
     extend: {
       colors: {
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
+        border:     'hsl(var(--border))',
+        input:      'hsl(var(--input))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
+          DEFAULT:    'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
         },
         muted: {
-          DEFAULT: 'hsl(var(--muted))',
+          DEFAULT:    'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))',
         },
         accent: {
-          DEFAULT: 'hsl(var(--accent))',
+          DEFAULT:    'hsl(var(--accent))',
           foreground: 'hsl(var(--accent-foreground))',
         },
         card: {
-          DEFAULT: 'hsl(var(--card))',
+          DEFAULT:    'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
-        'bg-app':         '#FAF9FC',
-        'text-primary':   '#1A1530',
-        'text-secondary': '#5E5878',
-        'text-hint':      '#ACA4C8',
-        brand: { DEFAULT: '#5B3DF2', deep: '#4427D6' },
-        coral:  '#FF6F52',
-        mint:   '#00D2A0',
-        yellow: '#FFCB47',
+        'bg-app':         'hsl(var(--bg-app))',
+        'text-primary':   'hsl(var(--text-primary))',
+        'text-secondary': 'hsl(var(--text-secondary))',
+        'text-hint':      'hsl(var(--text-hint))',
+        brand: {
+          DEFAULT: 'hsl(var(--brand))',
+          deep:    'hsl(var(--brand-deep))',
+        },
+        coral:  'hsl(var(--coral))',
+        mint:   'hsl(var(--mint))',
+        yellow: 'hsl(var(--yellow))',
       },
       backdropBlur: { xs: '8px' },
       boxShadow: {
-        'glass-sm':          '0 3px 12px rgba(91,61,242,0.06)',
-        'glass-md':          '0 6px 18px rgba(91,61,242,0.12)',
-        'glass-button':      '0 6px 16px rgba(91,61,242,0.25)',
-        'glass-card-purple': '0 8px 24px rgba(91,61,242,0.22)',
+        'glass-sm':          '0 3px 12px hsl(var(--brand) / 0.06)',
+        'glass-md':          '0 6px 18px hsl(var(--brand) / 0.12)',
+        'glass-button':      '0 6px 16px hsl(var(--brand) / 0.25)',
+        'glass-card-purple': '0 8px 24px hsl(var(--brand) / 0.22)',
       },
       keyframes: {
         'blob-morph': {
