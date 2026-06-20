@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { Sun, Moon, LogOut, X } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { useTheme } from '../../hooks/useTheme'
 
@@ -80,7 +81,7 @@ export function TopBar() {
                   onClick={() => setOpen(false)}
                   style={{ fontSize: 18, background: 'none', border: 'none', cursor: 'pointer', color: '#aaa', lineHeight: 1 }}
                 >
-                  ✕
+                  <X size={16} />
                 </button>
               </div>
 
@@ -98,7 +99,7 @@ export function TopBar() {
                   }}
                 >
                   <span className="flex items-center gap-2">
-                    <span style={{ fontSize: 15 }}>{theme === 'dark' ? '☀️' : '🌙'}</span>
+                    {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
                     {theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
                   </span>
                   <span style={{ opacity: 0.4, fontSize: 11 }}>
@@ -118,7 +119,7 @@ export function TopBar() {
                     cursor: 'pointer',
                   }}
                 >
-                  <span style={{ fontSize: 15 }}>↪</span>
+                  <LogOut size={15} />
                   Sair
                 </button>
               </div>

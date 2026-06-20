@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
+import { Sparkles } from 'lucide-react'
 
 export function FreemiumBanner({ visible = true }) {
   return (
@@ -15,7 +16,7 @@ export function FreemiumBanner({ visible = true }) {
             className="glass-surface rounded-[20px] flex items-start gap-3"
             style={{ padding: '14px 16px', background: 'rgba(255,111,82,0.08)' }}
           >
-            <div className="text-[18px] flex-shrink-0 pt-0.5">✦</div>
+            <Sparkles size={18} className="flex-shrink-0 mt-0.5 text-brand" />
             <div>
               <strong className="text-[13px] font-medium block mb-1">
                 Você já usou seu crédito gratuito

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { Sparkles } from 'lucide-react'
 import { Textarea } from '../ui/textarea'
 import { Button } from '../ui/button'
 
@@ -49,7 +50,7 @@ export function DumpInput({ value, onChange, onSubmit, disabled, inputRef }) {
             border: 'none',
           }}
         >
-          Dump ✦
+          Dump <Sparkles size={13} className="ml-1" />
         </Button>
       </div>
     </motion.div>

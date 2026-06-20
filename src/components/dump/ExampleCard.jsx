@@ -11,6 +11,7 @@
 // To adjust the crop point: change marginBottom. More negative = higher crop.
 // To adjust character size: change MASCOT_WIDTH (container width is independent).
 
+import { Lightbulb } from 'lucide-react'
 import Mascot from '../ui/Mascot'
 
 const MASCOT_WIDTH = 230          // rendered image width
@@ -33,7 +34,7 @@ export function ExampleCard({ onFill }) {
       <div className="flex-1 py-3.5 pr-4 pl-1.5">
         <div className="flex items-center gap-1.5 mb-1.5">
           <span className="text-[10px] font-bold text-text-hint uppercase tracking-wide">
-            💡 clique pra testar
+            <Lightbulb size={10} className="inline-block mr-0.5" /> clique pra testar
           </span>
           <span
             className="text-[10px] font-bold px-2 py-0.5 rounded-full"

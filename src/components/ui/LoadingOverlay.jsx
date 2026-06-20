@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
+import { Sparkles } from 'lucide-react'
 
 export function LoadingOverlay({ visible }) {
   return (
@@ -27,7 +28,7 @@ export function LoadingOverlay({ visible }) {
               color: '#fff', fontSize: 32,
             }}
           >
-            ✦
+            <Sparkles size={32} />
           </motion.div>
 
           <div>

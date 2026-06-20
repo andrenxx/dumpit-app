@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion'
+import { Sparkles, LayoutList } from 'lucide-react'
 
 const items = [
-  { id: 'dump',    icon: '✦', label: 'Dump' },
-  { id: 'tarefas', icon: '☰', label: 'Tarefas' },
+  { id: 'dump',    Icon: Sparkles,   label: 'Dump' },
+  { id: 'tarefas', Icon: LayoutList, label: 'Tarefas' },
 ]
 
 export function BottomNav({ activePage, onChange }) {
@@ -35,7 +36,7 @@ export function BottomNav({ activePage, onChange }) {
                   transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                 />
               )}
-              <span className="relative z-10 text-[18px] leading-none">{item.icon}</span>
+              <item.Icon size={18} className="relative z-10" />
               <span className="relative z-10">{item.label}</span>
             </button>
           )

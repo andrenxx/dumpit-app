@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { motion, useAnimationControls } from 'framer-motion'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { GripVertical } from 'lucide-react'
 import { ShadcnBadge } from '../ui/shadcn-badge'
 
 const PRIORITY_CLASS = {
@@ -53,7 +54,7 @@ function CardBody({ task }) {
         <ShadcnBadge className={PRIORITY_CLASS[task.priority] || PRIORITY_CLASS.media}>
           {PRIORITY_LABEL[task.priority] || task.priority}
         </ShadcnBadge>
-        <span style={{ color: '#ACA4C8', fontSize: 13, lineHeight: 1 }}>⠿</span>
+        <GripVertical size={14} style={{ color: '#ACA4C8', flexShrink: 0 }} />
       </div>
     </div>
   )

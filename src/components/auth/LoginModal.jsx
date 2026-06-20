@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { X } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
@@ -66,7 +67,7 @@ export function LoginModal({ isOpen, onClose }) {
               className="absolute top-4 right-4 text-text-hint hover:text-text-secondary"
               style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 16, lineHeight: 1 }}
             >
-              ✕
+              <X size={16} />
             </button>
 
             {step === 'email' ? (
