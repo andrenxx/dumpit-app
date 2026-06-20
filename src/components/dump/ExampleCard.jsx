@@ -20,15 +20,8 @@ export function ExampleCard({ onFill }) {
   return (
     <div
       onClick={onFill}
-      className="rounded-[22px] flex items-end cursor-pointer overflow-hidden"
-      style={{
-        minHeight: 108,
-        background: 'var(--glass-bg-strong)',
-        backdropFilter: 'blur(20px) saturate(1.4)',
-        WebkitBackdropFilter: 'blur(20px) saturate(1.4)',
-        border: '1px solid var(--glass-border)',
-        boxShadow: '0 4px 16px hsl(var(--brand) / 0.06)',
-      }}
+      className="glass-surface-strong glass-inset-highlight shadow-glass-sm rounded-[22px] flex items-end cursor-pointer overflow-hidden"
+      style={{ minHeight: 108 }}
     >
       <div
         className="flex-shrink-0 flex items-start justify-center self-end"
