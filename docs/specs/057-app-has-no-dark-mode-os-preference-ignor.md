@@ -56,7 +56,7 @@ FAWT is verified by hard-refreshing (Ctrl+Shift+R) in dark mode: background must
 - A dark mode option on the landing page (`/`) — only the authenticated shell (`/dashboard`) is in scope.
 - TypeScript migration or shadcn component upgrades.
 - The palette swap (indigo → teal) from issue #58 — that is a separate spec, blocked on this one shipping.
-- Saving theme preference to the user's Supabase profile — `localStorage` is sufficient for V1.
+- Saving theme preference to the user's Supabase profile — `localStorage` is the persistence layer for this spec. Supabase sync (so preference follows the user across devices) is deferred to a future spec.
 
 ## 4. Design
 
