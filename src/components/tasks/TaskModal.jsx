@@ -54,7 +54,7 @@ export function TaskModal({ mode, task, onClose, onSave, onDelete }) {
         </div>
 
         <textarea
-          autoFocus
+          autoFocus={!window.matchMedia('(pointer: coarse)').matches}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           maxLength={200}

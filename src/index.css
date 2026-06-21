@@ -146,6 +146,14 @@ body {
   color: hsl(var(--text-primary));
 }
 
+.kanban-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.kanban-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 .glass-surface {
   background: var(--glass-bg);
   backdrop-filter: blur(20px) saturate(1.4);
