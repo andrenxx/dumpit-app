@@ -7,6 +7,7 @@ import { FreemiumBanner } from '../components/ui/FreemiumBanner'
 export function DumpPage({ setLoading, onSuccess, onLoginRequired }) {
   const [showFreemiumBanner, setShowFreemiumBanner] = useState(false)
   const [errorToast, setErrorToast] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const inputRef = useRef(null)
 
   const showError = () => {
@@ -17,6 +18,7 @@ export function DumpPage({ setLoading, onSuccess, onLoginRequired }) {
   const handleSubmit = async (finalText) => {
     setShowFreemiumBanner(false)
     setLoading(true)
+    setSubmitting(true)
 
     try {
       const { data: { session } } = await supabase.auth.getSession()
@@ -32,19 +34,24 @@ export function DumpPage({ setLoading, onSuccess, onLoginRequired }) {
       if (res.status === 200) {
         const { tasks } = await res.json()
         setLoading(false)
+        setSubmitting(false)
         onSuccess(tasks ?? [])
       } else if (res.status === 401 && onLoginRequired) {
         setLoading(false)
+        setSubmitting(false)
         onLoginRequired(finalText)
       } else if (res.status === 402) {
         setLoading(false)
+        setSubmitting(false)
         setShowFreemiumBanner(true)
       } else {
         setLoading(false)
+        setSubmitting(false)
         showError()
       }
     } catch {
       setLoading(false)
+      setSubmitting(false)
       showError()
     }
   }
@@ -72,6 +79,7 @@ export function DumpPage({ setLoading, onSuccess, onLoginRequired }) {
       }}>
         <DumpInput
           onSubmit={handleSubmit}
+          disabled={submitting}
           inputRef={inputRef}
         />
 

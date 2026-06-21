@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
+import { toast } from 'sonner'
 import { AmbientBlobs } from '../components/layout/AmbientBlobs'
 import { Toaster } from '../components/ui/sonner'
 import { LoadingOverlay } from '../components/ui/LoadingOverlay'
@@ -64,9 +65,11 @@ export function Landing() {
         } else {
           setPendingText(null)
           setLoading(false)
+          toast.error('Algo deu errado ao organizar suas tarefas. Tente de novo.')
         }
       } catch {
         setLoading(false)
+        toast.error('Algo deu errado ao organizar suas tarefas. Tente de novo.')
       }
     }
     resend()
