@@ -1,16 +1,24 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Sun, Moon, LogOut, X } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { useTheme } from '../../hooks/useTheme'
 
-function getInitial(email) {
-  return email ? email[0].toUpperCase() : ''
+function getInitial(user) {
+  const name = user?.user_metadata?.name
+  if (name) return name[0].toUpperCase()
+  return user?.email ? user.email[0].toUpperCase() : ''
+}
+
+function getDisplayName(user) {
+  return user?.user_metadata?.name || user?.email || ''
 }
 
 export function TopBar() {
   const { user, signOut } = useAuth()
   const { theme, toggle } = useTheme()
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false)
 
   return (
@@ -33,7 +41,7 @@ export function TopBar() {
             border: 'none', cursor: 'pointer',
           }}
         >
-          {getInitial(user?.email)}
+          {getInitial(user)}
         </button>
       </div>
 
@@ -72,7 +80,7 @@ export function TopBar() {
                 style={{ borderBottom: '1px solid hsl(var(--brand) / 0.07)' }}
               >
                 <div>
-                  <div className="text-[13px] font-bold text-text-primary">Perfil</div>
+                  <div className="text-[13px] font-bold text-text-primary">{getDisplayName(user)}</div>
                   <div className="text-[11px] text-text-secondary mt-0.5 truncate" style={{ maxWidth: 180 }}>
                     {user?.email}
                   </div>
@@ -108,7 +116,11 @@ export function TopBar() {
                 </button>
 
                 <button
-                  onClick={async () => { setOpen(false); await signOut() }}
+                  onClick={async () => {
+                    setOpen(false)
+                    localStorage.setItem('dumpit_show_login', '1')
+                    await signOut()
+                  }}
                   className="w-full flex items-center gap-3 px-4 py-3 rounded-[16px] text-left"
                   style={{
                     background: 'rgba(255,100,80,0.07)',

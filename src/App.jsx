@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, useLocation } from 'react-router-dom'
+import { useTheme } from './hooks/useTheme'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Landing } from './pages/Landing'
 import { AuthGuard } from './components/auth/AuthGuard'
@@ -19,7 +20,9 @@ const pageVariants = {
 const pageTransition = { duration: 0.22, ease: 'easeInOut' }
 
 function AppShell() {
-  const [activePage, setActivePage] = useState('dump')
+  const location = useLocation()
+  const fromParse = !!location.state?.tasks
+  const [activePage, setActivePage] = useState(fromParse ? 'tarefas' : 'dump')
   const [dir, setDir] = useState(1)
   const [loading, setLoading] = useState(false)
 
@@ -72,6 +75,15 @@ const router = createBrowserRouter([
   },
 ])
 
+function ThemeProvider({ children }) {
+  useTheme()
+  return children
+}
+
 export default function App() {
-  return <RouterProvider router={router} />
+  return (
+    <ThemeProvider>
+      <RouterProvider router={router} />
+    </ThemeProvider>
+  )
 }

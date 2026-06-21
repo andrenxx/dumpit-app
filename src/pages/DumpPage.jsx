@@ -1,29 +1,24 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
+import { useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import { DumpInput } from '../components/dump/DumpInput'
-import { ExampleCard } from '../components/dump/ExampleCard'
 import { FreemiumBanner } from '../components/ui/FreemiumBanner'
 
-export function DumpPage({ setLoading, onSuccess }) {
-  const [text, setText] = useState('')
+export function DumpPage({ setLoading, onSuccess, onLoginRequired }) {
   const [showFreemiumBanner, setShowFreemiumBanner] = useState(false)
   const [errorToast, setErrorToast] = useState(false)
-  const textareaRef = useRef(null)
+  const [submitting, setSubmitting] = useState(false)
+  const inputRef = useRef(null)
 
   const showError = () => {
     setErrorToast(true)
     setTimeout(() => setErrorToast(false), 3000)
   }
 
-  const handleSubmit = async () => {
-    const trimmed = text.trim()
-    if (!trimmed) {
-      textareaRef.current?.focus()
-      return
-    }
-
+  const handleSubmit = async (finalText) => {
     setShowFreemiumBanner(false)
     setLoading(true)
+    setSubmitting(true)
 
     try {
       const { data: { session } } = await supabase.auth.getSession()
@@ -31,24 +26,32 @@ export function DumpPage({ setLoading, onSuccess }) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${session?.access_token}`,
+          ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
         },
-        body: JSON.stringify({ text: trimmed }),
+        body: JSON.stringify({ text: finalText }),
       })
 
       if (res.status === 200) {
+        const { tasks } = await res.json()
         setLoading(false)
-        setText('')
-        onSuccess()
+        setSubmitting(false)
+        onSuccess(tasks ?? [])
+      } else if (res.status === 401 && onLoginRequired) {
+        setLoading(false)
+        setSubmitting(false)
+        onLoginRequired(finalText)
       } else if (res.status === 402) {
         setLoading(false)
+        setSubmitting(false)
         setShowFreemiumBanner(true)
       } else {
         setLoading(false)
+        setSubmitting(false)
         showError()
       }
     } catch {
       setLoading(false)
+      setSubmitting(false)
       showError()
     }
   }
@@ -60,31 +63,25 @@ export function DumpPage({ setLoading, onSuccess }) {
     }}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6, paddingBottom: 20 }}>
         <h1 style={{
-          fontSize: 23, fontWeight: 500, color: 'var(--text-primary)',
-          letterSpacing: '-0.3px', lineHeight: 1.3,
+          fontSize: 32, fontWeight: 700, color: 'hsl(var(--text-primary))',
+          letterSpacing: '-0.5px', lineHeight: 1.2,
         }}>
           O que tá na sua cabeça?
         </h1>
-        <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+        <p style={{ fontSize: 15, color: 'hsl(var(--text-secondary))', lineHeight: 1.6 }}>
           Joga tudo aqui. A IA organiza pra você.
         </p>
       </div>
 
       <div style={{
         flex: 1, display: 'flex', flexDirection: 'column', gap: 14,
-        overflowY: 'auto', paddingBottom: 20,
+        overflow: 'hidden', paddingBottom: 110,
       }}>
         <DumpInput
-          value={text}
-          onChange={setText}
           onSubmit={handleSubmit}
-          inputRef={textareaRef}
+          disabled={submitting}
+          inputRef={inputRef}
         />
-
-        <ExampleCard onFill={(exampleText) => {
-          setText(exampleText)
-          textareaRef.current?.focus()
-        }} />
 
         {showFreemiumBanner && <FreemiumBanner />}
 
@@ -92,7 +89,7 @@ export function DumpPage({ setLoading, onSuccess }) {
           <div style={{
             background: 'var(--bg-card)', border: '0.5px solid rgba(184,58,36,0.2)',
             borderRadius: 12, padding: '10px 14px', fontSize: 13,
-            color: 'var(--text-primary)',
+            color: 'hsl(var(--text-primary))',
           }}>
             Algo deu errado. Tente novamente.
           </div>

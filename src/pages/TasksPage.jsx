@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { KanbanBoard } from '../components/tasks/KanbanBoard'
@@ -6,8 +7,10 @@ import { ProgressCard } from '../components/tasks/ProgressCard'
 
 export function TasksPage() {
   const { user } = useAuth()
-  const [tasks, setTasks] = useState([])
-  const [loading, setLoading] = useState(true)
+  const location = useLocation()
+  const seedTasks = location.state?.tasks
+  const [tasks, setTasks] = useState(seedTasks ?? [])
+  const [loading, setLoading] = useState(!seedTasks)
 
   useEffect(() => {
     let active = true

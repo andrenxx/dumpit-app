@@ -151,7 +151,7 @@ export function KanbanBoard({ tasks, onTasksChange, loading, user }) {
 
     // Remove from UI and write to DB immediately so re-fetches exclude this task
     onTasksChange(tasks.filter((t) => t.id !== id))
-    supabase.from('tasks').update({ deleted_at: new Date().toISOString() }).eq('id', id)
+    supabase.from('tasks').update({ deleted_at: new Date().toISOString() }).eq('id', id).then()
 
     const timeout = setTimeout(() => { pendingDeleteRef.current = null }, 4000)
     pendingDeleteRef.current = { id, task: taskToDelete, timeout }
@@ -170,7 +170,7 @@ export function KanbanBoard({ tasks, onTasksChange, loading, user }) {
             next.splice(idx, 0, taskToDelete)
             return next
           })
-          supabase.from('tasks').update({ deleted_at: null }).eq('id', id)
+          supabase.from('tasks').update({ deleted_at: null }).eq('id', id).then()
         },
       },
       duration: 4000,
