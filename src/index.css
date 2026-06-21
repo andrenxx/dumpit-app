@@ -59,6 +59,25 @@
   --badge-normal-text:  #8A6200;
   --badge-depois-bg:    #F2EFE9;
   --badge-depois-text:  #7A6A5A;
+
+  /* kanban card and column tokens */
+  --card-bg:             rgba(255,255,255,0.75);
+  --card-border:         rgba(255,255,255,0.80);
+  --col-body-bg:         rgba(0,0,0,0.03);
+  --col-body-border:     rgba(0,0,0,0.07);
+
+  /* column header gradients (same in light and dark) */
+  --col-a_fazer-grad: linear-gradient(135deg, #1B9DC6, #0E7C9E);
+  --col-fazendo-grad: linear-gradient(135deg, #6B5DD3, #4A3DB0);
+  --col-feito-grad:   linear-gradient(135deg, #1FA868, #157A4D);
+
+  /* priority badge tokens */
+  --badge-alta-bg:    rgba(255,133,104,0.15);
+  --badge-alta-text:  #C24A33;
+  --badge-media-bg:   rgba(255,203,71,0.22);
+  --badge-media-text: #8A6418;
+  --badge-baixa-bg:   rgba(0,210,160,0.13);
+  --badge-baixa-text: #1A8A6C;
 }
 
 html.dark {
@@ -81,6 +100,20 @@ html.dark {
   --shadow-brand-button: rgba(27, 157, 198, 0.35);
   --shadow-brand-card:   rgba(27, 157, 198, 0.30);
   --shadow-brand-input:  rgba(27, 157, 198, 0.28);
+
+  /* kanban card and column tokens — lighter-than-page overlays */
+  --card-bg:         rgba(255,255,255,0.05);
+  --card-border:     rgba(255,255,255,0.09);
+  --col-body-bg:     rgba(255,255,255,0.035);
+  --col-body-border: rgba(255,255,255,0.06);
+
+  /* priority badge tokens — dark mode */
+  --badge-alta-bg:    rgba(255,133,104,0.18);
+  --badge-alta-text:  #FF9D80;
+  --badge-media-bg:   rgba(255,213,107,0.18);
+  --badge-media-text: #FFD56B;
+  --badge-baixa-bg:   rgba(46,224,174,0.16);
+  --badge-baixa-text: #4FE8BE;
 
   --background:         245 17% 13%;
   --foreground:         248 100% 97%;
