@@ -143,22 +143,18 @@ export function KanbanBoard({ tasks, onTasksChange, loading, user }) {
     const taskToDelete = tasks.find((t) => t.id === id)
     if (!taskToDelete) return
 
+    // Disable undo for any previous pending delete
     if (pendingDeleteRef.current) {
       clearTimeout(pendingDeleteRef.current.timeout)
-      supabase.from('tasks').update({ deleted_at: new Date().toISOString() }).eq('id', pendingDeleteRef.current.id)
       pendingDeleteRef.current = null
     }
 
+    // Remove from UI and write to DB immediately so re-fetches exclude this task
     onTasksChange(tasks.filter((t) => t.id !== id))
+    supabase.from('tasks').update({ deleted_at: new Date().toISOString() }).eq('id', id)
 
-    pendingDeleteRef.current = {
-      id,
-      task: taskToDelete,
-      timeout: setTimeout(async () => {
-        await supabase.from('tasks').update({ deleted_at: new Date().toISOString() }).eq('id', id)
-        pendingDeleteRef.current = null
-      }, 4000),
-    }
+    const timeout = setTimeout(() => { pendingDeleteRef.current = null }, 4000)
+    pendingDeleteRef.current = { id, task: taskToDelete, timeout }
 
     toast('Task excluída', {
       action: {
@@ -174,6 +170,7 @@ export function KanbanBoard({ tasks, onTasksChange, loading, user }) {
             next.splice(idx, 0, taskToDelete)
             return next
           })
+          supabase.from('tasks').update({ deleted_at: null }).eq('id', id)
         },
       },
       duration: 4000,
