@@ -1,27 +1,20 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
+import { useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import { DumpInput } from '../components/dump/DumpInput'
-import { ExampleCard } from '../components/dump/ExampleCard'
 import { FreemiumBanner } from '../components/ui/FreemiumBanner'
 
-export function DumpPage({ setLoading, onSuccess }) {
-  const [text, setText] = useState('')
+export function DumpPage({ setLoading, onSuccess, onLoginRequired }) {
   const [showFreemiumBanner, setShowFreemiumBanner] = useState(false)
   const [errorToast, setErrorToast] = useState(false)
-  const textareaRef = useRef(null)
+  const inputRef = useRef(null)
 
   const showError = () => {
     setErrorToast(true)
     setTimeout(() => setErrorToast(false), 3000)
   }
 
-  const handleSubmit = async () => {
-    const trimmed = text.trim()
-    if (!trimmed) {
-      textareaRef.current?.focus()
-      return
-    }
-
+  const handleSubmit = async (finalText) => {
     setShowFreemiumBanner(false)
     setLoading(true)
 
@@ -31,15 +24,17 @@ export function DumpPage({ setLoading, onSuccess }) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${session?.access_token}`,
+          ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
         },
-        body: JSON.stringify({ text: trimmed }),
+        body: JSON.stringify({ text: finalText }),
       })
 
       if (res.status === 200) {
         setLoading(false)
-        setText('')
         onSuccess()
+      } else if (res.status === 401 && onLoginRequired) {
+        setLoading(false)
+        onLoginRequired(finalText)
       } else if (res.status === 402) {
         setLoading(false)
         setShowFreemiumBanner(true)
@@ -60,12 +55,12 @@ export function DumpPage({ setLoading, onSuccess }) {
     }}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6, paddingBottom: 20 }}>
         <h1 style={{
-          fontSize: 23, fontWeight: 500, color: 'var(--text-primary)',
+          fontSize: 23, fontWeight: 500, color: 'hsl(var(--text-primary))',
           letterSpacing: '-0.3px', lineHeight: 1.3,
         }}>
           O que tá na sua cabeça?
         </h1>
-        <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+        <p style={{ fontSize: 13, color: 'hsl(var(--text-secondary))', lineHeight: 1.6 }}>
           Joga tudo aqui. A IA organiza pra você.
         </p>
       </div>
@@ -75,16 +70,9 @@ export function DumpPage({ setLoading, onSuccess }) {
         overflowY: 'auto', paddingBottom: 20,
       }}>
         <DumpInput
-          value={text}
-          onChange={setText}
           onSubmit={handleSubmit}
-          inputRef={textareaRef}
+          inputRef={inputRef}
         />
-
-        <ExampleCard onFill={(exampleText) => {
-          setText(exampleText)
-          textareaRef.current?.focus()
-        }} />
 
         {showFreemiumBanner && <FreemiumBanner />}
 
@@ -92,7 +80,7 @@ export function DumpPage({ setLoading, onSuccess }) {
           <div style={{
             background: 'var(--bg-card)', border: '0.5px solid rgba(184,58,36,0.2)',
             borderRadius: 12, padding: '10px 14px', fontSize: 13,
-            color: 'var(--text-primary)',
+            color: 'hsl(var(--text-primary))',
           }}>
             Algo deu errado. Tente novamente.
           </div>
