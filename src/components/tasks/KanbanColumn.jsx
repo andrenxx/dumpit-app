@@ -64,6 +64,7 @@ export function KanbanColumn({ id, tasks, loading, onEdit, onNewTask }) {
           gap: 8,
           flex: 1,
           minHeight: 200,
+          overflowY: 'auto',
           outline: isOver ? '1.5px dashed hsl(var(--brand) / 0.25)' : 'none',
           outlineOffset: -2,
           transition: 'background 150ms ease',

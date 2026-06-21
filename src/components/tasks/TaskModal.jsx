@@ -54,14 +54,14 @@ export function TaskModal({ mode, task, onClose, onSave, onDelete }) {
         </div>
 
         <textarea
-          autoFocus
+          autoFocus={!window.matchMedia('(pointer: coarse)').matches}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           maxLength={200}
           rows={isCreate ? 3 : 2}
           placeholder="Nome da task..."
           className="w-full resize-none bg-transparent text-[15px] font-semibold text-text-primary placeholder:text-text-hint focus:outline-none"
-          style={{ lineHeight: 1.5, marginBottom: 10 }}
+          style={{ lineHeight: 1.5, marginBottom: 10, fontSize: 16 }}
         />
 
         <textarea
@@ -71,7 +71,7 @@ export function TaskModal({ mode, task, onClose, onSave, onDelete }) {
           rows={isCreate ? 3 : 2}
           placeholder="Descrição (opcional)..."
           className="w-full resize-none bg-transparent text-[13px] text-text-secondary placeholder:text-text-hint focus:outline-none"
-          style={{ lineHeight: 1.55, marginBottom: 18, borderTop: '1px solid hsl(var(--brand) / 0.08)', paddingTop: 10 }}
+          style={{ lineHeight: 1.55, marginBottom: 18, borderTop: '1px solid hsl(var(--brand) / 0.08)', paddingTop: 10, fontSize: 16 }}
         />
 
         <div className="flex gap-2 mb-5">

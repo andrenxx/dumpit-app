@@ -101,8 +101,9 @@ export function LoginModal({ isOpen, onClose }) {
                   value={code}
                   onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
                   required
-                  autoFocus
+                  autoFocus={!window.matchMedia('(pointer: coarse)').matches}
                   className="mb-3 text-center text-2xl tracking-widest"
+                  style={{ fontSize: 16 }}
                 />
                 {codeError && <p className="text-red-500 text-sm mb-3">{codeError}</p>}
                 <Button type="submit" className="w-full">

@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { AnimatePresence } from 'framer-motion'
-import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors, closestCorners } from '@dnd-kit/core'
+import { DndContext, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors, closestCorners } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import { KanbanColumn } from './KanbanColumn'
 import { TaskModal } from './TaskModal'
@@ -19,7 +19,8 @@ function groupByStatus(tasks) {
 
 export function KanbanBoard({ tasks, onTasksChange, loading, user }) {
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } })
   )
   const [editingTask, setEditingTask] = useState(null)
   const [creatingColumn, setCreatingColumn] = useState(null)
@@ -186,10 +187,14 @@ export function KanbanBoard({ tasks, onTasksChange, loading, user }) {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div style={{
-        display: 'flex', gap: 12, padding: '0 20px 20px',
-        overflowX: 'auto', flex: 1,
-      }}>
+      <div
+        className="kanban-scroll"
+        style={{
+          display: 'flex', gap: 12, padding: '0 20px 20px',
+          overflowX: 'auto', flex: 1,
+          touchAction: 'pan-x',
+        }}
+      >
         <AnimatePresence>
           {COLUMNS.map((id) => (
             <KanbanColumn
