@@ -191,7 +191,7 @@ export function KanbanBoard({ tasks, onTasksChange, loading, user }) {
         className="kanban-scroll"
         style={{
           display: 'flex', gap: 12, padding: '0 20px 20px',
-          overflowX: 'auto', overflowY: 'hidden', flex: 1,
+          overflowX: 'auto', flex: 1,
           touchAction: 'pan-x',
         }}
       >

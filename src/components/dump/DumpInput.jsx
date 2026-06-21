@@ -30,7 +30,7 @@ export function DumpInput({ value, onChange, onSubmit, disabled, inputRef }) {
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         className="border-none shadow-none focus-visible:ring-0 resize-none min-h-[150px] text-[14px] leading-[1.65] bg-transparent placeholder:text-text-hint"
-        style={{ fontFamily: 'inherit' }}
+        style={{ fontFamily: 'inherit', fontSize: 16 }}
       />
       <div
         className="flex items-center justify-between pt-3 mt-2"
