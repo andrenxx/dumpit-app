@@ -30,8 +30,9 @@ export function DumpPage({ setLoading, onSuccess, onLoginRequired }) {
       })
 
       if (res.status === 200) {
+        const { tasks } = await res.json()
         setLoading(false)
-        onSuccess()
+        onSuccess(tasks ?? [])
       } else if (res.status === 401 && onLoginRequired) {
         setLoading(false)
         onLoginRequired(finalText)
@@ -55,19 +56,19 @@ export function DumpPage({ setLoading, onSuccess, onLoginRequired }) {
     }}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6, paddingBottom: 20 }}>
         <h1 style={{
-          fontSize: 23, fontWeight: 500, color: 'hsl(var(--text-primary))',
-          letterSpacing: '-0.3px', lineHeight: 1.3,
+          fontSize: 32, fontWeight: 700, color: 'hsl(var(--text-primary))',
+          letterSpacing: '-0.5px', lineHeight: 1.2,
         }}>
           O que tá na sua cabeça?
         </h1>
-        <p style={{ fontSize: 13, color: 'hsl(var(--text-secondary))', lineHeight: 1.6 }}>
+        <p style={{ fontSize: 15, color: 'hsl(var(--text-secondary))', lineHeight: 1.6 }}>
           Joga tudo aqui. A IA organiza pra você.
         </p>
       </div>
 
       <div style={{
         flex: 1, display: 'flex', flexDirection: 'column', gap: 14,
-        overflowY: 'auto', paddingBottom: 20,
+        overflow: 'hidden', paddingBottom: 110,
       }}>
         <DumpInput
           onSubmit={handleSubmit}

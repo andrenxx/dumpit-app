@@ -15,9 +15,17 @@ export function DumpInput({ onSubmit, disabled, inputRef }) {
 
   function handleFocus() {
     setFocused(true)
-    if (isPristine) {
-      setIsPristine(false)
-    }
+  }
+
+  function handleBlur() {
+    setFocused(false)
+    if (!text.trim()) setIsPristine(true)
+  }
+
+  function handleChange(e) {
+    const val = e.target.value
+    setText(val)
+    if (isPristine && val.length > 0) setIsPristine(false)
   }
 
   function handleSubmit() {
@@ -25,6 +33,8 @@ export function DumpInput({ onSubmit, disabled, inputRef }) {
     if (!finalText.trim()) return
     onSubmit(finalText)
   }
+
+  const placeholderOpacity = isPristine && !focused ? 0.45 : 0
 
   return (
     <motion.div
@@ -36,20 +46,47 @@ export function DumpInput({ onSubmit, disabled, inputRef }) {
       }}
       transition={{ duration: 0.2 }}
       className="glass-surface-strong glass-inset-highlight rounded-[26px]"
-      style={{ padding: '18px 18px 0' }}
+      style={{ padding: '18px 18px 0', display: 'flex', flexDirection: 'column', flex: 1, position: 'relative', overflow: 'hidden' }}
     >
+      {/* Placeholder overlay — fades in/out via CSS transition */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          top: 18,
+          left: 18,
+          right: 18,
+          pointerEvents: 'none',
+          opacity: placeholderOpacity,
+          transition: 'opacity 0.25s ease',
+          color: 'hsl(var(--text-secondary))',
+          fontSize: 16,
+          fontFamily: 'inherit',
+          lineHeight: 1.65,
+          userSelect: 'none',
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'break-word',
+        }}
+      >
+        {EXAMPLE_TEXT}
+      </div>
+
       <Textarea
         ref={inputRef}
-        value={isPristine ? EXAMPLE_TEXT : text}
-        onChange={(e) => setText(e.target.value)}
+        value={text}
+        onChange={handleChange}
         maxLength={MAX_LENGTH}
         onFocus={handleFocus}
-        onBlur={() => setFocused(false)}
-        className="border-none shadow-none focus-visible:ring-0 resize-none min-h-[150px] text-[14px] leading-[1.65] bg-transparent"
+        onBlur={handleBlur}
+        className="border-none shadow-none focus-visible:ring-0 resize-none text-[14px] leading-[1.65] bg-transparent"
         style={{
           fontFamily: 'inherit',
           fontSize: 16,
-          color: isPristine ? 'rgba(237,234,245,0.35)' : 'hsl(var(--text-primary))',
+          flex: 1,
+          minHeight: 0,
+          color: 'hsl(var(--text-primary))',
+          position: 'relative',
+          zIndex: 1,
         }}
       />
 
@@ -59,18 +96,17 @@ export function DumpInput({ onSubmit, disabled, inputRef }) {
       >
         <Mascot
           pose="dump"
-          width={104}
+          width={240}
           style={{
-            marginTop: -6,
-            marginLeft: -3,
+            marginBottom: -55,
+            marginLeft: -65,
             filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.3))',
           }}
         />
         <Button
           onClick={handleSubmit}
           disabled={disabled}
-          size="sm"
-          className="rounded-[18px] shadow-glass-button text-[13px] font-medium text-white mb-[13px] mr-[13px]"
+          className="rounded-[18px] shadow-glass-button text-[15px] font-semibold text-white mb-[13px] mr-[13px] px-5 py-3"
           style={{
             background: 'linear-gradient(135deg, hsl(var(--brand)), hsl(var(--brand-deep)))',
             fontFamily: 'inherit',
