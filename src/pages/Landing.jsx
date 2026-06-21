@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { AmbientBlobs } from '../components/layout/AmbientBlobs'
@@ -13,6 +14,7 @@ export function Landing() {
   const [hasSeenWelcome, setHasSeenWelcome] = useState(
     () => localStorage.getItem('dumpit_seen_welcome') === 'true'
   )
+  const [showLoginOnly, setShowLoginOnly] = useState(false)
   const [pendingText, setPendingText] = useState(null)
   const [showLoginOverlay, setShowLoginOverlay] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -25,6 +27,17 @@ export function Landing() {
       navigate('/dashboard', { replace: true })
     }
   }, [user, authLoading, pendingText, navigate])
+
+  // Show login-only screen after logout (flag set by TopBar before signOut)
+  useEffect(() => {
+    if (!authLoading && !user) {
+      const flag = localStorage.getItem('dumpit_show_login')
+      if (flag) {
+        localStorage.removeItem('dumpit_show_login')
+        setShowLoginOnly(true)
+      }
+    }
+  }, [authLoading, user])
 
   // After login: auto-resend the pending dump text
   useEffect(() => {
@@ -43,10 +56,14 @@ export function Landing() {
           },
           body: JSON.stringify({ text: pendingText }),
         })
-        setPendingText(null)
-        setLoading(false)
         if (res.status === 200) {
-          navigate('/dashboard', { replace: true })
+          const { tasks } = await res.json()
+          setPendingText(null)
+          setLoading(false)
+          navigate('/dashboard', { replace: true, state: { tasks: tasks ?? [] } })
+        } else {
+          setPendingText(null)
+          setLoading(false)
         }
       } catch {
         setLoading(false)
@@ -72,26 +89,48 @@ export function Landing() {
       <LoadingOverlay visible={loading} />
 
       <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-        {!hasSeenWelcome ? (
-          <WelcomePage onContinue={handleContinue} />
-        ) : (
-          <DumpPage
-            setLoading={setLoading}
-            onSuccess={() => navigate('/dashboard', { replace: true })}
-            onLoginRequired={(text) => {
-              setPendingText(text)
-              setShowLoginOverlay(true)
-            }}
-          />
+        {!showLoginOnly && (
+          <AnimatePresence mode="wait">
+            {!hasSeenWelcome ? (
+              <motion.div
+                key="welcome"
+                initial={{ opacity: 0, x: 0 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ duration: 0.22, ease: 'easeInOut' }}
+                style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+              >
+                <WelcomePage onContinue={handleContinue} />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="dump"
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ duration: 0.22, ease: 'easeInOut' }}
+                style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+              >
+                <DumpPage
+                  setLoading={setLoading}
+                  onSuccess={(tasks) => navigate('/dashboard', { replace: true, state: { tasks } })}
+                  onLoginRequired={(text) => {
+                    setPendingText(text)
+                    setShowLoginOverlay(true)
+                  }}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         )}
       </div>
 
-      {showLoginOverlay && (
-        <LoginModal
-          isOpen
-          onClose={() => setShowLoginOverlay(false)}
-        />
-      )}
+      <LoginModal
+        isOpen={showLoginOnly || showLoginOverlay}
+        hideClose={showLoginOnly}
+        context={showLoginOverlay ? 'first-dump' : 'default'}
+        onClose={() => { setShowLoginOnly(false); setShowLoginOverlay(false) }}
+      />
     </div>
   )
 }
