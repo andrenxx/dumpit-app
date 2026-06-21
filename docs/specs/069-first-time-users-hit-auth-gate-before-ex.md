@@ -172,19 +172,39 @@ useEffect(() => {
 
 On successful resend, navigates to `/dashboard` with `state: { tasks }` so `AppShell` and `TasksPage` can display the parsed tasks immediately without a second fetch.
 
-### 4.6 LoginModal — 3-step flow
+### 4.6 LoginModal — email + password with tabs
 
-`LoginModal` is redesigned as a centered modal (not bottom sheet) with three animated steps:
+`LoginModal` is redesigned as a centered modal with two tabs: **Entrar** (login) and **Criar conta** (signup), using `supabase.auth.signInWithPassword` and `supabase.auth.signUp` respectively. OTP flow was dropped: Supabase's email confirmation is disabled, so signup requires no email sending.
 
-- **options** — "Entrar com email" (blue gradient button) + "Entrar com Google" (disabled, "em breve")
-- **email** — email input + back button + "Enviar código"
-- **code** — OTP input + back button + "Verificar" + ghost "Reenviar código"
+Props: `isOpen`, `onClose`, `hideClose = false`, `context = 'default'`.
 
-Step transitions use `AnimatePresence mode="wait"` with slide variants (`x: 16 → 0 → -16`). Card maintains `minHeight: 360` across steps to prevent height jumps.
+**Tabs:**
+- **Entrar** — email + password fields → `signInWithPassword`
+- **Criar conta** — name + email + password fields → `signUp` with `options.data.name`
 
-Visual: `glass-surface-strong`, `borderRadius: 20`, `maxWidth: 340`, centered over `rgba(0,0,0,0.35) blur(6px)` backdrop. Buttons use the same blue gradient (`linear-gradient(145deg, #1B9DC6, #0E7C9E)`) as the DumpPage and WelcomePage CTAs.
+Initial tab: `'criar-conta'` when `context === 'first-dump'`; `'entrar'` otherwise. Tab resets on `isOpen` or `context` change via `useEffect`.
 
-Closing the modal (`handleClose`) resets all step state (step, email, code, errors).
+**Password field:** eye toggle (show/hide) via `Eye`/`EyeOff` icons. Character counter (`N / 8 mín.`) shown only on the signup tab.
+
+**Context messages** (`ContextMessage`): text above the tabs changes based on `context`:
+- `'first-dump'` → "Quase lá!" / "Crie sua conta pra eu guardar essas tarefas..."
+- `'default'` → "Bem-vindo de volta" / "Entra pra continuar de onde parou."
+
+`Landing.jsx` passes `context='first-dump'` when modal opens via dump overlay; `context='default'` when coming from logout redirect. `hideClose=true` on logout redirect (no X button).
+
+Visual: `glass-surface-strong`, `borderRadius: 22`, `maxWidth: 340`, centered over `rgba(0,0,0,0.35) blur(6px)` backdrop.
+
+### 4.6.1 Logout redirect flow
+
+`TopBar` sets `localStorage.setItem('dumpit_show_login', '1')` before calling `signOut()`. `Landing.jsx` reads this flag in a `useEffect` gated on `!authLoading && !user`, removes it, and sets `showLoginOnly=true` — rendering the modal with `hideClose=true` and `context='default'` over a blank background (DumpPage hidden).
+
+### 4.10 Dark mode default
+
+`useTheme` returns `'dark'` when no preference is stored in `localStorage` (previously fell back to `prefers-color-scheme`). The theme is applied globally via a `ThemeProvider` component in `App.jsx` that calls `useTheme()` at the router root, ensuring the `dark` class is on `<html>` from the very first render — including WelcomePage.
+
+### 4.11 User name in TopBar + public.users
+
+`supabase.auth.signUp` stores `name` in `options.data`, which Supabase persists in `auth.users.raw_user_meta_data`. The `handle_new_user` trigger reads `NEW.raw_user_meta_data->>'name'` and inserts it into `public.users.name` (new nullable column, migration `004_add_user_name.sql`). `TopBar` reads `user.user_metadata.name` from the auth session (no extra query) and displays it as the drawer header and avatar initial.
 
 ### 4.7 AppShell — activePage seeded from router state
 
@@ -235,27 +255,37 @@ A background `useEffect` still fetches from Supabase to sync any remote state.
 | Path | Action | Notes |
 |------|--------|-------|
 | `src/pages/WelcomePage.jsx` | Create | Nova tela de boas-vindas; props: `{ onContinue }` |
-| `src/pages/Landing.jsx` | Modify | Vira OnboardingShell: hasSeenWelcome routing, WelcomePage, anonymous DumpPage, pendingText + resend pós-login |
-| `src/components/dump/DumpInput.jsx` | Modify | isPristine + overlay placeholder, mascot footer cropped, remove char-count, API muda de value/onChange para onSubmit(finalText) |
+| `src/pages/Landing.jsx` | Modify | OnboardingShell: hasSeenWelcome routing, showLoginOnly logout redirect, pendingText + resend pós-login, AnimatePresence slide transition |
+| `src/components/dump/DumpInput.jsx` | Modify | isPristine + overlay placeholder, mascot footer cropped, remove char-count |
 | `src/pages/DumpPage.jsx` | Modify | onLoginRequired prop, 401 handler delegates up, onSuccess(tasks), remove ExampleCard |
-| `src/components/auth/LoginModal.jsx` | Modify | Redesign para 3-step flow (options→email→code) com AnimatePresence; modal centralizado; glass surface |
-| `src/App.jsx` | Modify | AppShell semeia activePage='tarefas' de location.state?.tasks para abrir Kanban diretamente pós-parse |
+| `src/components/auth/LoginModal.jsx` | Modify | Email+password tabs (Entrar/Criar conta), context messages, hideClose prop, password eye toggle, signup char counter |
+| `src/hooks/useAuth.js` | Modify | Substitui signInWithEmail/verifyOtp por signInWithPassword/signUp |
+| `src/App.jsx` | Modify | ThemeProvider wrapping RouterProvider; AppShell semeia activePage de location.state?.tasks |
+| `src/hooks/useTheme.js` | Modify | Dark mode como padrão quando nenhuma preferência salva |
 | `src/pages/TasksPage.jsx` | Modify | Semeia tasks iniciais de location.state?.tasks; skips loading spinner quando tasks disponíveis |
+| `src/components/layout/TopBar.jsx` | Modify | Logout sets localStorage flag; drawer exibe nome do usuário; avatar inicial do nome |
+| `src/components/tasks/KanbanBoard.jsx` | Modify | Fix soft delete: adiciona .then() para disparar a query supabase |
+| `supabase/migrations/004_add_user_name.sql` | Create | Adiciona coluna name em public.users; atualiza handle_new_user com SECURITY DEFINER + exception handler + name |
 | `src/components/dump/ExampleCard.jsx` | Delete | Absorvido pelo isPristine overlay placeholder |
 
 ## 6. Acceptance
 
-- [ ] Primeiro acesso (localStorage limpo): `/` mostra WelcomePage — sem modal de login.
+- [ ] Primeiro acesso (localStorage limpo): `/` mostra WelcomePage em dark mode — sem modal de login.
 - [ ] Clicar "Por aqui →" navega para DumpPage sem exigir conta.
 - [ ] DumpPage mostra `EXAMPLE_TEXT` como overlay em ~45% de opacidade no estado inicial.
 - [ ] Focar o textarea limpa o overlay e permite digitação; desfocando sem digitar, overlay volta.
-- [ ] Clicar "Dump" sem conta → LoginModal overlay aparece sobre DumpPage (sem redirect para outra rota).
-- [ ] Fazer login no overlay → tasks parseadas do texto (exemplo ou digitado) aparecem na TasksPage imediatamente, sem redigitar, na aba "tarefas".
+- [ ] Clicar "Dump" sem conta → LoginModal overlay aparece sobre DumpPage com context "Quase lá!" e aba "Criar conta" pré-selecionada.
+- [ ] Criar conta via email+senha → tasks parseadas aparecem na TasksPage imediatamente, sem redigitar, na aba "tarefas".
+- [ ] Login via email+senha (conta existente) no overlay → mesmo fluxo acima.
 - [ ] Segundo acesso (hasSeenWelcome=true, sem sessão): `/` mostra DumpPage diretamente — sem WelcomePage.
 - [ ] Usuário logado abrindo `/` → redirect imediato para `/dashboard`.
+- [ ] Logout → tela limpa com LoginModal sem X, context "Bem-vindo de volta", aba "Entrar" pré-selecionada.
+- [ ] Exclusão de task persiste após navegar para dump e voltar.
 - [ ] Mascot (`pose="dump"`) visível no footer do DumpInput.
 - [ ] Char-count (`0 / 1000`) não aparece no DumpInput.
 - [ ] `ExampleCard` não renderiza em nenhuma tela.
+- [ ] Nome do usuário aparece no drawer do TopBar; avatar exibe inicial do nome.
+- [ ] Dark mode ativo por padrão em primeiro acesso; preferência salva ao trocar.
 
 ## 7. Risks
 
