@@ -25,5 +25,4 @@ npm-debug.log*
 supabase/.branches
 supabase/.temp
 .vite/
-package-lock.json
 test-parse.html
