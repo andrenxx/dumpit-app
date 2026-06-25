@@ -7,15 +7,9 @@ import { KanbanColumn } from './KanbanColumn'
 import { TaskModal } from './TaskModal'
 import { TaskCardDragClone } from './TaskCard'
 import { supabase } from '../../lib/supabase'
+import { groupByStatus } from '../../utils/groupByStatus'
 
 const COLUMNS = ['a_fazer', 'fazendo', 'feito']
-
-function groupByStatus(tasks) {
-  return COLUMNS.reduce((acc, status) => {
-    acc[status] = tasks.filter((t) => t.status === status)
-    return acc
-  }, {})
-}
 
 export function KanbanBoard({ tasks, onTasksChange, loading, user }) {
   const sensors = useSensors(
