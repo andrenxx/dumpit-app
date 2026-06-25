@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Sun, Moon, LogOut, X } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
@@ -18,7 +17,6 @@ function getDisplayName(user) {
 export function TopBar() {
   const { user, signOut } = useAuth()
   const { theme, toggle } = useTheme()
-  const navigate = useNavigate()
   const [open, setOpen] = useState(false)
 
   return (

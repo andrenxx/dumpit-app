@@ -205,6 +205,8 @@ export function LoginModal({ isOpen, onClose, hideClose = false, context = 'defa
   const [activeTab, setActiveTab] = useState(initialTab)
 
   useEffect(() => {
+    // Intentional: resets active tab each time the modal opens or context changes
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (isOpen) setActiveTab(context === 'first-dump' ? 'criar-conta' : 'entrar')
   }, [isOpen, context])
 
