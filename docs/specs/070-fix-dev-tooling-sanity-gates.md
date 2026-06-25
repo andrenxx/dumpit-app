@@ -96,8 +96,6 @@ Single PR, two commits:
 1. `chore(#46): fix 3 ESLint errors — remove unused navigate, add scoped disable comments`
 2. `chore(#51): remove package-lock.json from .gitignore and commit lockfile`
 
-After merge: optionally update the Cloudflare Pages dashboard build command to `npm ci` (not required for CI correctness since Pages will use the committed lockfile with `npm install` too, but `npm ci` is stricter and preferred).
-
 ---
 
 **Reviewer checklist:**
