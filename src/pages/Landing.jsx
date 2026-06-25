@@ -35,6 +35,8 @@ export function Landing() {
       const flag = localStorage.getItem('dumpit_show_login')
       if (flag) {
         localStorage.removeItem('dumpit_show_login')
+        // Intentional: flag must be consumed in the same auth-state cycle; async callback would miss the window
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setShowLoginOnly(true)
       }
     }
