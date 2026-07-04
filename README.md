@@ -61,7 +61,7 @@ Cloudflare Worker  ──►  Claude API  (parse-tasks)
 A lógica de negócio roda no edge (sem região fixa, sem cold start significativo). O worker tem acesso a variáveis de ambiente seguras via `context.env` — nenhuma chave de API toca o frontend.
 
 **GitHub Issues como fonte de verdade**
-O projeto usa Spec-Driven Development: cada feature passa por uma issue de discovery, uma spec revisada (`docs/specs/`) e code review antes de qualquer linha de código ser escrita. O histórico de decisões está em `docs/architecture/decisions/`. Isso permite que agentes de IA (Claude Code) implementem features de forma controlada e rastreável.
+Cada feature tem uma issue rastreável com problema, opções consideradas e critério de validação antes de qualquer código ser escrito. O histórico de decisões de arquitetura está em `docs/architecture/decisions/`.
 
 **RLS no Supabase**
 Row Level Security garante que cada query retorna apenas dados do usuário autenticado — sem filtros manuais no código de produto.
@@ -74,18 +74,6 @@ Tasks deletadas mantêm `deleted_at` para auditoria; a posição no Kanban é um
 ## Desenvolvimento local
 
 → [docs/SETUP.md](docs/SETUP.md)
-
----
-
-## Processo de desenvolvimento
-
-Este projeto usa **Spec-Driven Development** com agentes de IA (Claude Code) como implementadores primários. O loop completo:
-
-```
-/discover → /discovery-review → /spec → /spec-review → /implement → /code-review → /ship
-```
-
-Cada PR tem uma spec aprovada antes do primeiro commit de código. O workflow é documentado em [CONTRIBUTING.md](CONTRIBUTING.md) e [ADR 0001](docs/architecture/decisions/0001-spec-driven-workflow.md).
 
 ---
 
