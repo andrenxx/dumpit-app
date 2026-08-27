@@ -2,7 +2,6 @@
 
 > Despeje tudo o que está na sua cabeça. A IA organiza em tarefas no Kanban.
 
-🔗 **[dumpit.com.br](https://dumpit.com.br)**
 
 ---
 
