@@ -9,7 +9,7 @@ export function Badge({ variant }) {
   return (
     <span style={{
       display: 'inline-block', padding: '3px 9px', borderRadius: 6,
-      fontSize: 11, fontWeight: 500, background: v.bg, color: v.color,
+      fontSize: 'var(--fs-meta)', fontWeight: 500, background: v.bg, color: v.color,
     }}>
       {v.label}
     </span>

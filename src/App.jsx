@@ -1,10 +1,13 @@
-import { useState } from 'react'
-import { createBrowserRouter, RouterProvider, useLocation } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import {
+  createBrowserRouter, RouterProvider, Outlet, Navigate,
+  useLocation, useNavigate, useOutletContext,
+} from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { useTheme } from './hooks/useTheme'
-import { AnimatePresence, motion } from 'framer-motion'
 import { Landing } from './pages/Landing'
 import { AuthGuard } from './components/auth/AuthGuard'
-import { AmbientBlobs } from './components/layout/AmbientBlobs'
+import { Sidebar } from './components/layout/Sidebar'
 import { TopBar } from './components/layout/TopBar'
 import { BottomNav } from './components/layout/BottomNav'
 import { LoadingOverlay } from './components/ui/LoadingOverlay'
@@ -12,55 +15,66 @@ import { Toaster } from './components/ui/sonner'
 import { DumpPage } from './pages/DumpPage'
 import { TasksPage } from './pages/TasksPage'
 
-const pageVariants = {
-  initial: (dir) => ({ x: dir > 0 ? 40 : -40, opacity: 0 }),
-  animate: { x: 0, opacity: 1 },
-  exit:    (dir) => ({ x: dir > 0 ? -40 : 40, opacity: 0 }),
+const SHORTCUTS = { d: '/dashboard/dump', t: '/dashboard/tarefas' }
+
+function isTyping(el) {
+  return el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable)
 }
-const pageTransition = { duration: 0.22, ease: 'easeInOut' }
 
 function AppShell() {
   const location = useLocation()
-  const fromParse = !!location.state?.tasks
-  const [activePage, setActivePage] = useState(fromParse ? 'tarefas' : 'dump')
-  const [dir, setDir] = useState(1)
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
 
-  const navigateTo = (page) => {
-    setDir(page === 'tarefas' ? 1 : -1)
-    setActivePage(page)
-  }
+  useEffect(() => {
+    function onKey(e) {
+      if (e.metaKey || e.ctrlKey || e.altKey || isTyping(document.activeElement)) return
+      const to = SHORTCUTS[e.key.toLowerCase()]
+      if (to && to !== location.pathname) navigate(to)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [location.pathname, navigate])
 
   return (
-    <div style={{
-      display: 'flex', flexDirection: 'column', height: '100vh',
-      maxWidth: 480, margin: '0 auto', overflow: 'hidden', background: 'transparent',
-    }}>
-      <AmbientBlobs />
+    <div className="flex h-[100dvh] bg-bg-app overflow-hidden">
       <Toaster position="top-center" />
-      <TopBar />
-      <LoadingOverlay visible={loading} />
-      <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
-        <AnimatePresence initial={false} custom={dir} mode="wait">
+      <Sidebar />
+      <div className="flex-1 min-w-0 flex flex-col">
+        <TopBar />
+        <main className="flex-1 min-h-0 relative">
+          <LoadingOverlay visible={loading} />
           <motion.div
-            key={activePage}
-            custom={dir}
-            variants={pageVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            transition={pageTransition}
-            style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column' }}
+            key={location.pathname}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-0 flex flex-col"
           >
-            {activePage === 'dump'
-              ? <DumpPage setLoading={setLoading} onSuccess={() => navigateTo('tarefas')} />
-              : <TasksPage />}
+            <Outlet context={{ setLoading }} />
           </motion.div>
-        </AnimatePresence>
+        </main>
+        <BottomNav />
       </div>
-      <BottomNav activePage={activePage} onChange={navigateTo} />
     </div>
   )
+}
+
+function DashboardIndex() {
+  const location = useLocation()
+  return (
+    <Navigate
+      to={location.state?.tasks ? 'tarefas' : 'dump'}
+      state={location.state}
+      replace
+    />
+  )
+}
+
+function DashboardDump() {
+  const { setLoading } = useOutletContext()
+  const navigate = useNavigate()
+  return <DumpPage setLoading={setLoading} onSuccess={() => navigate('/dashboard/tarefas')} />
 }
 
 const router = createBrowserRouter([
@@ -72,7 +86,13 @@ const router = createBrowserRouter([
         <AppShell />
       </AuthGuard>
     ),
+    children: [
+      { index: true, element: <DashboardIndex /> },
+      { path: 'dump', element: <DashboardDump /> },
+      { path: 'tarefas', element: <TasksPage /> },
+    ],
   },
+  { path: '*', element: <Navigate to="/" replace /> },
 ])
 
 function ThemeProvider({ children }) {

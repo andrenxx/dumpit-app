@@ -34,19 +34,14 @@ export function DumpInput({ onSubmit, disabled, inputRef }) {
     onSubmit(finalText)
   }
 
-  const placeholderOpacity = isPristine && !focused ? 0.45 : 0
+  const placeholderOpacity = isPristine && !focused ? 1 : 0
 
   return (
     <motion.div
-      animate={{
-        y: focused ? -2 : 0,
-        boxShadow: focused
-          ? '0 10px 28px rgba(14,124,158,0.18)'
-          : '0 6px 18px rgba(14,124,158,0.12)',
-      }}
+      animate={{ y: focused ? -2 : 0 }}
       transition={{ duration: 0.2 }}
-      className="glass-surface-strong glass-inset-highlight rounded-[26px]"
-      style={{ padding: '18px 18px 0', display: 'flex', flexDirection: 'column', flex: 1, position: 'relative', overflow: 'hidden' }}
+      className="surface-raised rounded-[20px] lg:!flex-none lg:h-[400px]"
+      style={{ borderColor: focused ? 'hsl(var(--brand))' : undefined, padding: '18px 18px 0', display: 'flex', flexDirection: 'column', flex: 1, position: 'relative', overflow: 'hidden' }}
     >
       {/* Placeholder overlay — fades in/out via CSS transition */}
       <div
@@ -59,8 +54,8 @@ export function DumpInput({ onSubmit, disabled, inputRef }) {
           pointerEvents: 'none',
           opacity: placeholderOpacity,
           transition: 'opacity 0.25s ease',
-          color: 'hsl(var(--text-secondary))',
-          fontSize: 16,
+          color: 'hsl(var(--text-hint))',
+          fontSize: 'var(--fs-body)',
           fontFamily: 'inherit',
           lineHeight: 1.65,
           userSelect: 'none',
@@ -78,10 +73,10 @@ export function DumpInput({ onSubmit, disabled, inputRef }) {
         maxLength={MAX_LENGTH}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        className="border-none shadow-none focus-visible:ring-0 resize-none text-[14px] leading-[1.65] bg-transparent"
+        className="border-none shadow-none focus-visible:ring-0 resize-none leading-[1.65] bg-transparent"
         style={{
           fontFamily: 'inherit',
-          fontSize: 16,
+          fontSize: 'var(--fs-body)',
           flex: 1,
           minHeight: 0,
           color: 'hsl(var(--text-primary))',
@@ -92,7 +87,7 @@ export function DumpInput({ onSubmit, disabled, inputRef }) {
 
       <div
         className="flex items-end justify-between mt-auto"
-        style={{ borderTop: '0.5px solid hsl(var(--brand) / 0.08)' }}
+        style={{ borderTop: '1px solid hsl(var(--border-default))' }}
       >
         <Mascot
           pose="dump"
@@ -106,14 +101,13 @@ export function DumpInput({ onSubmit, disabled, inputRef }) {
         <Button
           onClick={handleSubmit}
           disabled={disabled}
-          className="rounded-[18px] shadow-glass-button text-[15px] font-semibold text-white mb-[13px] mr-[13px] px-5 py-3"
+          className="rounded-[14px] text-label font-semibold text-white group bg-action hover:bg-action-hover mb-[13px] mr-[13px] px-5 py-3"
           style={{
-            background: 'linear-gradient(135deg, hsl(var(--brand)), hsl(var(--brand-deep)))',
             fontFamily: 'inherit',
             border: 'none',
           }}
         >
-          Dump <Sparkles size={13} className="ml-1" />
+          Dump <Sparkles size={14} className="ml-1 transition-transform duration-200 group-hover:rotate-12 group-hover:scale-110" />
         </Button>
       </div>
     </motion.div>

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { motion, useAnimationControls } from 'framer-motion'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { GripVertical } from 'lucide-react'
+import { GripVertical, Check } from 'lucide-react'
 import { ShadcnBadge } from '../ui/shadcn-badge'
 
 const PRIORITY_LABEL = { alta: 'Alta', media: 'Média', baixa: 'Baixa' }
@@ -18,7 +18,7 @@ function CardBody({ task }) {
   const badge = PRIORITY_VAR[task.priority] || PRIORITY_VAR.media
   return (
     <div
-      className="glass-inset-highlight rounded-[20px] shadow-glass-sm"
+      className="rounded-[14px] shadow-raised"
       style={{
         padding: '12px 14px',
         background: 'var(--card-bg)',
@@ -26,7 +26,7 @@ function CardBody({ task }) {
       }}
     >
       <div style={{
-        fontSize: 13,
+        fontSize: 'var(--fs-label)',
         fontWeight: 600,
         lineHeight: 1.35,
         color: done ? 'hsl(var(--text-hint))' : 'hsl(var(--text-primary))',
@@ -42,7 +42,7 @@ function CardBody({ task }) {
 
       {task.description && (
         <div style={{
-          fontSize: 11.5,
+          fontSize: 'var(--fs-meta)',
           fontWeight: 400,
           lineHeight: 1.4,
           color: 'hsl(var(--text-secondary))',
@@ -63,7 +63,23 @@ function CardBody({ task }) {
         >
           {PRIORITY_LABEL[task.priority] || task.priority}
         </ShadcnBadge>
-        <GripVertical size={14} style={{ color: 'hsl(var(--text-hint))', flexShrink: 0 }} />
+        <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {done && (
+            <motion.span
+              initial={{ scale: 0, rotate: -20 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: 'spring', stiffness: 520, damping: 18 }}
+              style={{
+                width: 20, height: 20, borderRadius: '50%', flexShrink: 0,
+                background: 'hsl(var(--status-done))', color: 'hsl(var(--surface))',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}
+            >
+              <Check size={13} strokeWidth={3} />
+            </motion.span>
+          )}
+          <GripVertical size={14} style={{ color: 'hsl(var(--text-hint))', flexShrink: 0 }} />
+        </span>
       </div>
     </div>
   )
