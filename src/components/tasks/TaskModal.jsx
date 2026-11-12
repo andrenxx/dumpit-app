@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 
 const PRIORITY_OPTIONS = [
-  { value: 'alta',  label: 'Alta',  activeClass: 'bg-coral/[0.22] text-[#C24A33]' },
-  { value: 'media', label: 'Média', activeClass: 'bg-yellow/[0.28] text-[#8A6418]' },
-  { value: 'baixa', label: 'Baixa', activeClass: 'bg-mint/[0.16] text-[#1A8A6C]' },
+  { value: 'alta',  label: 'Alta',  bg: 'var(--badge-alta-bg)',  color: 'var(--badge-alta-text)' },
+  { value: 'media', label: 'Média', bg: 'var(--badge-media-bg)', color: 'var(--badge-media-text)' },
+  { value: 'baixa', label: 'Baixa', bg: 'var(--badge-baixa-bg)', color: 'var(--badge-baixa-text)' },
 ]
 
 export function TaskModal({ mode, task, onClose, onSave, onDelete }) {
@@ -36,12 +36,12 @@ export function TaskModal({ mode, task, onClose, onSave, onDelete }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.18 }}
-      style={{ background: 'rgba(20,15,45,0.45)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', padding: '0 20px' }}
+      style={{ background: 'hsl(var(--scrim))', padding: '0 20px' }}
       onClick={onClose}
     >
       <motion.div
-        className="glass-surface-strong glass-inset-highlight w-full"
-        style={{ borderRadius: 24, padding: '28px 22px 26px', maxWidth: 480 }}
+        className="surface-raised w-full"
+        style={{ borderRadius: 20, padding: '28px 22px 26px', maxWidth: 480 }}
         initial={{ scale: 0.82, opacity: 0, y: 12 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.88, opacity: 0, y: 8 }}
@@ -49,7 +49,7 @@ export function TaskModal({ mode, task, onClose, onSave, onDelete }) {
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDown}
       >
-        <div style={{ fontSize: 12, fontWeight: 600, color: '#ACA4C8', letterSpacing: '0.06em', marginBottom: 14, textTransform: 'uppercase' }}>
+        <div style={{ fontSize: 'var(--fs-label)', fontWeight: 600, color: 'hsl(var(--text-secondary))', marginBottom: 14 }}>
           {isCreate ? 'Nova task' : 'Editar task'}
         </div>
 
@@ -60,8 +60,8 @@ export function TaskModal({ mode, task, onClose, onSave, onDelete }) {
           maxLength={200}
           rows={isCreate ? 3 : 2}
           placeholder="Nome da task..."
-          className="w-full resize-none bg-transparent text-[15px] font-semibold text-text-primary placeholder:text-text-hint focus:outline-none"
-          style={{ lineHeight: 1.5, marginBottom: 10, fontSize: 16 }}
+          className="w-full resize-none bg-transparent font-semibold text-text-primary placeholder:text-text-hint focus:outline-none"
+          style={{ lineHeight: 1.5, marginBottom: 10, fontSize: 'var(--fs-body)' }}
         />
 
         <textarea
@@ -70,8 +70,8 @@ export function TaskModal({ mode, task, onClose, onSave, onDelete }) {
           maxLength={1000}
           rows={isCreate ? 3 : 2}
           placeholder="Descrição (opcional)..."
-          className="w-full resize-none bg-transparent text-[13px] text-text-secondary placeholder:text-text-hint focus:outline-none"
-          style={{ lineHeight: 1.55, marginBottom: 18, borderTop: '1px solid hsl(var(--brand) / 0.08)', paddingTop: 10, fontSize: 16 }}
+          className="w-full resize-none bg-transparent text-text-secondary placeholder:text-text-hint focus:outline-none"
+          style={{ lineHeight: 1.55, marginBottom: 18, borderTop: '1px solid hsl(var(--border-default))', paddingTop: 10, fontSize: 'var(--fs-body)' }}
         />
 
         <div className="flex gap-2 mb-5">
@@ -80,9 +80,10 @@ export function TaskModal({ mode, task, onClose, onSave, onDelete }) {
               key={opt.value}
               type="button"
               onClick={() => setPriority(opt.value)}
-              className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-colors ${
-                priority === opt.value ? opt.activeClass : 'bg-white/50 text-text-hint'
+              className={`px-3 py-1.5 rounded-full text-meta font-medium transition-colors ${
+                priority === opt.value ? '' : 'bg-surface-sunken text-text-secondary'
               }`}
+              style={priority === opt.value ? { background: opt.bg, color: opt.color } : undefined}
             >
               {opt.label}
             </button>
@@ -92,16 +93,16 @@ export function TaskModal({ mode, task, onClose, onSave, onDelete }) {
         <div className="flex gap-2">
           <button
             onClick={handleSave}
-            className="flex-1 py-3 rounded-[16px] text-[14px] font-semibold text-white"
-            style={{ background: 'linear-gradient(135deg, hsl(var(--brand)), hsl(var(--brand-deep)))', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
+            className="flex-1 py-3 rounded-[12px] text-label font-semibold text-white bg-action hover:bg-action-hover"
+            style={{ border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
           >
             {isCreate ? 'Criar task' : 'Salvar'}
           </button>
           {!isCreate && (
             <button
               onClick={handleDelete}
-              className="px-5 py-3 rounded-[16px] text-[14px] font-medium"
-              style={{ background: 'rgba(194,74,51,0.12)', color: '#C24A33', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
+              className="px-5 py-3 rounded-[12px] text-label font-medium"
+              style={{ background: 'transparent', color: 'hsl(var(--danger))', border: '1px solid hsl(var(--border-default))', cursor: 'pointer', fontFamily: 'inherit' }}
             >
               Excluir
             </button>
@@ -109,7 +110,7 @@ export function TaskModal({ mode, task, onClose, onSave, onDelete }) {
         </div>
 
         {isCreate && (
-          <div style={{ textAlign: 'center', marginTop: 12, fontSize: 11, color: '#ACA4C8' }}>
+          <div style={{ textAlign: 'center', marginTop: 12, fontSize: 'var(--fs-meta)', color: 'hsl(var(--text-hint))' }}>
             ⌘+Enter para criar
           </div>
         )}

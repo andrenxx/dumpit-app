@@ -18,7 +18,7 @@ The UI reads as generic AI-generated design. Evidence from the Impeccable design
 - Colored shadows (`--shadow-brand-*`, `glass-*` Tailwind shadows) and gradient fills on buttons, the progress card, the avatar and the nav pill.
 - Colors hardcoded inline (`#FF6F52`, `#D93B22`, `#e53e3e`, `#ACA4C8`) next to token usage, and neutral tokens tinted violet (hue 252–270) against a teal brand.
 
-The product record (`PRODUCT.md`) classifies this as an Operate-mode surface: a work tool where the interface should recede behind the task. Brand commitments to preserve: the name, the penguin mascot, the informal pt-BR voice, and the teal accent (`#0E7C9E`).
+The product record (`PRODUCT.md`) classifies this as an Operate-mode surface: a work tool where the interface should recede behind the task. Brand commitments to preserve: the name, the penguin mascot, the informal pt-BR voice, and the teal accent (`hsl(199 86% 33%)`).
 
 ## 2. Goals
 
@@ -40,9 +40,7 @@ The oracle is a mix of mechanical scans and a rendered check; the repo has no UI
 
 ## 3. Non-goals
 
-- Desktop layout and the `maxWidth: 480` shell (separate issue).
-- Routing and navigation structure; the bottom nav stays a bottom nav.
-- Motion and animation changes beyond removing `backdrop-filter`/blur transitions.
+- ~~Desktop layout, routing, and motion~~ were non-goals in the first draft; see section 9 for the owner-approved scope expansion.
 - Accessibility hardening (aria labels, focus management, error and empty states).
 - Changes to copy, the mascot, features, or the freemium gate. `FreemiumBanner.jsx` only loses its gradient.
 - A full design-system extraction or `DESIGN.md` (a later `document` step).
@@ -51,8 +49,8 @@ The oracle is a mix of mechanical scans and a rendered check; the repo has no UI
 
 ### 4.1 Typography
 
-- Add `@fontsource-variable/instrument-sans` (OFL-1.1, variable `wght` axis) and import its latin `wght` stylesheet in `src/main.jsx`. Self-hosted: no request to a font CDN. `font-display: swap` is the package default.
-- `body` font stack: `'Instrument Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif`, mirrored in Tailwind `fontFamily.sans`.
+- Add `@fontsource-variable/hanken-grotesk` (OFL-1.1, variable `wght` axis) and import its latin `wght` stylesheet in `src/main.jsx`. Self-hosted: no request to a font CDN. `font-display: swap` is the package default.
+- `body` font stack: `'Hanken Grotesk Variable', system-ui, -apple-system, 'Segoe UI', sans-serif`, mirrored in Tailwind `fontFamily.sans`.
 - Role scale defined once as CSS custom properties in `src/index.css` and mapped into `tailwind.config.js` `fontSize`:
 
 | Role    | Size                | Weight | Used for                                       |
@@ -68,7 +66,7 @@ The oracle is a mix of mechanical scans and a rendered check; the repo has no UI
 
 ### 4.2 Color
 
-- Define the action color once: `--action` = `#0E7C9E` in both themes (white text on it is 4.8:1) with `--action-hover` one step darker. All primary buttons, the nav pill, the avatar and the progress fill use the solid `--action`. In dark mode the lighter `--brand` (`#1B9DC6`) is used only for text and icons on dark surfaces, never as a fill under white text (3.1:1).
+- Define the action color once: `--action` = `hsl(199 86% 33%)` (rgb 12,111,157) in both themes (white text on it is 5.6:1) with `--action-hover` one step darker. All primary buttons, the nav pill, the avatar and the progress fill use the solid `--action`. In dark mode the lighter `--brand` (`#1B9DC6`) is used only for text and icons on dark surfaces, never as a fill under white text (3.1:1).
 - Neutrals: replace the violet-tinted `--bg-app`, `--text-*`, `--border-*` values (hue 252–270) with a low-chroma ramp at the brand hue (~200). Dark theme gets explicit surface steps (page, raised, overlay) rather than white alpha overlays.
 - Remove the blobs: delete `AmbientBlobs.jsx` and its usages in `App.jsx` and `Landing.jsx`; the page background is a flat token.
 - Kanban column headers lose their gradient fill. Each header becomes a neutral row: label in `label` role, count in `meta`, and an 8px status dot (`a_fazer` neutral, `fazendo` teal, `feito` green). The purple hue is dropped. Status is also carried by the text label, not color alone.
@@ -88,7 +86,7 @@ The oracle is a mix of mechanical scans and a rendered check; the repo has no UI
 - **Load the font from Google Fonts:** simpler, but adds a third-party request and a runtime dependency; rejected in favor of self-hosting.
 - **Desaturate the existing gradients instead of removing them:** keeps the look but not the detector findings or the Operate-mode restraint; rejected.
 
-Confidence on the face is moderate: Instrument Sans is chosen on character and pt-BR coverage and is validated by the detector's `overused-font` rule. It can be swapped by changing one import and one token.
+The face changed during implementation: the first choice (Instrument Sans) is flagged by the detector's `overused-font` rule, so Hanken Grotesk (OFL-1.1, pt-BR coverage, no finding) replaced it. It can be swapped by changing one import and one token.
 
 ## 4.5 UX decision
 
@@ -98,10 +96,11 @@ N/A — fresh issue with no discovery; visual refinement only, no flow or copy c
 
 | Path | Action | Notes |
 | ---- | ------ | ----- |
-| `package.json`, `package-lock.json` | Modify | Add `@fontsource-variable/instrument-sans`. |
+| `package.json`, `package-lock.json` | Modify | Add `@fontsource-variable/hanken-grotesk`. |
 | `src/index.css` | Modify | Tokens (neutrals, action, status, danger), type scale, `.surface*`, remove glass classes and brand shadows. |
 | `tailwind.config.js` | Modify | `fontFamily`, `fontSize` roles, remove glass shadows, new color tokens. |
 | `src/main.jsx` | Modify | Import the font stylesheet. |
+| `src/lib/utils.js` | Modify | Teach `tailwind-merge` the new font-size roles so `text-label` is not dropped next to `text-white`. |
 | `src/App.jsx`, `src/pages/Landing.jsx` | Modify | Remove `AmbientBlobs`; flat background. |
 | `src/components/layout/AmbientBlobs.jsx` | Delete | |
 | `src/components/layout/TopBar.jsx`, `BottomNav.jsx` | Modify | Surfaces, solid avatar and nav pill, type roles, scrim without blur. |
@@ -110,15 +109,18 @@ N/A — fresh issue with no discovery; visual refinement only, no flow or copy c
 | `src/components/dump/DumpInput.jsx` | Modify | Surface, solid submit button, no glow focus shadow. |
 | `src/components/auth/LoginModal.jsx` | Modify | Type roles (no 9.5–11px), tokens instead of hex, no blur. |
 | `src/components/ui/dialog.jsx`, `sonner.jsx`, `button.jsx`, `Badge.jsx`, `shadcn-badge.jsx`, `LoadingOverlay.jsx`, `FreemiumBanner.jsx` | Modify | Tokens, type roles, no gradients or shadows. |
-| `PRODUCT.md` | Add | Product record captured by Impeccable `init`; referenced by this work. |
+| `PRODUCT.md` | Add | Product record captured by Impeccable `init` (currently untracked); committed with this PR. |
 
 ## 6. Acceptance
 
-- [ ] `impeccable detect http://localhost:5173/` reports no findings on the landing page.
+- [ ] `impeccable detect http://localhost:5173/` reports no findings on the landing page. Baseline before this work: 3 findings (low-contrast button 3.7:1, dark-glow, cyan gradient); `impeccable detect src/` baseline: 0 findings (regex-only scan).
+- [ ] Controls (button fills, input borders, focus ring, status dots) meet 3:1 against their surface in both themes (computed values in the PR).
+- [ ] The type role scale is defined as named tokens in `src/index.css` and mapped in `tailwind.config.js`; no `fontSize` literal below 12px remains.
+- [ ] Every `box-shadow` in `src/` uses a neutral hue (grep for `box-shadow`/`boxShadow` lists each remaining one for manual review).
 - [ ] `impeccable detect src/` reports no findings.
 - [ ] No `linear-gradient`, `radial-gradient`, `backdrop-filter`, blur filter, or colored `box-shadow`/`text-shadow` remains in `src/` (checked by grep).
 - [ ] `AmbientBlobs.jsx` is deleted and unreferenced.
-- [ ] Computed `font-size` of rendered text is at least 12px on landing, dump, and login modal; `font-family` resolves to Instrument Sans Variable.
+- [ ] Computed `font-size` of rendered text is at least 12px on landing, dump, and login modal; `font-family` resolves to Hanken Grotesk Variable.
 - [ ] Primary button, body, secondary and metadata text meet 4.5:1 in light and dark themes (computed values recorded in the PR).
 - [ ] No network request to a third-party font host.
 - [ ] `npm run lint`, `npm test`, and `npm run build` exit 0.
@@ -134,9 +136,21 @@ N/A — fresh issue with no discovery; visual refinement only, no flow or copy c
 | Font adds weight and a swap flash. | Latin subset variable file only; `font-display: swap`; system fallback with similar metrics. |
 | Visual taste: the result may feel too plain. | This pass is the quiet baseline; character is added in follow-up steps (`polish`, `animate`) with the same detector gate. |
 
+## 9. Scope update (owner-approved during implementation)
+
+The owner reviewed the quiet baseline, found it lacked personality, and asked for a finished, beautiful result including PC support. The scope grew to:
+
+- **Personality, concentrated at moments of meaning** (Impeccable `delight`, Operate mode): a warm paper light theme; a coral "sticker" `it` chip in the wordmark (dark ink text, tilted -3deg); a completion stamp (check badge with spring) on done cards; a loading state where loose notes sort themselves into three columns (reduced motion shows the sorted state); on desktop welcome, floating note chips around the mascot using phrases from the existing example text. No user-facing copy was changed.
+- **Desktop layout:** the 480px shell is gone. At `lg` (1024px+) a left sidebar holds the wordmark, navigation with `D`/`T` keyboard shortcuts, theme toggle, sign out, and the account; the Kanban fills the width with three flexible columns; dump is centered. Below `lg` the top bar and bottom nav remain.
+- **Real routes:** `/dashboard/dump` and `/dashboard/tarefas` (`/dashboard` redirects, preserving seeded task state; unknown paths go home). Back button and deep links work.
+- **Robustness:** a failed task fetch no longer wipes the tasks already on screen (toast instead); the auth guard shows a quiet loading screen instead of a blank page.
+- **Reference points** (design write-ups, not copied visuals): Linear (neutral surfaces, one accent budget, desktop sidebar chrome), Duolingo (mascot at moments of meaning, not wallpaper), Raycast (inline shortcut hints), Things (motion that preserves spatial context).
+
+Additional files: `src/App.jsx` (router and shell), `src/components/layout/Sidebar.jsx`, `src/components/ui/Wordmark.jsx`, `src/utils/getInitial.js`, `src/components/auth/AuthGuard.jsx`, `src/pages/*`, `KanbanBoard.jsx`, `KanbanColumn.jsx`, `ProgressCard.jsx`.
+
 ## 8. Rollout
 
-Single PR, implemented in four chunks: (1) tokens, type scale and font; (2) shell and layout components; (3) tasks components; (4) dump, welcome, auth, and shared UI. Each chunk passes the repo gates before commit. No feature flag. After merge, follow-up issues: desktop layout and routing, accessibility hardening (`harden`), motion, and `document` to generate `DESIGN.md`. Installing the Impeccable skill files into the repo is a separate decision and is not part of this PR.
+Single PR, implemented in four chunks. Old tokens and classes (`.glass-*`, `--shadow-brand-*`, `--col-*-grad`) stay defined until chunk 4 and are deleted only once no consumer references them, so every chunk builds and renders. The detector runs through the local, uncommitted Impeccable install (`.claude/skills/impeccable/scripts/impeccable`); the PR records baseline and final outputs. Chunks: (1) tokens, type scale and font; (2) shell and layout components; (3) tasks components; (4) dump, welcome, auth, and shared UI. Each chunk passes the repo gates before commit. No feature flag. After merge, follow-up issues: desktop layout and routing, accessibility hardening (`harden`), motion, and `document` to generate `DESIGN.md`. Installing the Impeccable skill files into the repo is a separate decision and is not part of this PR.
 
 ---
 

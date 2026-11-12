@@ -34,11 +34,11 @@ function FieldGroup({ label, type, placeholder, value, onChange, error, showCoun
   return (
     <div style={{ marginBottom: 11 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
-        <label style={{ fontSize: 10.5, fontWeight: 700, color: 'hsl(var(--text-secondary))' }}>
+        <label style={{ fontSize: 'var(--fs-meta)', fontWeight: 600, color: 'hsl(var(--text-secondary))' }}>
           {label}
         </label>
         {isPassword && showCount && (
-          <span style={{ fontSize: 10, color: 'hsl(var(--text-secondary))', opacity: 0.6 }}>
+          <span style={{ fontSize: 'var(--fs-meta)', color: 'hsl(var(--text-hint))' }}>
             {value.length} / 8 mín.
           </span>
         )}
@@ -54,11 +54,11 @@ function FieldGroup({ label, type, placeholder, value, onChange, error, showCoun
             width: '100%',
             padding: isPassword ? '11px 38px 11px 13px' : '11px 13px',
             borderRadius: 13,
-            fontSize: 12.5,
+            fontSize: 'var(--fs-label)',
             fontWeight: 500,
             color: 'hsl(var(--text-primary))',
-            background: 'rgba(255,255,255,0.05)',
-            border: error ? '1px solid #e53e3e' : '1px solid rgba(255,255,255,0.1)',
+            background: 'hsl(var(--surface-sunken))',
+            border: error ? '1px solid hsl(var(--danger))' : '1px solid hsl(var(--border-strong))',
             outline: 'none',
             fontFamily: 'inherit',
             boxSizing: 'border-box',
@@ -78,7 +78,7 @@ function FieldGroup({ label, type, placeholder, value, onChange, error, showCoun
           </button>
         )}
       </div>
-      {error && <p style={{ color: '#e53e3e', fontSize: 11.5, marginTop: 4 }}>{error}</p>}
+      {error && <p style={{ color: 'hsl(var(--danger))', fontSize: 'var(--fs-meta)', marginTop: 4 }}>{error}</p>}
     </div>
   )
 }
@@ -91,13 +91,13 @@ function SubmitButton({ children, loading }) {
       style={{
         width: '100%',
         padding: '13px 0',
-        borderRadius: 15,
+        borderRadius: 12,
         border: 'none',
-        background: loading ? 'rgba(27,157,198,0.5)' : 'linear-gradient(145deg, #1B9DC6, #0E7C9E)',
-        boxShadow: '0 8px 20px rgba(27,157,198,0.3)',
+        background: 'hsl(var(--action))',
+        opacity: loading ? 0.6 : 1,
         color: 'white',
-        fontSize: 13,
-        fontWeight: 700,
+        fontSize: 'var(--fs-label)',
+        fontWeight: 600,
         cursor: loading ? 'not-allowed' : 'pointer',
         marginTop: 6,
         fontFamily: 'inherit',
@@ -143,7 +143,7 @@ function LoginForm({ onSuccess }) {
     <form onSubmit={handleSubmit}>
       <FieldGroup label="Email" type="email" placeholder="seu@email.com" value={email} onChange={e => setEmail(e.target.value)} error={errors.email} />
       <FieldGroup label="Senha" type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} error={errors.password} />
-      {apiError && <p style={{ color: '#e53e3e', fontSize: 12, marginBottom: 8 }}>{apiError}</p>}
+      {apiError && <p style={{ color: 'hsl(var(--danger))', fontSize: 'var(--fs-meta)', marginBottom: 8 }}>{apiError}</p>}
       <SubmitButton loading={loading}>Entrar</SubmitButton>
     </form>
   )
@@ -189,9 +189,9 @@ function SignupForm({ onSuccess }) {
       <FieldGroup label="Nome" type="text" placeholder="Como podemos te chamar?" value={name} onChange={e => setName(e.target.value)} error={errors.name} />
       <FieldGroup label="Email" type="email" placeholder="seu@email.com" value={email} onChange={e => setEmail(e.target.value)} error={errors.email} />
       <FieldGroup label="Senha" type="password" placeholder="Mínimo 8 caracteres" value={password} onChange={e => setPassword(e.target.value)} error={errors.password} showCount />
-      {apiError && <p style={{ color: '#e53e3e', fontSize: 12, marginBottom: 8 }}>{apiError}</p>}
+      {apiError && <p style={{ color: 'hsl(var(--danger))', fontSize: 'var(--fs-meta)', marginBottom: 8 }}>{apiError}</p>}
       <SubmitButton loading={loading}>Criar minha conta</SubmitButton>
-      <p style={{ textAlign: 'center', fontSize: 9.5, color: 'hsl(var(--text-secondary))', fontWeight: 500, marginTop: 14, lineHeight: 1.6 }}>
+      <p style={{ textAlign: 'center', fontSize: 'var(--fs-meta)', color: 'hsl(var(--text-secondary))', fontWeight: 400, marginTop: 14, lineHeight: 1.6 }}>
         Ao criar conta, você concorda com os<br />
         <a href="/termos" style={{ color: 'hsl(var(--brand))', fontWeight: 700 }}>Termos de Uso</a>{' '}e{' '}
         <a href="/privacidade" style={{ color: 'hsl(var(--brand))', fontWeight: 700 }}>Privacidade</a>
@@ -222,21 +222,20 @@ export function LoginModal({ isOpen, onClose, hideClose = false, context = 'defa
       {isOpen && (
         <motion.div
           className="fixed inset-0 flex items-center justify-center z-50"
-          style={{ background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)' }}
+          style={{ background: 'hsl(var(--scrim))' }}
           variants={backdropVariants}
           initial="hidden"
           animate="visible"
           exit="exit"
         >
           <motion.div
-            className="glass-surface-strong glass-inset-highlight relative"
+            className="surface-raised relative"
             style={{
               width: '100%',
               maxWidth: 340,
               margin: '0 24px',
               padding: '28px 18px 22px',
-              borderRadius: 22,
-              boxShadow: '0 12px 36px var(--shadow-brand-card)',
+              borderRadius: 20,
             }}
             variants={cardVariants}
             initial="hidden"
@@ -258,16 +257,16 @@ export function LoginModal({ isOpen, onClose, hideClose = false, context = 'defa
 
             {/* Context message */}
             <div style={{ textAlign: 'center', marginBottom: 16 }}>
-              <div style={{ fontSize: 15, fontWeight: 800, color: 'hsl(var(--text-primary))', marginBottom: 5 }}>
+              <div style={{ fontSize: 'var(--fs-title)', fontWeight: 700, color: 'hsl(var(--text-primary))', marginBottom: 5 }}>
                 {title}
               </div>
-              <div style={{ fontSize: 11, color: 'hsl(var(--text-secondary))', fontWeight: 500, lineHeight: 1.6 }}>
+              <div style={{ fontSize: 'var(--fs-label)', color: 'hsl(var(--text-secondary))', fontWeight: 400, lineHeight: 1.5 }}>
                 {subtitle}
               </div>
             </div>
 
             {/* Tabs */}
-            <div style={{ display: 'flex', gap: 4, borderRadius: 13, padding: 3, background: 'rgba(255,255,255,0.04)', marginBottom: 18 }}>
+            <div style={{ display: 'flex', gap: 4, borderRadius: 13, padding: 3, background: 'hsl(var(--surface-sunken))', marginBottom: 18 }}>
               {['entrar', 'criar-conta'].map(tab => (
                 <button
                   key={tab}
@@ -277,14 +276,14 @@ export function LoginModal({ isOpen, onClose, hideClose = false, context = 'defa
                     padding: '8px 0',
                     borderRadius: 10,
                     border: 'none',
-                    fontSize: 12,
-                    fontWeight: 700,
+                    fontSize: 'var(--fs-label)',
+                    fontWeight: 600,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
                     transition: 'background 0.15s',
                     ...(activeTab === tab
-                      ? { background: 'linear-gradient(145deg, #1B9DC6, #0E7C9E)', color: 'white' }
-                      : { background: 'none', color: '#6F6688' }),
+                      ? { background: 'hsl(var(--action))', color: 'white' }
+                      : { background: 'none', color: 'hsl(var(--text-secondary))' }),
                   }}
                 >
                   {tab === 'entrar' ? 'Entrar' : 'Criar conta'}

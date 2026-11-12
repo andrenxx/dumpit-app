@@ -26,23 +26,36 @@ export default {
           foreground: 'hsl(var(--card-foreground))',
         },
         'bg-app':         'hsl(var(--bg-app))',
+        surface: {
+          DEFAULT: 'hsl(var(--surface))',
+          sunken:  'hsl(var(--surface-sunken))',
+        },
+        action: {
+          DEFAULT: 'hsl(var(--action))',
+          hover:   'hsl(var(--action-hover))',
+        },
+        danger: 'hsl(var(--danger))',
+        sticker: {
+          DEFAULT: 'hsl(var(--sticker))',
+          ink:     'hsl(var(--sticker-ink))',
+        },
         'text-primary':   'hsl(var(--text-primary))',
         'text-secondary': 'hsl(var(--text-secondary))',
         'text-hint':      'hsl(var(--text-hint))',
-        brand: {
-          DEFAULT: 'hsl(var(--brand))',
-          deep:    'hsl(var(--brand-deep))',
-        },
-        coral:  'hsl(var(--coral))',
-        mint:   'hsl(var(--mint))',
-        yellow: 'hsl(var(--yellow))',
+        brand: 'hsl(var(--brand))',
       },
-      backdropBlur: { xs: '8px' },
+      fontFamily: {
+        sans: ['Hanken Grotesk Variable', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+      },
+      fontSize: {
+        display: ['var(--fs-display)', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
+        title:   ['var(--fs-title)',   { lineHeight: '1.25', letterSpacing: '-0.01em' }],
+        body:    ['var(--fs-body)',    { lineHeight: '1.5' }],
+        label:   ['var(--fs-label)',   { lineHeight: '1.35' }],
+        meta:    ['var(--fs-meta)',    { lineHeight: '1.35' }],
+      },
       boxShadow: {
-        'glass-sm':          '0 3px 12px hsl(var(--brand) / 0.06)',
-        'glass-md':          '0 6px 18px hsl(var(--brand) / 0.12)',
-        'glass-button':      '0 6px 16px hsl(var(--brand) / 0.25)',
-        'glass-card-purple': '0 8px 24px hsl(var(--brand) / 0.22)',
+        raised: 'var(--shadow-raised)',
       },
       keyframes: {
         'blob-morph': {

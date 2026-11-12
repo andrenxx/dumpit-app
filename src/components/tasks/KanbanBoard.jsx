@@ -179,12 +179,8 @@ export function KanbanBoard({ tasks, onTasksChange, loading, user }) {
       onDragEnd={handleDragEnd}
     >
       <div
-        className="kanban-scroll"
-        style={{
-          display: 'flex', gap: 12, padding: '0 20px 20px',
-          overflowX: 'auto', flex: 1,
-          touchAction: 'pan-x',
-        }}
+        className="kanban-scroll flex gap-3 px-5 pb-5 lg:gap-5 lg:px-10 lg:pb-8 overflow-x-auto flex-1 min-h-0"
+        style={{ touchAction: 'pan-x' }}
       >
         <AnimatePresence>
           {COLUMNS.map((id) => (

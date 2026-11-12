@@ -6,38 +6,33 @@ import { TaskCard } from './TaskCard'
 import { NewTaskButton } from './NewTaskButton'
 
 const STATUS_CONFIG = {
-  a_fazer: { label: 'A fazer', gradient: 'var(--col-a_fazer-grad)' },
-  fazendo: { label: 'Fazendo', gradient: 'var(--col-fazendo-grad)' },
-  feito:   { label: 'Feito',   gradient: 'var(--col-feito-grad)'   },
+  a_fazer: { label: 'A fazer', dot: 'hsl(var(--status-todo))' },
+  fazendo: { label: 'Fazendo', dot: 'hsl(var(--status-doing))' },
+  feito:   { label: 'Feito',   dot: 'hsl(var(--status-done))' },
 }
 
 export function KanbanColumn({ id, tasks, loading, onEdit, onNewTask }) {
   const { setNodeRef, isOver } = useDroppable({ id })
   const taskIds = tasks.map((t) => t.id)
-  const config = STATUS_CONFIG[id] || { label: id, gradient: 'rgba(100,100,100,0.5)' }
+  const config = STATUS_CONFIG[id] || { label: id, dot: 'hsl(var(--status-todo))' }
 
   return (
-    <div style={{ flex: '0 0 300px', width: 300, display: 'flex', flexDirection: 'column' }}>
+    <div className="flex flex-col flex-none w-[300px] min-h-0 lg:flex-1 lg:w-auto lg:min-w-[260px]">
 
-      {/* Header — gradiente sólido, arredondado só no topo */}
       <div style={{
-        background: config.gradient,
-        padding: '12px 14px',
-        borderRadius: '14px 14px 0 0',
+        padding: '0 4px 10px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 14, fontWeight: 800, color: 'white' }}>{config.label}</span>
-          <span style={{
-            fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.85)',
-            background: 'rgba(255,255,255,0.18)', padding: '1px 8px', borderRadius: 20,
-          }}>
+          <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: '50%', background: config.dot }} />
+          <span style={{ fontSize: 'var(--fs-label)', fontWeight: 600, color: 'hsl(var(--text-primary))' }}>{config.label}</span>
+          <span style={{ fontSize: 'var(--fs-meta)', fontWeight: 500, color: 'hsl(var(--text-secondary))' }}>
             {tasks.length}
           </span>
         </div>
-        <div style={{ display: 'flex', gap: 10, color: 'rgba(255,255,255,0.8)', fontSize: 17, lineHeight: 1 }}>
+        <div style={{ display: 'flex', gap: 10, color: 'hsl(var(--text-secondary))', fontSize: 17, lineHeight: 1 }}>
           <button
             style={{ background: 'none', border: 'none', cursor: 'default', color: 'inherit', padding: 0, lineHeight: 1 }}
             aria-label="Mais opções"
@@ -50,14 +45,12 @@ export function KanbanColumn({ id, tasks, loading, onEdit, onNewTask }) {
         </div>
       </div>
 
-      {/* Body — conectado ao header, arredondado só na base */}
       <div
         ref={setNodeRef}
         style={{
           background: isOver ? 'hsl(var(--brand) / 0.07)' : 'var(--col-body-bg)',
           border: '1px solid var(--col-body-border)',
-          borderTop: 'none',
-          borderRadius: '0 0 16px 16px',
+          borderRadius: 16,
           padding: '10px 10px',
           display: 'flex',
           flexDirection: 'column',
@@ -65,7 +58,7 @@ export function KanbanColumn({ id, tasks, loading, onEdit, onNewTask }) {
           flex: 1,
           minHeight: 200,
           overflowY: 'auto',
-          outline: isOver ? '1.5px dashed hsl(var(--brand) / 0.25)' : 'none',
+          outline: isOver ? '1.5px dashed hsl(var(--brand) / 0.5)' : 'none',
           outlineOffset: -2,
           transition: 'background 150ms ease',
         }}
@@ -91,7 +84,7 @@ export function KanbanColumn({ id, tasks, loading, onEdit, onNewTask }) {
                 textAlign: 'center',
                 padding: '24px 8px',
                 color: 'hsl(var(--text-hint))',
-                fontSize: 11.5,
+                fontSize: 'var(--fs-meta)',
                 fontWeight: 500,
                 wordBreak: 'break-word',
                 width: '100%',

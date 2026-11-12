@@ -4,10 +4,10 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { toast } from 'sonner'
-import { AmbientBlobs } from '../components/layout/AmbientBlobs'
 import { Toaster } from '../components/ui/sonner'
 import { LoadingOverlay } from '../components/ui/LoadingOverlay'
 import { LoginModal } from '../components/auth/LoginModal'
+import { Wordmark } from '../components/ui/Wordmark'
 import WelcomePage from './WelcomePage'
 import { DumpPage } from './DumpPage'
 
@@ -85,13 +85,13 @@ export function Landing() {
   if (authLoading) return null
 
   return (
-    <div style={{
-      display: 'flex', flexDirection: 'column', height: '100vh',
-      maxWidth: 480, margin: '0 auto', overflow: 'hidden', background: 'transparent',
-    }}>
-      <AmbientBlobs />
+    <div className="relative flex flex-col h-[100dvh] overflow-hidden bg-bg-app">
       <Toaster position="top-center" />
       <LoadingOverlay visible={loading} />
+
+      {hasSeenWelcome && !showLoginOnly && (
+        <Wordmark className="hidden lg:flex absolute top-8 left-12 z-10" />
+      )}
 
       <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
         {!showLoginOnly && (

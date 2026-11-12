@@ -22,22 +22,12 @@ export function ProgressCard({ tasks }) {
 
   return (
     <div
-      className="rounded-[26px] relative overflow-hidden flex items-end"
+      className="rounded-[20px] relative overflow-hidden flex items-end"
       style={{
         minHeight: 140,
-        background: 'linear-gradient(135deg, hsl(var(--brand) / 0.88), hsl(var(--brand-deep) / 0.92))',
-        boxShadow: '0 10px 28px var(--shadow-brand-card)',
+        background: 'hsl(var(--action))',
       }}
     >
-      <div
-        className="absolute -top-[35px] -right-[25px]"
-        style={{
-          width: 110,
-          height: 110,
-          background: 'rgba(255,255,255,0.14)',
-          borderRadius: '45% 55% 50% 50% / 55% 45% 55% 45%',
-        }}
-      />
 
       <div className="relative z-10 flex-1 py-[18px] pl-5 pb-4">
         <div className="flex items-baseline gap-2">
@@ -45,15 +35,15 @@ export function ProgressCard({ tasks }) {
             key={done}
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-[40px] font-extrabold text-white tracking-tight leading-none"
+            className="text-display font-bold text-white tracking-tight leading-none tabular-nums"
           >
             {done}
           </motion.span>
-          <span className="text-[12.5px] text-white/75 font-semibold pb-1">
+          <span className="text-label text-white font-medium pb-1">
             de {total}
           </span>
         </div>
-        <div className="text-[11px] text-white/60 font-semibold mt-0.5">
+        <div className="text-meta text-white font-medium mt-0.5">
           feitas hoje <Flame size={11} className="inline-block ml-0.5 mb-px" />
         </div>
       </div>

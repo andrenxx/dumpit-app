@@ -57,26 +57,17 @@ export function DumpPage({ setLoading, onSuccess, onLoginRequired }) {
   }
 
   return (
-    <div style={{
-      display: 'flex', flexDirection: 'column', flex: 1,
-      padding: '20px 20px 0', justifyContent: 'space-between', overflow: 'hidden',
-    }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, paddingBottom: 20 }}>
-        <h1 style={{
-          fontSize: 32, fontWeight: 700, color: 'hsl(var(--text-primary))',
-          letterSpacing: '-0.5px', lineHeight: 1.2,
-        }}>
+    <div className="flex flex-col flex-1 w-full max-w-[760px] mx-auto px-5 pt-5 lg:px-8 lg:pt-0 overflow-hidden justify-between lg:justify-center">
+      <div className="flex flex-col gap-1.5 pb-5 lg:pb-8">
+        <h1 className="text-title lg:text-display font-bold text-text-primary">
           O que tá na sua cabeça?
         </h1>
-        <p style={{ fontSize: 15, color: 'hsl(var(--text-secondary))', lineHeight: 1.6 }}>
+        <p className="text-label lg:text-body text-text-secondary">
           Joga tudo aqui. A IA organiza pra você.
         </p>
       </div>
 
-      <div style={{
-        flex: 1, display: 'flex', flexDirection: 'column', gap: 14,
-        overflow: 'hidden', paddingBottom: 110,
-      }}>
+      <div className="flex flex-col flex-1 gap-3.5 overflow-hidden pb-[110px] lg:pb-0 lg:flex-none lg:overflow-visible">
         <DumpInput
           onSubmit={handleSubmit}
           disabled={submitting}
@@ -87,8 +78,8 @@ export function DumpPage({ setLoading, onSuccess, onLoginRequired }) {
 
         {errorToast && (
           <div style={{
-            background: 'var(--bg-card)', border: '0.5px solid rgba(184,58,36,0.2)',
-            borderRadius: 12, padding: '10px 14px', fontSize: 13,
+            background: 'hsl(var(--surface))', border: '1px solid hsl(var(--border-default))',
+            borderRadius: 12, padding: '10px 14px', fontSize: 'var(--fs-label)',
             color: 'hsl(var(--text-primary))',
           }}>
             Algo deu errado. Tente novamente.
